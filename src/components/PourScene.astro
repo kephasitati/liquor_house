@@ -7,9 +7,11 @@
  * The bottle is a real one: a photograph cut out of its white ground (scripts/bottle-photos.sh),
  * placed as an <image> so the same transform tips it.
  *
- * Geometry, in viewBox units: the bottle is centred on (0,0), mouth at (0,−170), and parked at (170,330).
- * Tipped 125° clockwise and nudged (56,−28), its mouth lands at ~(365,400) — just above the
- * glass rim (y 470), where the stream starts.
+ * Geometry, in viewBox units: the bottle is drawn around its own centre, parked at (170,352),
+ * and turns about that point (transform-origin 0 0, so the flying cork never moves the pivot).
+ * The open mouth sits at (0,−170). Tipped 125° clockwise and nudged (56,−28), it lands at
+ * ~(347,389) — just above the glass rim (y 470), where the stream starts. The cork pops off
+ * along the bottle's axis as it tips (--cork) and goes back on as it rights itself.
  */
 ---
 <section class="pour dark" aria-label="How an order is poured">
@@ -48,9 +50,9 @@
 
           <!-- the stream -->
           <g class="pour-stream" style="transition: opacity .35s">
-            <path d="M362 402 C 368 450, 372 520, 376 610" stroke="url(#ps-stream)" stroke-width="9" fill="none" stroke-linecap="round">
+            <path d="M347 390 C 358 450, 370 520, 376 610" stroke="url(#ps-stream)" stroke-width="9" fill="none" stroke-linecap="round">
               <animate attributeName="d" dur=".6s" repeatCount="indefinite"
-                values="M362 402 C 368 450, 372 520, 376 610;M362 402 C 366 452, 375 522, 377 610;M362 402 C 368 450, 372 520, 376 610" />
+                values="M347 390 C 358 450, 370 520, 376 610;M347 390 C 356 452, 373 522, 377 610;M347 390 C 358 450, 370 520, 376 610" />
             </path>
             <circle cx="372" cy="600" r="4" fill="#ffc670"><animate attributeName="cy" values="600;580;600" dur=".5s" repeatCount="indefinite" /><animate attributeName="cx" values="372;356;372" dur=".5s" repeatCount="indefinite" /></circle>
             <circle cx="384" cy="600" r="3" fill="#ffc670"><animate attributeName="cy" values="600;575;600" dur=".45s" repeatCount="indefinite" /><animate attributeName="cx" values="384;402;384" dur=".45s" repeatCount="indefinite" /></circle>
@@ -68,10 +70,15 @@
             <path d="M318 490 L326 600" stroke="#fff" stroke-opacity=".35" stroke-width="4" stroke-linecap="round" />
           </g>
 
-          <!-- the bottle -->
-          <g transform="translate(170 330)">
+          <!-- the bottle: a photograph in two pieces, so it uncorks as it tips -->
+          <g transform="translate(170.3 352)">
             <g class="pour-bottle">
-              <image href="/hero/monkey-shoulder.webp" x="-76" y="-170" width="153" height="384" preserveAspectRatio="xMidYMin meet" />
+              <!-- the neck was clear glass on white and went with the background; put the glass back -->
+              <rect x="-24" y="-140" width="48" height="26" rx="4" fill="url(#ps-glass)" stroke="#fff" stroke-opacity=".28" />
+              <image href="/hero/monkey-shoulder-body.webp" x="-76.3" y="-170.4" width="152.6" height="362.4" />
+              <g class="pour-cork">
+                <image href="/hero/monkey-shoulder-cork.webp" x="-76.3" y="-192" width="152.6" height="21.6" />
+              </g>
             </g>
           </g>
         </svg>

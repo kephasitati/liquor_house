@@ -44,4 +44,9 @@ cutout hennessy-vsop.webp hennessy-vsop 6
 cutout moet-and-chandon-brut-imperial.jpg moet 2
 cutout jameson.webp jameson 4
 cutout monkey-shoulder.webp monkey-shoulder 8
+# The pour (components/PourScene.astro) uncorks the bottle as it tips, so it is split in two:
+# the wooden cap (the top 31 rows) and the rest. Keep CORK_ROWS in step with the scene.
+CORK_ROWS=31
+convert "$HERO/monkey-shoulder.webp" -crop "x$CORK_ROWS+0+0" +repage -strip -quality 86 "$HERO/monkey-shoulder-cork.webp"
+convert "$HERO/monkey-shoulder.webp" -crop "+0+$CORK_ROWS" +repage -strip -quality 86 "$HERO/monkey-shoulder-body.webp"
 echo "bottles: $(ls "$OUT" | wc -l)  hero: $(ls "$HERO" | wc -l)"

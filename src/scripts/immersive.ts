@@ -57,7 +57,11 @@ function onScrollPour() {
   const stream = p > 0.28 && p < 0.86 ? 1 : 0;
   const level = Math.min(1, Math.max(0, (p - 0.3) / 0.54));
   pour.style.setProperty("--p", p.toFixed(4));
-  pour.style.setProperty("--pt", (p > 0.86 ? Math.max(0, 1 - (p - 0.86) / 0.12) : tip).toFixed(4));
+  const pt = p > 0.86 ? Math.max(0, 1 - (p - 0.86) / 0.12) : tip;
+  pour.style.setProperty("--pt", pt.toFixed(4));
+  // The cork pops as the bottle starts to tip (well before the stream) and is back on by the
+  // time it stands up again.
+  pour.style.setProperty("--cork", Math.min(1, Math.max(0, (pt - 0.08) / 0.42)).toFixed(4));
   pour.style.setProperty("--stream", String(stream));
   if (fill) {
     const h = (FILL_BOTTOM - FILL_TOP) * 0.86 * level;
