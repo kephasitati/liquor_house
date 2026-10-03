@@ -9,8 +9,7 @@ import { DEMO_CATALOG } from "../data/catalog";
  * channel; without one it is the demo cellar. Every page reads through here and never knows
  * which.
  *
- * Medusa → Drink follows beyond/src/lib/catalog.ts, so a product set up from the POS reads
- * the same here:
+ * Medusa → Drink, reading the fields the POS writes when a product is set up:
  *   category  categories[0].handle      the shelf id
  *   brand     metadata.brand
  *   specs     metadata.specs.{Volume,ABV,Origin}
@@ -82,8 +81,8 @@ export function fromMedusa(p: any): Drink {
   };
 }
 
-/* The live shelf, fetched in pages and cached for a minute (beyond/src/lib/catalog.ts explains
- * why paging by `count` rather than one big `limit` matters). Never throws. */
+/* The live shelf, fetched in pages of 200 until the reported `count` is reached (so a shelf
+ * larger than one page is never silently cut short) and cached for a minute. Never throws. */
 const TTL = 60_000;
 let cache: { at: number; value: Drink[] } | null = null;
 let inflight: Promise<Drink[]> | null = null;

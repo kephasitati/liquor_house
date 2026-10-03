@@ -7,7 +7,7 @@ import { site } from "../config/site";
  * Two ways an order leaves the site.
  *
  *   medusa    every line has a variant id (a live channel): a real Medusa cart is built from
- *             the bag, then address → shipping → payment → complete, as in beyond/.
+ *             the bag, then address → shipping → payment → complete.
  *   whatsapp  the demo cellar, or a bag with a line Medusa does not know: the order is
  *             written out as a message to the shop's WhatsApp, and the shop confirms the
  *             delivery and the payment in the chat.

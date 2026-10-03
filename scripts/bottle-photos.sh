@@ -4,7 +4,11 @@
 # medusa/src/scripts/data/beyond/. Those were downloaded from Nairobi retailers' listings and
 # are self-hosted, never hotlinked; scripts/bottle-credits.json records where each came from.
 #
-#   bash liquorhouse/scripts/bottle-photos.sh        (needs ImageMagick and node)
+#   bash scripts/bottle-photos.sh        (needs ImageMagick and node)
+#
+# The finished photos are committed in public/, so building or running the site never needs
+# this script or anything outside this folder. It is only for re-cutting them, and reads its
+# sources from PHOTO_SRC (by default the photo folder in the monorepo this project started in).
 #
 # Every product photo is normalised to the same 600×750 frame on pure white, standing on the
 # same floor line, so a grid of them reads as one shelf. Pure white matters: the cards print
@@ -12,7 +16,8 @@
 set -euo pipefail
 HERE="$(cd "$(dirname "$0")" && pwd)"
 APP="$(dirname "$HERE")"
-SRC="$APP/../medusa/src/scripts/data/beyond"
+SRC="${PHOTO_SRC:-$APP/../medusa/src/scripts/data/beyond}"
+[ -d "$SRC" ] || { echo "No source photos at $SRC — set PHOTO_SRC to the folder that holds them." >&2; exit 1; }
 OUT="$APP/public/bottles"
 HERO="$APP/public/hero"
 mkdir -p "$OUT" "$HERO"

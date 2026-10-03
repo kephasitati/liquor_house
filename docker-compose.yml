@@ -1,0 +1,21 @@
+# Liquor House Kenya — deployable on its own. Nothing here depends on any other service in
+# the repository this folder lives in.
+#
+#   docker compose up --build -d        → http://localhost:4325
+#
+# PUBLIC_* are baked into the bundle at BUILD time (see Dockerfile), so set them in .env next
+# to this file (or in the host's environment) before building. With PUBLIC_MEDUSA_KEY_LIQUORHOUSE
+# empty the site serves its demo cellar and checks out over WhatsApp, calling no backend.
+services:
+  liquorhouse:
+    build:
+      context: .
+      args:
+        PUBLIC_MEDUSA_URL: ${PUBLIC_MEDUSA_URL:-}
+        PUBLIC_MEDUSA_KEY_LIQUORHOUSE: ${PUBLIC_MEDUSA_KEY_LIQUORHOUSE:-}
+        PUBLIC_MEDUSA_REGION_ID: ${PUBLIC_MEDUSA_REGION_ID:-}
+        PUBLIC_SITE_URL: ${PUBLIC_SITE_URL:-}
+    image: liquorhouse-storefront:latest
+    restart: unless-stopped
+    ports:
+      - "${LIQUORHOUSE_PORT:-4325}:4321"

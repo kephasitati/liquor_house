@@ -1,0 +1,8 @@
+# Liquor House is its own project. This file makes liquorhouse/ its own pnpm root, so an
+# install here never reaches into the surrounding repository's workspace (and never picks up
+# another app's React).
+packages:
+  - "."
+onlyBuiltDependencies:
+  - esbuild
+  - sharp

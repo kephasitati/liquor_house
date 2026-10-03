@@ -1,7 +1,6 @@
 /**
- * The liquid's colour, read from the words in a product's style — the same rule beyond/'s
- * BottleArt uses, so a bottle added from the POS without a `metadata.colour` still pours the
- * right shade.
+ * The liquid's colour, read from the words in a product's style, so a bottle added from the
+ * POS without a `metadata.colour` still tints its card and the pour the right shade.
  */
 export function liquidColour(p: { subcategory?: string; name?: string; category?: string }): string {
   const s = `${p.subcategory ?? ""} ${p.name ?? ""} ${p.category ?? ""}`.toLowerCase();

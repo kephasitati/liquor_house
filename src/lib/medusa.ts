@@ -1,7 +1,7 @@
 import Medusa from "@medusajs/js-sdk";
 
 /**
- * Medusa Store SDK — single store, like beyond/src/lib/medusa.ts. The publishable key IS the
+ * Medusa Store SDK — a single store. The publishable key IS the
  * store: Medusa resolves it to this shop's sales channel before any handler runs.
  *
  * No key means no backend yet: `LIVE` is false, the catalogue comes from the demo cellar and
