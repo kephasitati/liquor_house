@@ -9,7 +9,8 @@ pipeline or deployment with anything else in the repository it sits in, and the 
 lifted out into a repository of its own unchanged.
 
 Commerce comes from a Medusa backend over its store API: one sales channel, one publishable
-key, managed from the POS.
+key, managed from the POS. **The backend is shared:** Liquor House is a sales channel on the
+existing Medusa backend, not a backend of its own. Only the storefront is separate.
 
 It also runs **with no backend at all**. Without a publishable key it serves its demo cellar
 (`src/data/catalog.ts`) and checkout goes through WhatsApp. That lets the site be designed,
