@@ -1,0 +1,333 @@
+{
+  "_": "Where each demo-cellar photograph came from. Downloaded and self-hosted, never hotlinked. Entries without a source URL came in with Beyond Sweetness (medusa/src/scripts/catalog/liquor.ts), sourced from drinksvine.co.ke.",
+  "johnnie-walker-black-label-750ml": {
+    "file": "johnnie-walker-black-label.jpg",
+    "retailer": "Jays Wines",
+    "source": "https://jayswines.com/wp-content/uploads/2023/05/Buy-Johnnie-Walker-Black-Label-250ml-online-in-Nairobi.jpg"
+  },
+  "johnnie-walker-red-label-750ml": {
+    "file": "johnnie-walker-red-label.jpg",
+    "retailer": "Jays Wines",
+    "source": "https://jayswines.com/wp-content/uploads/2016/04/johnnie-walker-red-label-1L.jpg"
+  },
+  "johnnie-walker-double-black-750ml": {
+    "file": "johnnie-walker-double-black.webp",
+    "retailer": "Jays Wines",
+    "source": "https://jayswines.com/wp-content/uploads/2015/04/Johnnie-Walker-Double-Black-1-Litre.jpeg"
+  },
+  "johnnie-walker-gold-label-reserve-750ml": {
+    "file": "johnnie-walker-gold-label-reserve.jpg",
+    "retailer": "Jays Wines",
+    "source": "https://jayswines.com/wp-content/uploads/2023/02/Buy-Johnnie-Walker-Gold-Label-Reserve-1L-online-in-Nairobi.jpg"
+  },
+  "johnnie-walker-blue-label-750ml": {
+    "file": "johnnie-walker-blue-label.png",
+    "retailer": "Jays Wines",
+    "source": "https://jayswines.com/wp-content/uploads/2020/09/johnnie-walker-blue-label-700ml.png"
+  },
+  "jameson-irish-whiskey-750ml": {
+    "file": "jameson.webp",
+    "retailer": "Drinks Vine (drinksvine.co.ke)",
+    "source": null
+  },
+  "jameson-black-barrel-750ml": {
+    "file": "jameson-black-barrel.jpg",
+    "retailer": "Jays Wines",
+    "source": "https://jayswines.com/wp-content/uploads/2021/04/Jameson-Black-Barrel-1.jpg"
+  },
+  "glenfiddich-12-year-old-750ml": {
+    "file": "glenfiddich-12-year-old.jpg",
+    "retailer": "Jays Wines",
+    "source": "https://jayswines.com/wp-content/uploads/2019/04/Buy-Glenfiddich-12yrs-1ltr-online-in-Nairobi.jpg"
+  },
+  "the-glenlivet-founders-reserve-700ml": {
+    "file": "the-glenlivet-founder-s-reserve.jpg",
+    "retailer": "Jays Wines",
+    "source": "https://jayswines.com/wp-content/uploads/2021/03/Buy-Glenlivet-Founders-Reserve-700ml-online-in-Nairobi.jpg"
+  },
+  "the-singleton-12-year-old-750ml": {
+    "file": "the-singleton-of-dufftown-12.jpg",
+    "retailer": "Jays Wines",
+    "source": "https://jayswines.com/wp-content/uploads/2015/04/Buy-Singleton-12yrs-750ml-online-in-Nairobi-1.jpg"
+  },
+  "monkey-shoulder-700ml": {
+    "file": "monkey-shoulder.webp",
+    "retailer": "Jays Wines",
+    "source": "https://jayswines.com/wp-content/uploads/2021/12/monkey-shoulder-1L.jpg"
+  },
+  "talisker-10-year-old-700ml": {
+    "file": "talisker-10-year-old.jpg",
+    "retailer": "Jays Wines",
+    "source": "https://jayswines.com/wp-content/uploads/2015/04/Buy-Talisker-10yrs-750ml-online-in-Nairobi.jpg"
+  },
+  "jack-daniels-old-no-7-700ml": {
+    "file": "jack-daniel-s-old-no-7.jpg",
+    "retailer": "Jays Wines",
+    "source": "https://jayswines.com/wp-content/uploads/2015/04/buy-JACK-DANIEL-online-in-nairobi-kenya-tennessee-sour-mash-whiskey.jpg"
+  },
+  "chivas-regal-12-year-old-750ml": {
+    "file": "chivas-regal-12-year-old.jpg",
+    "retailer": "Jays Wines",
+    "source": "https://jayswines.com/wp-content/uploads/2022/07/Chivas-Regal-12-Year-Old-1-Litre-1.jpg"
+  },
+  "grants-family-reserve-750ml": {
+    "file": "grants.webp",
+    "retailer": "Drinks Vine (drinksvine.co.ke)",
+    "source": null
+  },
+  "teachers-highland-cream-750ml": {
+    "file": "teacher-s-highland-cream.jpg",
+    "retailer": "Jays Wines",
+    "source": "https://jayswines.com/wp-content/uploads/2021/09/Buy-Teachers-online-in-Nairobi.jpg"
+  },
+  "hennessy-v-s-700ml": {
+    "file": "hennessy-vs.webp",
+    "retailer": "Drinks Vine (drinksvine.co.ke)",
+    "source": null
+  },
+  "hennessy-v-s-o-p-privilege-700ml": {
+    "file": "hennessy-vsop.webp",
+    "retailer": "Drinks Vine (drinksvine.co.ke)",
+    "source": null
+  },
+  "martell-v-s-700ml": {
+    "file": "martell-vs.webp",
+    "retailer": "Drinks Vine (drinksvine.co.ke)",
+    "source": null
+  },
+  "remy-martin-v-s-o-p-700ml": {
+    "file": "remy-martin-vsop.webp",
+    "retailer": "Jays Wines",
+    "source": "https://jayswines.com/wp-content/uploads/2022/01/Remy-martin-vsop-1ltr-3.png"
+  },
+  "viceroy-5-year-old-750ml": {
+    "file": "viceroy-5-year-brandy.png",
+    "retailer": "Jays Wines",
+    "source": "https://jayswines.com/wp-content/uploads/2020/09/viceroy.png"
+  },
+  "gilbeys-mixed-berries-gin-750ml": {
+    "file": "gilbey-s-pink-gin.jpg",
+    "retailer": "Jays Wines",
+    "source": "https://jayswines.com/wp-content/uploads/2022/01/Buy-Gilbeys-Gin-350ml-online-in-Nairobi.jpg"
+  },
+  "gordons-london-dry-gin-750ml": {
+    "file": "gordon-s-london-dry-gin.png",
+    "retailer": "Jays Wines",
+    "source": "https://jayswines.com/wp-content/uploads/2020/09/gordons-gin.png"
+  },
+  "tanqueray-london-dry-750ml": {
+    "file": "tanqueray-london-dry.jpg",
+    "retailer": "Jays Wines",
+    "source": "https://jayswines.com/wp-content/uploads/2021/06/tanqueray-london-dry-gin.jpg"
+  },
+  "hendricks-gin-700ml": {
+    "file": "hendrick-s-gin.jpg",
+    "retailer": "Jays Wines",
+    "source": "https://jayswines.com/wp-content/uploads/2022/02/Buy-Hendricks-Gin-1ltr-online-in-Nairobi.jpg"
+  },
+  "bombay-sapphire-750ml": {
+    "file": "bombay-sapphire.jpg",
+    "retailer": "Jays Wines",
+    "source": "https://jayswines.com/wp-content/uploads/2015/04/Bombay-Sapphire-750ml.jpeg"
+  },
+  "beefeater-london-dry-750ml": {
+    "file": "beefeater-london-dry.png",
+    "retailer": "Jays Wines",
+    "source": "https://jayswines.com/wp-content/uploads/2020/09/beefeater-gin.png"
+  },
+  "procera-blue-dot-gin-700ml": {
+    "file": "procera-blue-dot-gin.jpg",
+    "retailer": "chupachap.co.ke",
+    "source": "https://chupachap.co.ke/wp-content/uploads/2024/06/Procera-Blue-Dot-chupachap-delivery-Nairobi.jpg"
+  },
+  "smirnoff-no-21-750ml": {
+    "file": "smirnoff-red-label.jpg",
+    "retailer": "Jays Wines",
+    "source": "https://jayswines.com/wp-content/uploads/2015/04/Smirnoff-Vodka-Red-750ml.jpg"
+  },
+  "absolut-vodka-750ml": {
+    "file": "absolut-vodka.webp",
+    "retailer": "Drinks Vine (drinksvine.co.ke)",
+    "source": null
+  },
+  "ciroc-snap-frost-750ml": {
+    "file": "ciroc-snap-frost.jpg",
+    "retailer": "chupachap.co.ke",
+    "source": "https://chupachap.co.ke/wp-content/uploads/2020/03/ciroc.jpg"
+  },
+  "grey-goose-750ml": {
+    "file": "grey-goose.webp",
+    "retailer": "Jays Wines",
+    "source": "https://jayswines.com/wp-content/uploads/2021/11/GREY-GOOSE-1L.jpg"
+  },
+  "belvedere-700ml": {
+    "file": "belvedere-pure.jpg",
+    "retailer": "www.liquorshack.co.ke",
+    "source": "https://www.liquorshack.co.ke/wp-content/uploads/2022/03/Belvedere-Pure-1-Litre.jpg"
+  },
+  "chrome-vodka-750ml": {
+    "file": "chrome-vodka.jpg",
+    "retailer": "Jays Wines",
+    "source": "https://jayswines.com/wp-content/uploads/2021/05/Buy-Chrome-Vodka-750ml-online-in-Nairobi.jpg"
+  },
+  "jose-cuervo-especial-gold-750ml": {
+    "file": "jose-cuervo-gold.webp",
+    "retailer": "Drinks Vine (drinksvine.co.ke)",
+    "source": null
+  },
+  "olmeca-blanco-700ml": {
+    "file": "olmeca-silver.jpg",
+    "retailer": "Monty's Kenya",
+    "source": "https://www.montyskenya.com/wp-content/uploads/2023/12/Olmeca-Tequila-Silver-1L.jpg"
+  },
+  "don-julio-blanco-750ml": {
+    "file": "don-julio-blanco.jpg",
+    "retailer": "Jays Wines",
+    "source": "https://jayswines.com/wp-content/uploads/2022/01/Don-Julio-Blanco-750ml38.jpg"
+  },
+  "patron-silver-750ml": {
+    "file": "patron-silver.webp",
+    "retailer": "Jays Wines",
+    "source": "https://jayswines.com/wp-content/uploads/2024/09/Untitled-800-×-800-mm-800-×-800-1-1.png"
+  },
+  "captain-morgan-spiced-gold-750ml": {
+    "file": "captain-morgan-spiced-gold.png",
+    "retailer": "Jays Wines",
+    "source": "https://jayswines.com/wp-content/uploads/2016/10/Buy-Captain-Morgan-Spiced-Gold-750ml-online-in-Nairobi.png"
+  },
+  "bacardi-carta-blanca-750ml": {
+    "file": "bacardi-superior.webp",
+    "retailer": "Drinks Vine (drinksvine.co.ke)",
+    "source": null
+  },
+  "kenya-cane-pineapple-750ml": {
+    "file": "kenya-cane-pineapple.jpg",
+    "retailer": "Jays Wines",
+    "source": "https://jayswines.com/wp-content/uploads/2023/02/kc-pineaple-2-1.jpg"
+  },
+  "kenya-cane-coconut-750ml": {
+    "file": "kenya-cane-coconut.jpg",
+    "retailer": "Jays Wines",
+    "source": "https://jayswines.com/wp-content/uploads/2023/01/Buy-Kenya-Cane-Coconut-750ml-online-in-Nairobi.jpg"
+  },
+  "malibu-coconut-750ml": {
+    "file": "malibu-caribbean-rum.webp",
+    "retailer": "Drinks Vine (drinksvine.co.ke)",
+    "source": null
+  },
+  "baileys-original-irish-cream-750ml": {
+    "file": "baileys-irish-cream.webp",
+    "retailer": "Drinks Vine (drinksvine.co.ke)",
+    "source": null
+  },
+  "amarula-cream-750ml": {
+    "file": "amarula-fruit-cream.webp",
+    "retailer": "Drinks Vine (drinksvine.co.ke)",
+    "source": null
+  },
+  "kahlua-coffee-liqueur-700ml": {
+    "file": "kahlua-coffee-liqueur.jpg",
+    "retailer": "Monty's Kenya",
+    "source": "https://www.montyskenya.com/wp-content/uploads/2020/05/KAHLUA.jpg"
+  },
+  "aperol-700ml": {
+    "file": "aperol.webp",
+    "retailer": "Drinks Vine (drinksvine.co.ke)",
+    "source": null
+  },
+  "4th-street-sweet-red-750ml": {
+    "file": "4th-street-sweet-red.png",
+    "retailer": "Jays Wines",
+    "source": "https://jayswines.com/wp-content/uploads/2020/11/Buy-4th-Street-Sweet-Red-750ml-online-in-Nairobi.png"
+  },
+  "4th-street-sweet-rose-750ml": {
+    "file": "4th-street-sweet-rose.png",
+    "retailer": "Jays Wines",
+    "source": "https://jayswines.com/wp-content/uploads/2020/11/Buy-4th-Street-Rose-750ml-online-in-Nairobi.png"
+  },
+  "nederburg-cabernet-sauvignon-750ml": {
+    "file": "nederburg-cabernet-sauvignon.jpg",
+    "retailer": "Jays Wines",
+    "source": "https://jayswines.com/wp-content/uploads/2020/11/Nederburg-5600-Cabernet-Sauvignon-750ml.jpg"
+  },
+  "casillero-del-diablo-cabernet-sauvignon-750ml": {
+    "file": "casillero-del-diablo-cabernet-sauvignon.jpg",
+    "retailer": "Jays Wines",
+    "source": "https://jayswines.com/wp-content/uploads/2020/09/23844011_0_1280x1280.jpg"
+  },
+  "nederburg-sauvignon-blanc-750ml": {
+    "file": "nederburg-sauvignon-blanc.jpg",
+    "retailer": "Jays Wines",
+    "source": "https://jayswines.com/wp-content/uploads/2020/11/Buy-Nederburg-Sauvignon-Blanc-online-in-Nairobi.jpg"
+  },
+  "whispering-angel-rose-750ml": {
+    "file": "whispering-angel-rose.webp",
+    "retailer": "www.liquorshack.co.ke",
+    "source": "https://www.liquorshack.co.ke/wp-content/uploads/2024/08/Whispering-Angel-Rose.webp"
+  },
+  "moet-and-chandon-brut-imperial-750ml": {
+    "file": "moet-and-chandon-brut-imperial.jpg",
+    "retailer": "Jays Wines",
+    "source": "https://jayswines.com/wp-content/uploads/2015/04/00118730900224____4__600x600-1.jpg"
+  },
+  "veuve-clicquot-yellow-label-750ml": {
+    "file": "veuve-clicquot.webp",
+    "retailer": "Drinks Vine (drinksvine.co.ke)",
+    "source": null
+  },
+  "j-c-le-roux-le-domaine-750ml": {
+    "file": "jc-le-roux-le-domaine.jpg",
+    "retailer": "jayswines.com",
+    "source": "https://jayswines.com/wp-content/uploads/2020/11/Buy-JC-Le-Roux-Le-Domaine-750ml-online-in-Nairobi-today.jpg"
+  },
+  "tusker-lager-500ml-can": {
+    "file": "tusker-lager-500ml-can.png",
+    "retailer": "www.liquorshack.co.ke",
+    "source": "https://www.liquorshack.co.ke/wp-content/uploads/2020/12/Website-Images-500X500-8-wpp1692311301899.png"
+  },
+  "white-cap-lager-500ml-can": {
+    "file": "white-cap.webp",
+    "retailer": "Drinks Vine (drinksvine.co.ke)",
+    "source": null
+  },
+  "guinness-draught-500ml-can": {
+    "file": "guinness.webp",
+    "retailer": "Drinks Vine (drinksvine.co.ke)",
+    "source": null
+  },
+  "tusker-cider-500ml-can": {
+    "file": "tusker-cider.webp",
+    "retailer": "Drinks Vine (drinksvine.co.ke)",
+    "source": null
+  },
+  "heineken-500ml-can": {
+    "file": "heineken-500ml-can.webp",
+    "retailer": "Jays Wines",
+    "source": "https://jayswines.com/wp-content/uploads/2015/04/Heineken-Original-Beer-Can-500ml-3.webp"
+  },
+  "savanna-dry-premium-cider-330ml": {
+    "file": "savanna-dry-cider-330ml.jpg",
+    "retailer": "Jays Wines",
+    "source": "https://jayswines.com/wp-content/uploads/2015/04/Buy-Savanna-Dry-Cider-330ml-online-in-Nairobi-Kenya.jpg"
+  },
+  "coca-cola-2l": {
+    "file": "coca-cola-2-litre.jpg",
+    "retailer": "chupachap.co.ke",
+    "source": "https://chupachap.co.ke/wp-content/uploads/2020/03/coca-cola.jpg"
+  },
+  "schweppes-ginger-ale-330ml-can": {
+    "file": "schweppes-ginger-ale-330ml.png",
+    "retailer": "chupachap.co.ke",
+    "source": "https://chupachap.co.ke/wp-content/uploads/2025/03/Schweppes-Ginger-Ale.png"
+  },
+  "sprite-2l": {
+    "file": "sprite-2-litre.png",
+    "retailer": "Jays Wines",
+    "source": "https://jayswines.com/wp-content/uploads/2021/03/Buy-Sprite-Soda-online-in-Nairobi.png"
+  },
+  "red-bull-energy-drink-250ml": {
+    "file": "red-bull-energy-250ml.jpg",
+    "retailer": "Jays Wines",
+    "source": "https://jayswines.com/wp-content/uploads/2020/10/buy-redbull-online-250ml.jpg"
+  }
+}

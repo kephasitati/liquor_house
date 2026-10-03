@@ -7,7 +7,7 @@ import Bottle from "../Bottle";
 import type { BagLine } from "../../lib/types";
 
 function Art({ l, h }: { l: BagLine; h: number }) {
-  return <Bottle d={{ handle: l.handle, name: l.name, brand: l.brand, volume: l.volume, colour: l.colour, shape: l.shape, thumbnail: l.thumbnail }} height={h} salt="bag" />;
+  return <Bottle d={{ handle: l.handle, name: l.name, brand: l.brand, thumbnail: l.thumbnail }} height={h} salt="bag" />;
 }
 
 export function EmptyGlass() {
@@ -108,7 +108,7 @@ export default function BagDrawer() {
           <>
             <span className="toast-art"><Art l={added.line} h={30} /></span>
             <span>{added.line.name} — in the bag</span>
-            <button type="button" className="line-remove" style={{ color: "var(--ink)" }} onClick={() => { setToast(false); bagOpen.set(true); }}>View</button>
+            <button type="button" className="line-remove" style={{ color: "var(--ground)" }} onClick={() => { setToast(false); bagOpen.set(true); }}>View</button>
           </>
         )}
       </div>

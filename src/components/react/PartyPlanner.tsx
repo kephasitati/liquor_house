@@ -49,7 +49,9 @@ export default function PartyPlanner({ drinks }: { drinks: Drink[] }) {
     const wine = pick(drinks, (d) => d.category === "wine");
     const crate = pick(drinks, (d) => d.category === "beer" && /crate/i.test(d.name));
     const beer = pick(drinks, (d) => d.category === "beer" && !/crate/i.test(d.name));
-    const tonic = pick(drinks, (d) => d.category === "mixers" && /tonic/i.test(d.subcategory + d.name));
+    const tonic =
+      pick(drinks, (d) => d.category === "mixers" && /tonic/i.test(d.subcategory + d.name)) ??
+      pick(drinks, (d) => d.category === "mixers" && /soda|lemon|ginger/i.test(d.subcategory + d.name));
     const cola = pick(drinks, (d) => d.category === "mixers" && /cola/i.test(d.subcategory + d.name));
     const iceBag = pick(drinks, (d) => d.category === "mixers" && /ice/i.test(d.subcategory + d.name));
 
@@ -64,12 +66,14 @@ export default function PartyPlanner({ drinks }: { drinks: Drink[] }) {
       const crates = crate ? Math.floor(beers / 25) : 0;
       const loose = beers - crates * 25;
       if (crates && crate) lines.push({ d: crate, qty: crates, why: `${crates * 25} bottles` });
-      if (loose > 0 && beer) lines.push({ d: beer, qty: loose, why: "the rest, by the bottle" });
+      if (loose > 0 && beer) lines.push({ d: beer, qty: loose, why: crates ? "the rest, one by one" : "one each, ice-cold" });
     }
     if (mixers) {
       const half = Math.ceil(mixers / 2);
       if (tonic) lines.push({ d: tonic, qty: half, why: "for the gin & vodka" });
-      if (cola) lines.push({ d: cola, qty: Math.max(1, Math.ceil(half / 2.5)), why: "1.25L, for the whisky" });
+      // A big bottle stands in for several 500ml mixers: 2L is four of them.
+      const litres = Number(cola?.volume.match(/([\d.]+)\s*L\b/i)?.[1] ?? 0.5);
+      if (cola) lines.push({ d: cola, qty: Math.max(1, Math.ceil(half / (litres * 2))), why: `${cola.volume}, for the whisky` });
     }
     if (iceBag) lines.push({ d: iceBag, qty: ice, why: "2kg bags" });
 

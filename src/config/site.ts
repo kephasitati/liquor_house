@@ -10,7 +10,7 @@ export const site = {
   name: "Liquor House Kenya",
   short: "Liquor House",
   tagline: "Nairobi's house of fine spirits",
-  url: (import.meta.env.PUBLIC_SITE_URL as string | undefined) ?? "https://liquorhouse.co.ke", // confirm
+  url: (import.meta.env.PUBLIC_SITE_URL as string | undefined) || "https://liquorhouse.co.ke", // confirm (an empty build arg must fall back too)
   locale: "en-KE",
   country: "ke",
   city: "Nairobi",
@@ -26,6 +26,10 @@ export const site = {
   /** Free delivery within the city zones once the bag reaches this. */
   freeDeliveryOver: 10_000, // confirm
   storagePrefix: "lhk_",
+  /** Leave a product off the shelf until it has a photograph, rather than show it without
+   *  one. Applies to the live Medusa catalogue too: a POS product with no picture stays
+   *  sellable in the shop but does not appear on the website until it gets one. */
+  photosOnly: true,
 } as const;
 
 /** Kenyan law: no sale to under-18s, and the statutory health message. Shown in the footer,

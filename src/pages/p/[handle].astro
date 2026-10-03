@@ -49,7 +49,7 @@ const jsonLd = {
       <a href="/">Home</a><span>/</span>
       <a href="/shop">Shop</a><span>/</span>
       {shelf && <><a href={`/shop?shelf=${shelf.id}`}>{shelf.name}</a><span>/</span></>}
-      <span style="color:var(--cream)">{d.name}</span>
+      <span style="color:var(--text)">{d.name}</span>
     </nav>
 
     <div class="pdp-grid">
@@ -59,7 +59,7 @@ const jsonLd = {
           <defs><path id="pring" d="M150,150 m-130,0 a130,130 0 1,1 260,0 a130,130 0 1,1 -260,0" /></defs>
           <text><textPath href="#pring">{`${d.brand || site.short} · ${d.subcategory} · ${d.origin} · `.toUpperCase().repeat(2)}</textPath></text>
         </svg>
-        <Bottle d={d} height={520} salt="pdp" />
+        <Bottle d={d} height={520} eager />
       </div>
 
       <div class="pdp-info">
@@ -96,7 +96,7 @@ const jsonLd = {
 
         <div class="block">
           <h2>In the glass</h2>
-          <p style="margin:0 0 1rem;color:var(--cream-2)">{d.description}</p>
+          <p style="margin:0 0 1rem;color:var(--text-2)">{d.description}</p>
           {d.notes.length > 0 && <div class="notes">{d.notes.map((n) => <span>{n}</span>)}</div>}
         </div>
 

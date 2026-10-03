@@ -13,8 +13,10 @@ interface Props {
   bare?: boolean;
   jsonLd?: Record<string, unknown> | Record<string, unknown>[];
   image?: string;
+  /** The page opens on a dark (after-hours) hero: the header starts dark over it. */
+  heroDark?: boolean;
 }
-const { title, description = `${site.tagline}. Whisky, cognac, gin, wine and cold beer delivered across Nairobi in under an hour.`, bare = false, jsonLd, image } = Astro.props;
+const { title, description = `${site.tagline}. Whisky, cognac, gin, wine and cold beer delivered across Nairobi in under an hour.`, bare = false, jsonLd, image, heroDark = false } = Astro.props;
 const fullTitle = title ? `${title} · ${site.name}` : `${site.name} — ${site.tagline}`;
 const canonical = new URL(Astro.url.pathname, site.url).toString();
 const ageKey = `${site.storagePrefix}age_ok`;
@@ -30,14 +32,14 @@ const org = {
 };
 ---
 <!doctype html>
-<html lang="en-KE">
+<html lang="en-KE" data-hero={heroDark ? "dark" : undefined}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
-    <meta name="theme-color" content="#0b0907" />
+    <meta name="theme-color" content="#f5eee1" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={site.name} />

@@ -258,7 +258,7 @@ export default function Checkout({ live }: { live: boolean }) {
           {lines.map((l) => (
             <div className="line" key={l.handle} style={{ gridTemplateColumns: "48px 1fr auto" }}>
               <div className="line-art" style={{ height: 60 }}>
-                <Bottle d={{ handle: l.handle, name: l.name, brand: l.brand, volume: l.volume, colour: l.colour, shape: l.shape, thumbnail: l.thumbnail }} height={50} salt="co" />
+                <Bottle d={{ handle: l.handle, name: l.name, brand: l.brand, thumbnail: l.thumbnail }} height={50} salt="co" />
               </div>
               <div><div className="line-name">{l.name}</div><div className="line-meta" style={{ margin: 0 }}>{l.qty} × {money(l.price)}</div></div>
               <span className="price">{money(l.price * l.qty)}</span>

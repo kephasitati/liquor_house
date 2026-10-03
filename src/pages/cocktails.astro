@@ -38,7 +38,7 @@ const recipes = COCKTAILS.map((c) => {
             <ul>{c.ingredients.map((x) => <li>{x.shelf ? <b>{x.label}</b> : x.label}</li>)}</ul>
             <ol>{c.method.map((m) => <li>{m}</li>)}</ol>
             <div class="ctl-foot">
-              <span class="muted" style="font-size:.8rem">{c.bottles.length} {c.bottles.length === 1 ? "bottle" : "bottles"} · <span class="price" style="color:var(--cream)">{money(c.total)}</span></span>
+              <span class="muted" style="font-size:.8rem">{c.bottles.length} {c.bottles.length === 1 ? "bottle" : "bottles"} · <span class="price" style="color:var(--text)">{money(c.total)}</span></span>
               {c.bottles.length > 0 && <button class="btn btn-amber btn-sm" type="button" data-add={JSON.stringify(c.bottles.map((b) => toLine(b)))}>Add the bottles</button>}
             </div>
           </div>

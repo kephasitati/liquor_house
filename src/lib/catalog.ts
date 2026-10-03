@@ -1,7 +1,7 @@
 import type { Drink, Profile } from "./types";
 import { LIVE, medusa, PRODUCT_FIELDS, regionId } from "./medusa";
 import { liquidColour, SHAPE_BY_SHELF } from "./colour";
-import { SHELF_BY_ID, SHELVES } from "../config/site";
+import { SHELF_BY_ID, SHELVES, site } from "../config/site";
 import { DEMO_CATALOG } from "../data/catalog";
 
 /**
@@ -101,7 +101,8 @@ async function fetchLive(): Promise<Drink[]> {
       if (!products?.length) break;
       all.push(...products);
     }
-    return all.map(fromMedusa);
+    const drinks = all.map(fromMedusa);
+    return site.photosOnly ? drinks.filter((d) => d.thumbnail) : drinks;
   } catch (err) {
     console.error("[catalog] Medusa fetch failed:", (err as Error).message);
     return cache?.value ?? [];
@@ -217,6 +218,8 @@ export function resolveIngredient(items: Drink[], shelf: string, brand?: string)
     const b = brand.toLowerCase();
     const hit = onShelf.find((d) => d.brand.toLowerCase().includes(b) || d.name.toLowerCase().includes(b));
     if (hit) return hit;
+    // Another gin will do for "Gin"; a cola will not do for "ice" or "tonic water".
+    if (shelf === "mixers") return null;
   }
   return onShelf.slice().sort(rank)[0];
 }

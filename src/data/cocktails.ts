@@ -46,8 +46,8 @@ export const COCKTAILS: Cocktail[] = [
     id: "gin-tonic", name: "Sundowner G&T", kicker: "The balcony classic", glass: "highball", colour: "#dfeee9", garnish: "#7cb342",
     base: "gin", minutes: 2,
     ingredients: [
-      { label: "50ml gin", shelf: "gin", brand: "Gilbey's" },
-      { label: "150ml tonic water", shelf: "mixers", brand: "Schweppes" },
+      { label: "50ml gin", shelf: "gin", brand: "Gordon's" },
+      { label: "150ml tonic water", shelf: "mixers", brand: "Tonic" },
       { label: "Lime wedge or cucumber ribbon" },
       { label: "Plenty of ice", shelf: "mixers", brand: "Liquor House" },
     ],
@@ -62,11 +62,11 @@ export const COCKTAILS: Cocktail[] = [
     base: "whisky", minutes: 2,
     ingredients: [
       { label: "50ml Irish whiskey", shelf: "whisky", brand: "Jameson" },
-      { label: "150ml ginger beer", shelf: "mixers", brand: "Stoney" },
+      { label: "150ml ginger ale", shelf: "mixers", brand: "Ginger Ale" },
       { label: "Lime wedge" },
       { label: "Ice", shelf: "mixers", brand: "Liquor House" },
     ],
-    method: ["Fill a highball with ice.", "Add the whiskey and top with ginger beer.", "Squeeze in the lime and stir."],
+    method: ["Fill a highball with ice.", "Add the whiskey and top with ginger ale.", "Squeeze in the lime and stir."],
   },
   {
     id: "margarita", name: "Margarita", kicker: "Salt rim, late night", glass: "coupe", colour: "#e4e9a8", garnish: "#9ccc65",
@@ -87,9 +87,9 @@ export const COCKTAILS: Cocktail[] = [
     id: "spritz", name: "Aperol Spritz", kicker: "Golden hour in a glass", glass: "flute", colour: "#f07a2c", garnish: "#ff9800",
     base: "liqueur", minutes: 2,
     ingredients: [
-      { label: "75ml sparkling wine", shelf: "champagne", brand: "Martini" },
+      { label: "75ml sparkling wine", shelf: "champagne", brand: "Le Roux" },
       { label: "50ml Aperol", shelf: "liqueur", brand: "Aperol" },
-      { label: "Splash of soda water", shelf: "mixers", brand: "Schweppes" },
+      { label: "Splash of soda water", shelf: "mixers", brand: "Soda Water" },
       { label: "Orange slice" },
     ],
     method: ["Fill a large wine glass with ice.", "Pour the sparkling wine, then the Aperol, then the soda.", "Garnish with orange."],
@@ -101,7 +101,7 @@ export const COCKTAILS: Cocktail[] = [
       { label: "50ml white rum", shelf: "rum", brand: "Bacardí" },
       { label: "8 mint leaves" },
       { label: "½ lime and 2 tsp sugar" },
-      { label: "Top with soda water", shelf: "mixers", brand: "Schweppes" },
+      { label: "Top with soda water", shelf: "mixers", brand: "Soda Water" },
     ],
     method: [
       "Gently press the mint with lime and sugar — bruise it, don't shred it.",

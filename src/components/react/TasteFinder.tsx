@@ -72,7 +72,7 @@ export default function TasteFinder({ drinks }: { drinks: Drink[] }) {
       <div className="tool-body" key={step} style={{ animation: "fadeUp .6s var(--ease)" }}>
         {step === 0 && (
           <>
-            <h2 className="q-title">How do you like to <em style={{ color: "var(--amber-hi)" }}>drink it?</em></h2>
+            <h2 className="q-title">How do you like to <em style={{ color: "var(--accent)" }}>drink it?</em></h2>
             <div className="opts">
               {WAYS.map((o) => (
                 <button key={o.id} type="button" className="opt" onClick={() => { setWay(o.id); setStep(1); }}>
@@ -84,7 +84,7 @@ export default function TasteFinder({ drinks }: { drinks: Drink[] }) {
         )}
         {step === 1 && (
           <>
-            <h2 className="q-title">Which flavours <em style={{ color: "var(--amber-hi)" }}>pull you in?</em></h2>
+            <h2 className="q-title">Which flavours <em style={{ color: "var(--accent)" }}>pull you in?</em></h2>
             <div className="opts">
               {FLAVOURS.map((o) => (
                 <button key={o.id} type="button" className="opt" onClick={() => { setFlavour(o.id); setStep(2); }}>
@@ -96,11 +96,11 @@ export default function TasteFinder({ drinks }: { drinks: Drink[] }) {
         )}
         {step === 2 && (
           <>
-            <h2 className="q-title">And the <em style={{ color: "var(--amber-hi)" }}>budget?</em></h2>
+            <h2 className="q-title">And the <em style={{ color: "var(--accent)" }}>budget?</em></h2>
             <div className="opts">
               {BUDGETS.map((o) => (
                 <button key={o.id} type="button" className="opt" onClick={() => { setBudget(o.id); setStep(3); }}>
-                  <span className="em mono" style={{ fontSize: "1rem", color: "var(--amber)" }}>{o.em}</span><b>{o.title}</b><span>{o.line}</span>
+                  <span className="em mono" style={{ fontSize: "1rem", color: "var(--accent)" }}>{o.em}</span><b>{o.title}</b><span>{o.line}</span>
                 </button>
               ))}
             </div>
@@ -108,7 +108,7 @@ export default function TasteFinder({ drinks }: { drinks: Drink[] }) {
         )}
         {step === 3 && (
           <>
-            <h2 className="q-title">{results.length ? <>Pour one of <em style={{ color: "var(--amber-hi)" }}>these.</em></> : "Nothing fits all three."}</h2>
+            <h2 className="q-title">{results.length ? <>Pour one of <em style={{ color: "var(--accent)" }}>these.</em></> : "Nothing fits all three."}</h2>
             {results.length === 0 ? (
               <p className="muted">Try a wider budget — or message us on WhatsApp and a person will pick for you.</p>
             ) : (
