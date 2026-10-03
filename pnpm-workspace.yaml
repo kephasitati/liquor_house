@@ -1,6 +1,6 @@
-# Liquor House is its own project. This file makes liquorhouse/ its own pnpm root, so an
-# install here never reaches into the surrounding repository's workspace (and never picks up
-# another app's React).
+# Liquor House is its own project. This file makes this folder its own pnpm root, so an
+# install here never reaches into a parent folder's workspace (and never picks up another
+# app's React) even if the repository is cloned inside one.
 packages:
   - "."
 onlyBuiltDependencies:

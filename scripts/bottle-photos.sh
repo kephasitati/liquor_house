@@ -8,7 +8,8 @@
 #
 # The finished photos are committed in public/, so building or running the site never needs
 # this script or anything outside this folder. It is only for re-cutting them, and reads its
-# sources from PHOTO_SRC (by default the photo folder in the monorepo this project started in).
+# sources from PHOTO_SRC: the shop-photo folder (medusa/src/scripts/data/beyond/) of the
+# Urban Market monorepo, where these photographs were collected.
 #
 # Every product photo is normalised to the same 600×750 frame on pure white, standing on the
 # same floor line, so a grid of them reads as one shelf. Pure white matters: the cards print
@@ -16,7 +17,8 @@
 set -euo pipefail
 HERE="$(cd "$(dirname "$0")" && pwd)"
 APP="$(dirname "$HERE")"
-SRC="${PHOTO_SRC:-$APP/../medusa/src/scripts/data/beyond}"
+SRC="${PHOTO_SRC:-}"
+[ -n "$SRC" ] || { echo "Set PHOTO_SRC to the folder holding the source photos." >&2; exit 1; }
 [ -d "$SRC" ] || { echo "No source photos at $SRC — set PHOTO_SRC to the folder that holds them." >&2; exit 1; }
 OUT="$APP/public/bottles"
 HERO="$APP/public/hero"

@@ -1,8 +1,8 @@
 # Liquor House Kenya — standalone Astro storefront, SSR via @astrojs/node.
 #
-# A project of its own: the build context is this folder and nothing outside it, with its own
+# A project of its own: the build context is this repository and nothing outside it, with its own
 # pnpm root (pnpm-workspace.yaml) and lockfile. Build it with `docker compose up --build` here,
-# or point any host (Dokploy, a VPS) at liquorhouse/docker-compose.yml.
+# or point any host (Dokploy, a VPS) at docker-compose.yml.
 #
 # NOTE: Astro inlines every PUBLIC_* var at BUILD time, so they are passed as build args
 # (not runtime env). Changing the backend URL or the publishable key means rebuilding the

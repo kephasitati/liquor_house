@@ -3,10 +3,9 @@
 An Astro 6 storefront for Liquor House Kenya, a Nairobi liquor shop.
 
 **It is a project of its own.** Everything it needs to install, build, run and deploy is in
-this folder: its own `package.json`, its own pnpm root (`pnpm-workspace.yaml`) and lockfile,
-its own `Dockerfile` and `docker-compose.yml`. It shares no workspace, compose file, CI
-pipeline or deployment with anything else in the repository it sits in, and the folder can be
-lifted out into a repository of its own unchanged.
+this repository: its `package.json`, its pnpm root (`pnpm-workspace.yaml`) and lockfile, its
+`Dockerfile` and `docker-compose.yml`. Its history up to the split was carried over from the
+`liquorhouse/` folder of the Urban Market monorepo, where it started.
 
 Commerce comes from a Medusa backend over its store API: one sales channel, one publishable
 key, managed from the POS. **The backend is shared:** Liquor House is a sales channel on the
@@ -21,7 +20,6 @@ reviewed and shown to the owner before their channel exists.
 Node 22.12 or newer, and pnpm 10 (`corepack enable` gives you the pinned version).
 
 ```bash
-cd liquorhouse
 pnpm install                         # its own install, its own node_modules
 pnpm dev                             # http://localhost:4325
 pnpm check                           # astro check: 0 errors expected
@@ -30,7 +28,6 @@ pnpm check                           # astro check: 0 errors expected
 Or the production image, exactly as it would be deployed:
 
 ```bash
-cd liquorhouse
 docker compose up --build -d         # http://localhost:4325, healthcheck on /healthz
 ```
 
@@ -123,8 +120,7 @@ healthcheck calls `/healthz` with Node's own `fetch`, so the image needs no curl
 `docker-compose.yml` runs that single service on `LIQUORHOUSE_PORT` (default 4325).
 
 **As its own Dokploy project:** create a new project (not inside Ecommerce), add a
-**Compose** service from this repository with compose path `liquorhouse/docker-compose.yml`,
-and set *Watch paths* to `liquorhouse/**` so that pushes to other apps do not rebuild it.
+**Compose** service from this repository with compose path `docker-compose.yml`.
 Put the `PUBLIC_*` values in the service's environment; they are build args, so change them
 and **rebuild**, not restart. Any other Docker host works the same way: copy the folder and
 run `docker compose up --build -d`.
