@@ -1,0 +1,85 @@
+---
+import Base from "../layouts/Base.astro";
+import ProductCard from "../components/ProductCard.astro";
+import { listAll, query, shelfCounts, SORTS, PRICE_BANDS, type SortId } from "../lib/catalog";
+import { SHELVES, SHELF_BY_ID } from "../config/site";
+
+/**
+ * The whole shop, filtered on the server: every filter is a query param, so a filtered
+ * shelf is a URL you can send on WhatsApp, and the page ships no filtering JavaScript.
+ */
+const sp = Astro.url.searchParams;
+const shelf = sp.get("shelf");
+const q = sp.get("q")?.trim() || null;
+const band = sp.get("band");
+const tag = sp.get("tag");
+const sort = (SORTS.some((s) => s.id === sp.get("sort")) ? sp.get("sort") : "featured") as SortId;
+
+const all = await listAll();
+const counts = shelfCounts(all);
+const items = query(all, { shelf, q, band, tag, sort });
+const active = shelf ? SHELF_BY_ID[shelf] : null;
+
+const TAG_TITLES: Record<string, string> = { local: "Made in Kenya", premium: "The top shelf", deal: "On offer", gift: "Gifts", value: "Great value", new: "New in" };
+const title = q ? `“${q}”` : active?.name ?? (tag ? TAG_TITLES[tag] ?? "The shop" : "The whole house");
+const lede = q
+  ? `${items.length} ${items.length === 1 ? "bottle matches" : "bottles match"} your search.`
+  : active?.line ?? "Every bottle on every shelf. Filter by what you're pouring, or what you want to spend.";
+
+/** Build a link that keeps the other filters. */
+function href(patch: Record<string, string | null>) {
+  const u = new URLSearchParams(sp);
+  for (const [k, v] of Object.entries(patch)) (v == null ? u.delete(k) : u.set(k, v));
+  const s = u.toString();
+  return `/shop${s ? `?${s}` : ""}`;
+}
+---
+<Base title={active?.name ?? (q ? `Search: ${q}` : "Shop")} description={`${title} — ${lede}`}>
+  <section class="page-hero" style={`--hue:${active?.hue ?? "#e8a33d"}`}>
+    <div class="wrap">
+      <span class="kicker">{active ? "The back bar" : "The shop"} · {items.length} bottles</span>
+      <h1 class="display h1">{title}</h1>
+      <p class="lede">{lede}</p>
+    </div>
+  </section>
+
+  <nav class="filters" aria-label="Shelves">
+    <div class="wrap filters-in">
+      <a class="pill" href={href({ shelf: null })} aria-current={!shelf ? "true" : undefined}>All <small>{all.length}</small></a>
+      {SHELVES.filter((s) => counts[s.id]).map((s) => (
+        <a class="pill" href={href({ shelf: s.id })} aria-current={shelf === s.id ? "true" : undefined}>{s.name} <small>{counts[s.id]}</small></a>
+      ))}
+    </div>
+  </nav>
+
+  <section class="wrap" style="padding-bottom:120px">
+    <div class="toolbar">
+      <div class="row gap-s" style="flex-wrap:wrap">
+        {PRICE_BANDS.map((b) => (
+          <a class="pill" href={href({ band: band === b.id ? null : b.id })} aria-current={band === b.id ? "true" : undefined}>{b.label}</a>
+        ))}
+        {tag && <a class="pill" href={href({ tag: null })} aria-current="true">{TAG_TITLES[tag] ?? tag} ✕</a>}
+      </div>
+      <form method="get" action="/shop">
+        {shelf && <input type="hidden" name="shelf" value={shelf} />}
+        {band && <input type="hidden" name="band" value={band} />}
+        {tag && <input type="hidden" name="tag" value={tag} />}
+        <input class="field" type="search" name="q" value={q ?? ""} placeholder="Search the shelf" aria-label="Search" />
+        <select class="field" name="sort" aria-label="Sort" onchange="this.form.submit()">
+          {SORTS.map((s) => <option value={s.id} selected={s.id === sort}>{s.label}</option>)}
+        </select>
+        <noscript><button class="btn btn-ghost btn-sm" type="submit">Apply</button></noscript>
+      </form>
+    </div>
+
+    {items.length ? (
+      <div class="grid">{items.map((d, i) => <ProductCard d={d} i={i} />)}</div>
+    ) : (
+      <div class="empty">
+        <h3 class="display h3">Nothing on this shelf.</h3>
+        <p class="muted">Try a wider price band, another spelling — or ask us on WhatsApp; if it's in Nairobi, we can usually find it.</p>
+        <a class="btn btn-amber mt" href="/shop">Show everything</a>
+      </div>
+    )}
+  </section>
+</Base>

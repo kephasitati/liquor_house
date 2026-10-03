@@ -1,0 +1,110 @@
+---
+/**
+ * The scroll-driven pour (home page). The section is 340vh tall with a sticky stage; the
+ * script in src/scripts/immersive.ts writes --p / --pt / --stream and the fill height, and
+ * everything here reads them.
+ *
+ * Geometry, in viewBox units: the bottle is drawn centred on (0,0) and parked at (170,330).
+ * Tipped 125° clockwise and nudged (56,−28), its mouth lands at ~(365,400) — just above the
+ * glass rim (y 470), where the stream starts.
+ */
+---
+<section class="pour" aria-label="How an order is poured">
+  <div class="pour-sticky">
+    <div class="pour-glow"></div>
+    <div class="pour-scene">
+      <div class="pour-art">
+        <svg viewBox="0 0 600 700" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+          <defs>
+            <linearGradient id="ps-liq" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0" stop-color="#8a420f" />
+              <stop offset=".5" stop-color="#eaa040" />
+              <stop offset="1" stop-color="#7a370b" />
+            </linearGradient>
+            <linearGradient id="ps-glass" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0" stop-color="#fff" stop-opacity=".25" />
+              <stop offset=".2" stop-color="#fff" stop-opacity=".04" />
+              <stop offset=".8" stop-color="#000" stop-opacity=".2" />
+              <stop offset="1" stop-color="#fff" stop-opacity=".12" />
+            </linearGradient>
+            <linearGradient id="ps-stream" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0" stop-color="#c8741f" />
+              <stop offset=".5" stop-color="#ffc670" />
+              <stop offset="1" stop-color="#b8661a" />
+            </linearGradient>
+            <linearGradient id="ps-fill" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#ffc670" />
+              <stop offset=".08" stop-color="#e3953a" />
+              <stop offset="1" stop-color="#7a370b" />
+            </linearGradient>
+            <clipPath id="ps-glass-in">
+              <path d="M305 472 H455 L445 626 H315 Z" />
+            </clipPath>
+            <radialGradient id="ps-table" cx=".5" cy=".5" r=".5">
+              <stop offset="0" stop-color="#e8a33d" stop-opacity=".35" />
+              <stop offset="1" stop-color="#e8a33d" stop-opacity="0" />
+            </radialGradient>
+          </defs>
+
+          <ellipse cx="380" cy="648" rx="200" ry="22" fill="url(#ps-table)" />
+
+          <!-- the stream -->
+          <g class="pour-stream" style="transition: opacity .35s">
+            <path d="M362 402 C 368 450, 372 520, 376 610" stroke="url(#ps-stream)" stroke-width="9" fill="none" stroke-linecap="round">
+              <animate attributeName="d" dur=".6s" repeatCount="indefinite"
+                values="M362 402 C 368 450, 372 520, 376 610;M362 402 C 366 452, 375 522, 377 610;M362 402 C 368 450, 372 520, 376 610" />
+            </path>
+            <circle cx="372" cy="600" r="4" fill="#ffc670"><animate attributeName="cy" values="600;580;600" dur=".5s" repeatCount="indefinite" /><animate attributeName="cx" values="372;356;372" dur=".5s" repeatCount="indefinite" /></circle>
+            <circle cx="384" cy="600" r="3" fill="#ffc670"><animate attributeName="cy" values="600;575;600" dur=".45s" repeatCount="indefinite" /><animate attributeName="cx" values="384;402;384" dur=".45s" repeatCount="indefinite" /></circle>
+          </g>
+
+          <!-- the glass, filling -->
+          <g>
+            <g clip-path="url(#ps-glass-in)">
+              <rect data-fill x="300" y="640" width="160" height="0" fill="url(#ps-fill)" />
+              <rect x="330" y="560" width="40" height="40" rx="8" fill="#fff" fill-opacity=".14" stroke="#fff" stroke-opacity=".3" transform="rotate(14 350 580)" />
+              <rect x="378" y="575" width="44" height="40" rx="8" fill="#fff" fill-opacity=".12" stroke="#fff" stroke-opacity=".3" transform="rotate(-10 400 595)" />
+            </g>
+            <path d="M300 468 H460 L448 632 Q446 642 436 642 H324 Q314 642 312 632 Z" fill="url(#ps-glass)" stroke="#f4ead7" stroke-opacity=".45" stroke-width="2" />
+            <path d="M313 610 H447 L444 640 H316 Z" fill="#fff" fill-opacity=".08" />
+            <path d="M318 490 L326 600" stroke="#fff" stroke-opacity=".35" stroke-width="4" stroke-linecap="round" />
+          </g>
+
+          <!-- the bottle -->
+          <g transform="translate(170 330)">
+            <g class="pour-bottle">
+              <path d="M-16,-152 h32 v62 c0,16 50,26 50,72 v162 a26,26 0 0 1 -26,26 h-80 a26,26 0 0 1 -26,-26 v-162 c0,-46 50,-56 50,-72 z" fill="url(#ps-liq)" />
+              <path d="M-16,-152 h32 v62 c0,16 50,26 50,72 v162 a26,26 0 0 1 -26,26 h-80 a26,26 0 0 1 -26,-26 v-162 c0,-46 50,-56 50,-72 z" fill="url(#ps-glass)" stroke="#fff" stroke-opacity=".2" />
+              <rect x="-20" y="-170" width="40" height="22" rx="4" fill="#2a221b" />
+              <rect x="-38" y="20" width="76" height="90" rx="4" fill="#f4ead7" />
+              <rect x="-34" y="24" width="68" height="82" rx="2.5" fill="none" stroke="#a8812f" />
+              <text x="0" y="58" text-anchor="middle" font-family="Fraunces, Georgia, serif" font-size="13" fill="#24190f">Liquor</text>
+              <text x="0" y="74" text-anchor="middle" font-family="Fraunces, Georgia, serif" font-size="13" fill="#24190f">House</text>
+              <text x="0" y="92" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="5.5" letter-spacing="2" fill="#7a5a26">NAIROBI</text>
+              <path d="M-50,-10 q2,-22 20,-36" stroke="#fff" stroke-opacity=".45" stroke-width="5" fill="none" stroke-linecap="round" />
+            </g>
+          </g>
+        </svg>
+      </div>
+
+      <div class="pour-beats">
+        <div class="beat on">
+          <span class="num">01 — THE SHELF</span>
+          <h3 class="display h2">Chosen by people <em>who drink it.</em></h3>
+          <p class="lede">Single malts to sweet reds, every bottle on the shelf earned its place. If you can't decide, ask — we answer on WhatsApp.</p>
+        </div>
+        <div class="beat">
+          <span class="num">02 — THE CHILL</span>
+          <h3 class="display h2">Cold before <em>it leaves.</em></h3>
+          <p class="lede">Beer, bubbles and whites ride out of the fridge, packed upright with ice on request. Nothing warm arrives at a party.</p>
+        </div>
+        <div class="beat">
+          <span class="num">03 — THE DOOR</span>
+          <h3 class="display h2">At your door, <em>within the hour.</em></h3>
+          <p class="lede">Express riders across Nairobi. Pay by M-Pesa or cash on delivery — and have your ID ready, we check.</p>
+        </div>
+      </div>
+    </div>
+    <div class="pour-progress"><i></i></div>
+  </div>
+</section>

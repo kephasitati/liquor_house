@@ -1,0 +1,12 @@
+---
+import Base from "../layouts/Base.astro";
+import Checkout from "../components/react/Checkout";
+import { LIVE } from "../lib/medusa";
+---
+<Base title="Checkout" bare>
+  <section class="wrap" style="padding:calc(var(--hdr) + 30px) var(--gut) 100px">
+    <span class="kicker">Checkout</span>
+    <h1 class="display h2" style="margin:.8rem 0 0">Last call — <em>where's it going?</em></h1>
+    <Checkout client:load live={LIVE} />
+  </section>
+</Base>

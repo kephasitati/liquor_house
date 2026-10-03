@@ -1,0 +1,197 @@
+---
+import Base from "../../layouts/Base.astro";
+import Bottle from "../../components/Bottle";
+import ProductCard from "../../components/ProductCard.astro";
+import Icon from "../../components/Icon.astro";
+import GlassArt from "../../components/GlassArt.astro";
+import AddToBag from "../../components/react/AddToBag";
+import { getDrink, listAll, similar, resolveIngredient } from "../../lib/catalog";
+import { PROFILE_AXES, toLine } from "../../lib/types";
+import { money, percentOff } from "../../lib/format";
+import { SHELF_BY_ID, ZONES, site, legal } from "../../config/site";
+import { COCKTAILS } from "../../data/cocktails";
+
+const { handle } = Astro.params;
+const d = handle ? await getDrink(handle) : null;
+if (!d) return Astro.redirect("/shop?missing=1", 302);
+
+const all = await listAll();
+const shelf = SHELF_BY_ID[d.category];
+const hue = shelf?.hue ?? d.colour;
+const off = percentOff(d.price, d.oldPrice);
+const soldOut = d.stock != null && d.stock <= 0;
+const lowStock = d.stock != null && d.stock > 0 && d.stock <= 5;
+const related = similar(all, d, 4);
+const cocktail = COCKTAILS.find((c) => c.base === d.category || c.ingredients.some((i) => i.shelf === d.category && i.brand && d.brand.toLowerCase().includes(i.brand.toLowerCase())));
+const mixers = d.category !== "mixers" ? all.filter((x) => x.category === "mixers" && x.price != null).slice(0, 3) : [];
+const fastest = ZONES[0];
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Product",
+  name: d.name,
+  brand: d.brand ? { "@type": "Brand", name: d.brand } : undefined,
+  description: d.description,
+  category: shelf?.name,
+  image: d.thumbnail ?? undefined,
+  offers: d.price != null ? {
+    "@type": "Offer",
+    priceCurrency: "KES",
+    price: d.price,
+    availability: soldOut ? "https://schema.org/OutOfStock" : "https://schema.org/InStock",
+    url: new URL(`/p/${d.handle}`, site.url).toString(),
+  } : undefined,
+};
+---
+<Base title={d.name} description={d.description.slice(0, 155)} jsonLd={jsonLd} image={d.thumbnail ?? undefined}>
+  <section class="pdp wrap" style="padding-bottom:40px">
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <a href="/">Home</a><span>/</span>
+      <a href="/shop">Shop</a><span>/</span>
+      {shelf && <><a href={`/shop?shelf=${shelf.id}`}>{shelf.name}</a><span>/</span></>}
+      <span style="color:var(--cream)">{d.name}</span>
+    </nav>
+
+    <div class="pdp-grid">
+      <div class="pdp-stage" style={`--hue:${hue}`}>
+        <div class="spot"></div>
+        <svg class="ring-text" viewBox="0 0 300 300" aria-hidden="true">
+          <defs><path id="pring" d="M150,150 m-130,0 a130,130 0 1,1 260,0 a130,130 0 1,1 -260,0" /></defs>
+          <text><textPath href="#pring">{`${d.brand || site.short} · ${d.subcategory} · ${d.origin} · `.toUpperCase().repeat(2)}</textPath></text>
+        </svg>
+        <Bottle d={d} height={520} salt="pdp" />
+      </div>
+
+      <div class="pdp-info">
+        <span class="kicker">{d.brand || shelf?.name}</span>
+        <h1 class="display">{d.name}</h1>
+        <p class="muted" style="margin:0">{d.subcategory}{d.origin ? ` from ${d.origin}` : ""}</p>
+
+        <div class="pdp-chips">
+          {d.volume && <span class="chip">{d.volume}</span>}
+          {d.abv > 0 && <span class="chip">{d.abv}% ABV</span>}
+          {d.tags.includes("local") && <span class="chip chip-leaf">Made in Kenya</span>}
+          {d.tags.includes("bestseller") && <span class="chip chip-amber">House favourite</span>}
+          {lowStock && <span class="chip chip-amber">Only {d.stock} left</span>}
+        </div>
+
+        <div class="pdp-price">
+          <span class="price">{d.price != null ? money(d.price) : "Price on request"}</span>
+          {d.oldPrice && <s class="price muted" style="font-size:1.1rem">{money(d.oldPrice)}</s>}
+          {off > 0 && <span class="save">SAVE {off}%</span>}
+        </div>
+
+        {d.price != null ? (
+          <AddToBag client:load line={toLine(d)} disabled={soldOut} />
+        ) : (
+          <a class="btn btn-amber mt" href={`https://wa.me/${site.whatsapp}?text=${encodeURIComponent(`Hi, is ${d.name} available?`)}`} target="_blank" rel="noopener">Ask on WhatsApp</a>
+        )}
+
+        <div class="assure">
+          <div><Icon name="bolt" /><span><b>Express {fastest.eta}</b>{fastest.name} and nearby</span></div>
+          <div><Icon name="snow" /><span><b>Delivered cold</b>Straight from the fridge</span></div>
+          <div><Icon name="shield" /><span><b>Genuine bottles</b>Sealed, from licensed suppliers</span></div>
+          <div><Icon name="chat" /><span><b>M-Pesa or cash</b>Pay at the door</span></div>
+        </div>
+
+        <div class="block">
+          <h2>In the glass</h2>
+          <p style="margin:0 0 1rem;color:var(--cream-2)">{d.description}</p>
+          {d.notes.length > 0 && <div class="notes">{d.notes.map((n) => <span>{n}</span>)}</div>}
+        </div>
+
+        {d.profile && (
+          <div class="block">
+            <h2>Flavour profile</h2>
+            <div class="profile">
+              {PROFILE_AXES.map((a, i) => (
+                <div class="profile-row">
+                  <span>{a.label}</span>
+                  <div class="profile-bar"><i style={`--v:${d.profile![a.key]};--d:${i * 0.08}s`}></i></div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {d.serve && (
+          <div class="block">
+            <h2>How to serve it</h2>
+            <p style="margin:0;font-family:var(--f-display);font-size:1.35rem;line-height:1.35;font-style:italic">“{d.serve}”</p>
+          </div>
+        )}
+
+        <div class="block">
+          <h2>The details</h2>
+          <dl class="specs">
+            {d.brand && <div><dt>Brand</dt><dd>{d.brand}</dd></div>}
+            {d.origin && <div><dt>Origin</dt><dd>{d.origin}</dd></div>}
+            {d.volume && <div><dt>Size</dt><dd>{d.volume}</dd></div>}
+            {d.abv > 0 && <div><dt>Strength</dt><dd>{d.abv}%</dd></div>}
+          </dl>
+          {d.ageRestricted && <p class="muted" style="font-size:.78rem;margin:1rem 0 0">{legal.ageLine} {legal.idLine}</p>}
+        </div>
+
+        {mixers.length > 0 && (
+          <div class="block">
+            <h2>Goes with</h2>
+            <div class="stack gap-s">
+              {mixers.map((m) => (
+                <div class="plan-line">
+                  <Bottle d={m} height={52} salt="mx" />
+                  <div><a href={`/p/${m.handle}`} style="font-weight:600">{m.name}</a><div class="muted" style="font-size:.78rem">{m.volume}</div></div>
+                  <div class="row gap-s"><span class="price">{money(m.price)}</span><button class="add-btn" type="button" aria-label={`Add ${m.name}`} data-add={JSON.stringify(toLine(m))}><Icon name="plus" /></button></div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  </section>
+
+  {cocktail && (() => {
+    const bottles = cocktail.ingredients.filter((i) => i.shelf).map((i) => resolveIngredient(all, i.shelf!, i.brand)).filter((x, i, arr) => x && arr.findIndex((y) => y?.handle === x.handle) === i);
+    return (
+      <section class="section" style="padding:60px 0">
+        <div class="wrap">
+          <div class="panel panel-glow" style="min-height:0;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);gap:2rem;align-items:center" data-reveal>
+            <div class="ctl-art" style={`--c:${cocktail.colour};border-radius:var(--r);aspect-ratio:1`}>
+              <GlassArt glass={cocktail.glass} colour={cocktail.colour} garnish={cocktail.garnish} id={`pdp-${cocktail.id}`} />
+            </div>
+            <div>
+              <span class="kicker">Make it a cocktail</span>
+              <h3 class="display h2" style="margin:.8rem 0">{cocktail.name}</h3>
+              <ul class="muted" style="padding-left:1.1rem;margin:0 0 1.4rem;display:grid;gap:4px">{cocktail.ingredients.map((i) => <li>{i.label}</li>)}</ul>
+              <div class="row gap" style="flex-wrap:wrap">
+                <button class="btn btn-amber" type="button" data-add={JSON.stringify(bottles.map((b) => toLine(b!)))}>Add the bottles</button>
+                <a class="link-arrow" href={`/cocktails#${cocktail.id}`}>Full recipe <span>→</span></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  })()}
+
+  {related.length > 0 && (
+    <section class="section" style="padding-top:40px">
+      <div class="wrap">
+        <div class="section-head" data-reveal>
+          <div>
+            <span class="kicker">If you like this</span>
+            <h2 class="display h2">Drinks <em>just like it.</em></h2>
+          </div>
+          {shelf && <a class="link-arrow" href={`/shop?shelf=${shelf.id}`}>All {shelf.name.toLowerCase()} <span>→</span></a>}
+        </div>
+        <div class="grid grid-4">{related.map((r, i) => <ProductCard d={r} i={i} />)}</div>
+      </div>
+    </section>
+  )}
+</Base>
+
+<style>
+  @media (max-width: 720px) {
+    .panel[style*="grid-template-columns"] { grid-template-columns: 1fr !important; }
+  }
+</style>

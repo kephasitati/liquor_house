@@ -1,0 +1,47 @@
+---
+import Logo from "./Logo.astro";
+import { site, legal, SHELVES } from "../config/site";
+const year = new Date().getFullYear();
+---
+<footer class="ftr">
+  <div class="wrap">
+    <p class="ftr-big" aria-hidden="true">Liquor <em>House</em></p>
+    <div class="ftr-grid">
+      <div>
+        <Logo />
+        <p class="muted" style="max-width:34ch;margin-top:1.2rem;font-size:.92rem">
+          {site.tagline}. Whisky, cognac, gin, wine and cold beer — delivered across {site.city}, or ready to collect.
+        </p>
+        <div class="row gap-s mt">
+          <a class="btn btn-ghost btn-sm" href={`https://wa.me/${site.whatsapp}`} target="_blank" rel="noopener">WhatsApp us</a>
+          <a class="btn btn-ghost btn-sm" href={`tel:${site.phone.replace(/\s/g, "")}`}>Call</a>
+        </div>
+      </div>
+      <div>
+        <h4>The shelves</h4>
+        <ul>{SHELVES.slice(0, 7).map((s) => <li><a href={`/shop?shelf=${s.id}`}>{s.name}</a></li>)}</ul>
+      </div>
+      <div>
+        <h4>The house</h4>
+        <ul>
+          <li><a href="/cocktails">Cocktail Lab</a></li>
+          <li><a href="/finder">Taste Finder</a></li>
+          <li><a href="/party">Party Planner</a></li>
+          <li><a href="/delivery">Delivery & zones</a></li>
+          <li><a href="/about">About & contact</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Opening hours</h4>
+        <ul>{site.hours.map((h) => <li><span class="mono" style="color:var(--cream)">{h.days}</span><br />{h.time}</li>)}</ul>
+      </div>
+    </div>
+    <div class="ftr-legal">
+      <div class="row gap">
+        <span class="badge-18" aria-label="18 plus">18+</span>
+        <span><strong>{legal.ageLine}</strong> {legal.healthLine} {legal.idLine}</span>
+      </div>
+      <span>© {year} {site.name}. Drink responsibly — never drink and drive.</span>
+    </div>
+  </div>
+</footer>

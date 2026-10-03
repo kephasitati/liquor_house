@@ -1,0 +1,20 @@
+---
+import Base from "../layouts/Base.astro";
+import TasteFinder from "../components/react/TasteFinder";
+import { listAll } from "../lib/catalog";
+
+// Only what the finder can score: a priced bottle with a flavour profile.
+const drinks = (await listAll()).filter((d) => d.profile && d.price != null);
+---
+<Base title="Taste Finder" description="Three questions — how you drink, the flavours you like, what you want to spend — and we match you to bottles from the Liquor House shelf.">
+  <section class="page-hero">
+    <div class="wrap">
+      <span class="kicker">Taste finder</span>
+      <h1 class="display h1">Three questions. <em>Your bottle.</em></h1>
+      <p class="lede">Tell us how you take it and what you like. We read every bottle's flavour profile and pour you the closest five.</p>
+    </div>
+  </section>
+  <section class="wrap" style="padding:20px var(--gut) 140px;max-width:980px">
+    <TasteFinder client:load drinks={drinks} />
+  </section>
+</Base>

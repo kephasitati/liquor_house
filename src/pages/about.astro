@@ -1,0 +1,38 @@
+---
+import Base from "../layouts/Base.astro";
+import Icon from "../components/Icon.astro";
+import { site } from "../config/site";
+---
+<Base title="About & contact" description={`${site.name} — ${site.tagline}. Find us, call us, or message us on WhatsApp.`}>
+  <section class="page-hero">
+    <div class="wrap">
+      <span class="kicker">The house</span>
+      <h1 class="display h1">A liquor store <em>with a bartender's taste.</em></h1>
+      <p class="lede">{site.name} is a Nairobi liquor house: a shelf picked by people who drink it, cold stock, honest prices and riders who know the city.</p>
+    </div>
+  </section>
+  <section class="wrap" style="padding:20px var(--gut) 140px">
+    <div class="split">
+      <div class="panel">
+        <span class="kicker">Find us</span>
+        <div class="stack gap mt">
+          <div class="row gap"><Icon name="pin" size={22} /><span>{site.address}</span></div>
+          <a class="row gap" href={`tel:${site.phone.replace(/\s/g, "")}`}><Icon name="phone" size={22} /><span>{site.phone}</span></a>
+          <a class="row gap" href={`https://wa.me/${site.whatsapp}`} target="_blank" rel="noopener"><Icon name="chat" size={22} /><span>WhatsApp — orders and questions</span></a>
+          <a class="row gap" href={`mailto:${site.email}`}><Icon name="spark" size={22} /><span>{site.email}</span></a>
+        </div>
+      </div>
+      <div class="panel panel-glow">
+        <span class="kicker">Opening hours</span>
+        <div class="stack mt">
+          {site.hours.map((h) => (
+            <div class="row" style="justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--line)">
+              <span>{h.days}</span><span class="mono">{h.time}</span>
+            </div>
+          ))}
+        </div>
+        <p class="muted mt" style="font-size:.85rem">Drink responsibly. Never drink and drive — order a ride, not another round.</p>
+      </div>
+    </div>
+  </section>
+</Base>

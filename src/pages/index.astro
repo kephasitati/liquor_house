@@ -1,0 +1,242 @@
+---
+import Base from "../layouts/Base.astro";
+import HouseBottle from "../components/HouseBottle.astro";
+import Skyline from "../components/Skyline.astro";
+import PourScene from "../components/PourScene.astro";
+import ProductCard from "../components/ProductCard.astro";
+import Bottle from "../components/Bottle";
+import Icon from "../components/Icon.astro";
+import GlassArt from "../components/GlassArt.astro";
+import OccasionPicker from "../components/react/OccasionPicker";
+import { listAll, forOccasion, rank, shelfCounts, isBestseller } from "../lib/catalog";
+import { SHELVES, OCCASIONS, ZONES, site } from "../config/site";
+import { COCKTAILS } from "../data/cocktails";
+import { money } from "../lib/format";
+
+const all = await listAll();
+const counts = shelfCounts(all);
+const priced = all.filter((d) => d.price != null);
+const favourites = priced.filter(isBestseller).sort(rank).slice(0, 8);
+const local = priced.filter((d) => d.tags.includes("local")).slice(0, 4);
+const occasionSets = OCCASIONS.map((o) => ({ ...o, picks: forOccasion(all, o.id, o.shelves, 4) })).filter((o) => o.picks.length);
+const shelves = SHELVES.filter((s) => counts[s.id]);
+const shelfBottles = (id: string) => all.filter((d) => d.category === id).sort(rank).slice(0, 3);
+const from = (id: string) => Math.min(...all.filter((d) => d.category === id && d.price != null).map((d) => d.price!));
+const cheapestZone = Math.min(...ZONES.map((z) => z.fee));
+---
+<Base>
+  <!-- ============================================================ HERO -->
+  <section class="hero">
+    <div class="hero-light"></div>
+    <div class="wrap hero-grid">
+      <div>
+        <span class="kicker fade-up">Nairobi · After hours</span>
+        <h1 class="display h1">
+          <span class="hl"><span>The city's</span></span>
+          <span class="hl"><span><em>finest pour,</em></span></span>
+          <span class="hl"><span>at your door.</span></span>
+        </h1>
+        <p class="lede fade-up" style="animation-delay:.5s">
+          Whisky, cognac, gin, wine and ice-cold Tusker — chosen by people who drink it and delivered across Nairobi within the hour.
+        </p>
+        <div class="hero-cta fade-up" style="animation-delay:.65s">
+          <a class="btn btn-amber" href="/shop">Enter the house <Icon name="arrow" size={18} /></a>
+          <a class="btn btn-ghost" href="/finder">Find my drink</a>
+        </div>
+        <div class="hero-facts fade-up" style="animation-delay:.8s">
+          <div><b>{all.length}+</b><span>bottles on the shelf</span></div>
+          <div><b>~45<small style="font-size:.5em"> min</small></b><span>express in the city</span></div>
+          <div><b>M-Pesa</b><span>or cash at the door</span></div>
+        </div>
+      </div>
+      <div class="hero-stage">
+        <div class="spot"></div>
+        <svg class="ring-text" viewBox="0 0 300 300" aria-hidden="true">
+          <defs><path id="ring" d="M150,150 m-130,0 a130,130 0 1,1 260,0 a130,130 0 1,1 -260,0" /></defs>
+          <text><textPath href="#ring">LIQUOR HOUSE · KENYA · FINE SPIRITS · NAIROBI · DELIVERED COLD ·</textPath></text>
+        </svg>
+        <div class="hero-bottle"><HouseBottle /></div>
+        <div class="hero-plinth"></div>
+        <div class="hero-tag t1"><b>Cold on arrival</b><span class="muted">Beer · bubbles · whites</span></div>
+        <div class="hero-tag t2"><b>18+ · ID at the door</b><span class="muted">Licensed, responsible</span></div>
+      </div>
+    </div>
+    <Skyline />
+    <div class="scroll-cue" aria-hidden="true">SCROLL<i></i></div>
+  </section>
+
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee-track">
+      {[0, 1].map(() => (
+        <>
+          <span>Single malts</span><span>Cognac for the elders</span><span>Tusker by the crate</span>
+          <span>Gin & tonic hour</span><span>Moët for the toast</span><span>Delivered across Nairobi</span>
+          <span>M-Pesa at the door</span>
+        </>
+      ))}
+    </div>
+  </div>
+
+  <!-- ======================================================== BACK BAR -->
+  <section class="section backbar" style="padding-bottom:40px">
+    <div class="wrap section-head">
+      <div>
+        <span class="kicker">The back bar</span>
+        <h2 class="display h2">Every shelf, <em>lit.</em></h2>
+      </div>
+      <div class="row gap">
+        <p class="muted hide-sm">Drag along the bar. Tap a shelf to see everything on it.</p>
+        <div class="rail-ctrl">
+          <button class="icon-btn" type="button" aria-label="Scroll shelves left" data-rail-btn="bar" data-dir="-1"><Icon name="left" /></button>
+          <button class="icon-btn" type="button" aria-label="Scroll shelves right" data-rail-btn="bar" data-dir="1"><Icon name="right" /></button>
+        </div>
+      </div>
+    </div>
+    <div class="backbar-rail" data-rail="bar">
+      {shelves.map((s) => (
+        <a class="shelf" href={`/shop?shelf=${s.id}`} style={`--hue:${s.hue}`}>
+          <span class="count">{String(counts[s.id]).padStart(2, "0")} bottles</span>
+          <div class="shelf-bottles">
+            {shelfBottles(s.id).map((d, i) => <Bottle d={d} height={i === 1 ? 210 : 175} salt={`bar${i}`} />)}
+          </div>
+          <h3>{s.name}</h3>
+          <p>{s.line}</p>
+          <p class="mono" style="margin-top:10px;color:var(--amber)">from {money(from(s.id))}</p>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <!-- ======================================================== THE POUR -->
+  <PourScene />
+
+  <!-- ======================================================= OCCASIONS -->
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head" data-reveal>
+        <div>
+          <span class="kicker">What's the night?</span>
+          <h2 class="display h2">Pick the occasion. <em>We'll set the table.</em></h2>
+        </div>
+        <p class="muted">Four bottles for every kind of evening — add one, or the whole set in a single tap.</p>
+      </div>
+      <OccasionPicker client:visible sets={occasionSets} />
+    </div>
+  </section>
+
+  <!-- ====================================================== FAVOURITES -->
+  <section class="section" style="padding-top:0">
+    <div class="wrap">
+      <div class="section-head" data-reveal>
+        <div>
+          <span class="kicker">House favourites</span>
+          <h2 class="display h2">The bottles Nairobi <em>reaches for.</em></h2>
+        </div>
+        <a class="link-arrow" href="/shop">See the whole shelf <span>→</span></a>
+      </div>
+      <div class="grid grid-4">
+        {favourites.map((d, i) => <ProductCard d={d} i={i} />)}
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================== TOOLS SPLIT -->
+  <section class="section" style="padding-top:0">
+    <div class="wrap split">
+      <div class="panel panel-glow" data-reveal>
+        <span class="kicker">Taste finder</span>
+        <h3 class="display h2">Not sure? <em>Three questions.</em></h3>
+        <p class="muted" style="max-width:36ch">How you take it, the flavours you like, what you want to spend. We'll match you to bottles that drink the way you do.</p>
+        <div class="panel-art" aria-hidden="true">
+          <svg viewBox="0 0 200 200">
+            {[["Sweet", 0], ["Fruity", 60], ["Fresh", 120], ["Spicy", 180], ["Oak", 240], ["Smoke", 300]].map(([l, a]) => {
+              const r = ((a as number) - 90) * Math.PI / 180;
+              return <g><line x1="100" y1="100" x2={100 + 80 * Math.cos(r)} y2={100 + 80 * Math.sin(r)} stroke="#c9a35c" stroke-opacity=".3" /><text x={100 + 92 * Math.cos(r)} y={100 + 92 * Math.sin(r) + 3} font-size="8" fill="#c9a35c" text-anchor="middle" font-family="JetBrains Mono">{l}</text></g>;
+            })}
+            <circle cx="100" cy="100" r="40" fill="none" stroke="#c9a35c" stroke-opacity=".2" />
+            <circle cx="100" cy="100" r="80" fill="none" stroke="#c9a35c" stroke-opacity=".2" />
+            <polygon points="100,44 150,72 142,124 100,150 66,120 62,78" fill="#e8a33d" fill-opacity=".25" stroke="#e8a33d" stroke-width="1.5" />
+          </svg>
+        </div>
+        <a class="btn btn-amber" href="/finder">Find my drink <Icon name="arrow" size={18} /></a>
+      </div>
+      <div class="panel" data-reveal style="--d:.1s">
+        <span class="kicker">Party planner</span>
+        <h3 class="display h2">How much for <em>forty guests?</em></h3>
+        <p class="muted" style="max-width:36ch">Tell us the headcount, the hours and the crowd. We'll work out the bottles, the beer, the mixers and the ice — then fill the bag.</p>
+        <div class="plan" style="margin:auto 0 1.6rem;max-width:420px">
+          <div><b>40</b><span>guests</span></div>
+          <div><b>5h</b><span>of party</span></div>
+          <div><b>6</b><span>bags of ice</span></div>
+        </div>
+        <a class="btn btn-ghost" href="/party">Plan my party <Icon name="arrow" size={18} /></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================== COCKTAIL LAB -->
+  <section class="section" style="padding-top:0">
+    <div class="wrap">
+      <div class="section-head" data-reveal>
+        <div>
+          <span class="kicker">The cocktail lab</span>
+          <h2 class="display h2">Stir something <em>tonight.</em></h2>
+        </div>
+        <a class="link-arrow" href="/cocktails">All recipes <span>→</span></a>
+      </div>
+      <div class="ctl-grid">
+        {COCKTAILS.slice(0, 3).map((c, i) => (
+          <a class="ctl" href={`/cocktails#${c.id}`} data-reveal style={`--d:${i * 0.08}s`}>
+            <div class="ctl-art" style={`--c:${c.colour}`}>
+              <span class="chip mins">{c.minutes} min</span>
+              <GlassArt glass={c.glass} colour={c.colour} garnish={c.garnish} id={`home-${c.id}`} />
+            </div>
+            <div class="ctl-body">
+              <span class="card-brand">{c.kicker}</span>
+              <h3>{c.name}</h3>
+              <p class="muted" style="margin:0;font-size:.88rem">{c.ingredients.map((x) => x.label.replace(/^[\d½.]+\s?(ml|tsp|tbsp)?\s?/i, "")).slice(0, 3).join(" · ")}</p>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================== MADE IN KENYA -->
+  {local.length > 0 && (
+    <section class="section" style="padding-top:0">
+      <div class="wrap">
+        <div class="section-head" data-reveal>
+          <div>
+            <span class="kicker">Made in Kenya</span>
+            <h2 class="display h2">Poured <em>close to home.</em></h2>
+          </div>
+          <a class="link-arrow" href="/shop?tag=local">Everything Kenyan <span>→</span></a>
+        </div>
+        <div class="grid grid-4">{local.map((d, i) => <ProductCard d={d} i={i} />)}</div>
+      </div>
+    </section>
+  )}
+
+  <!-- ========================================================= DELIVERY -->
+  <section class="section" style="padding-top:0">
+    <div class="wrap">
+      <div class="section-head" data-reveal>
+        <div>
+          <span class="kicker">Delivery</span>
+          <h2 class="display h2">Across Nairobi, <em>from {money(cheapestZone)}.</em></h2>
+        </div>
+        <p class="muted">Free in the city zones over {money(site.freeDeliveryOver)}. Express riders leave the moment your order is confirmed.</p>
+      </div>
+      <div class="zones-band" data-reveal>
+        {ZONES.map((z) => (
+          <div class="zone">
+            <h4>{z.name}</h4>
+            <div class="row" style="justify-content:space-between"><span class="price">{money(z.fee)}</span><span class="muted">{z.eta}</span></div>
+            <p>{z.areas.slice(0, 4).join(" · ")}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+</Base>

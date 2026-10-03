@@ -1,0 +1,20 @@
+---
+import Base from "../layouts/Base.astro";
+import PartyPlanner from "../components/react/PartyPlanner";
+import { listAll } from "../lib/catalog";
+
+const shelves = new Set(["whisky", "vodka", "gin", "wine", "beer", "mixers"]);
+const drinks = (await listAll()).filter((d) => d.price != null && shelves.has(d.category));
+---
+<Base title="Party Planner" description="Guests, hours and the crowd — the Liquor House party planner works out the spirits, wine, beer, mixers and ice, then fills your bag.">
+  <section class="page-hero">
+    <div class="wrap">
+      <span class="kicker">Party planner</span>
+      <h1 class="display h1">How much for <em>the party?</em></h1>
+      <p class="lede">Slide in the headcount and the hours. We'll work out the bottles, crates, mixers and ice — and put the whole list in your bag in one tap.</p>
+    </div>
+  </section>
+  <section class="wrap" style="padding:20px var(--gut) 140px;max-width:1040px">
+    <PartyPlanner client:load drinks={drinks} />
+  </section>
+</Base>

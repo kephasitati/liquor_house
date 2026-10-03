@@ -1,0 +1,40 @@
+---
+import Logo from "./Logo.astro";
+import Icon from "./Icon.astro";
+import BagButton from "./react/BagButton";
+
+const path = Astro.url.pathname;
+const NAV = [
+  { href: "/shop", label: "Shop" },
+  { href: "/cocktails", label: "Cocktail Lab" },
+  { href: "/finder", label: "Taste Finder" },
+  { href: "/party", label: "Party Planner" },
+  { href: "/delivery", label: "Delivery" },
+];
+const current = (href: string) => (path === href || path.startsWith(href + "/") ? "page" : undefined);
+---
+<header class="hdr" data-scrolled="false">
+  <div class="wrap hdr-in">
+    <Logo />
+    <nav class="nav" aria-label="Main">
+      {NAV.map((n) => <a href={n.href} aria-current={current(n.href)}>{n.label}</a>)}
+    </nav>
+    <div class="hdr-actions">
+      <div class="search-pop" data-open="false">
+        <button class="icon-btn" type="button" aria-label="Search" data-search-toggle><Icon name="search" /></button>
+        <form action="/shop" method="get" role="search">
+          <input name="q" type="search" placeholder="Search Jameson, gin, Moët…" aria-label="Search the shop" />
+          <button class="btn btn-amber btn-sm" type="submit">Find</button>
+        </form>
+      </div>
+      <BagButton client:load />
+      <button class="icon-btn menu-btn" type="button" aria-label="Menu" data-menu-open><Icon name="menu" /></button>
+    </div>
+  </div>
+</header>
+
+<div class="mobile-nav" data-open="false" id="mobile-nav">
+  <button class="icon-btn mobile-nav-close" type="button" aria-label="Close menu" data-menu-close><Icon name="close" /></button>
+  <a href="/">Home</a>
+  {NAV.map((n) => <a href={n.href}>{n.label}</a>)}
+</div>

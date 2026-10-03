@@ -1,0 +1,45 @@
+---
+import Bottle from "./Bottle";
+import Icon from "./Icon.astro";
+import type { Drink } from "../lib/types";
+import { toLine } from "../lib/types";
+import { money, percentOff } from "../lib/format";
+import { SHELF_BY_ID } from "../config/site";
+
+/**
+ * A lit bottle on a dark card. Server-rendered with no island: the quick-add button carries
+ * its bag line as data and the page script (src/scripts/immersive.ts) adds it, so a grid of
+ * sixty cards ships no React.
+ */
+interface Props { d: Drink; i?: number }
+const { d, i = 0 } = Astro.props;
+const off = percentOff(d.price, d.oldPrice);
+const hue = SHELF_BY_ID[d.category]?.hue ?? d.colour;
+const soldOut = d.stock != null && d.stock <= 0;
+const flags = [
+  off ? { cls: "flag-deal", t: `−${off}%` } : null,
+  d.tags.includes("local") ? { cls: "flag-local", t: "Made in Kenya" } : null,
+  !off && d.tags.includes("new") ? { cls: "", t: "New" } : null,
+].filter(Boolean) as { cls: string; t: string }[];
+---
+<article class="card" data-tilt data-reveal style={`--hue:${hue};--d:${(i % 4) * 0.06}s`}>
+  <div class="card-stage">
+    <div class="card-flags">{flags.map((f) => <span class={`flag ${f.cls}`}>{f.t}</span>)}</div>
+    <Bottle d={d} height={260} />
+  </div>
+  <div class="card-body">
+    <span class="card-brand">{d.brand || SHELF_BY_ID[d.category]?.name}</span>
+    <a class="card-name" href={`/p/${d.handle}`}>{d.name}</a>
+    <span class="card-meta">{[d.volume, d.abv ? `${d.abv}%` : "", d.origin].filter(Boolean).join(" · ")}</span>
+    <div class="card-foot">
+      <span class="price">{money(d.price)}{d.oldPrice && <s>{money(d.oldPrice)}</s>}</span>
+      {d.price != null && !soldOut ? (
+        <button class="add-btn" type="button" aria-label={`Add ${d.name} to bag`} data-add={JSON.stringify(toLine(d))}>
+          <Icon name="plus" />
+        </button>
+      ) : (
+        <span class="chip">{soldOut ? "Sold out" : "Ask us"}</span>
+      )}
+    </div>
+  </div>
+</article>

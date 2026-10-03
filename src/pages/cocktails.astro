@@ -1,0 +1,49 @@
+---
+import Base from "../layouts/Base.astro";
+import GlassArt from "../components/GlassArt.astro";
+import { listAll, resolveIngredient } from "../lib/catalog";
+import { COCKTAILS } from "../data/cocktails";
+import { toLine } from "../lib/types";
+import { money } from "../lib/format";
+
+const all = await listAll();
+const recipes = COCKTAILS.map((c) => {
+  const bottles = c.ingredients
+    .map((i) => (i.shelf ? resolveIngredient(all, i.shelf, i.brand) : null))
+    .filter((d, i, arr) => d && arr.findIndex((x) => x?.handle === d.handle) === i)
+    .map((d) => d!);
+  return { ...c, bottles, total: bottles.reduce((s, b) => s + (b.price ?? 0), 0) };
+});
+---
+<Base title="Cocktail Lab" description="Eight cocktails to make at home tonight — from Nairobi's own Dawa to the espresso martini — with every bottle one tap from your bag.">
+  <section class="page-hero">
+    <div class="wrap">
+      <span class="kicker">The cocktail lab</span>
+      <h1 class="display h1">Stir something <em>tonight.</em></h1>
+      <p class="lede">Eight drinks you can make at home with what's in one delivery. Tap “Add the bottles” and everything you'd need from our shelves goes in the bag.</p>
+    </div>
+  </section>
+
+  <section class="wrap" style="padding:30px var(--gut) 140px">
+    <div class="ctl-grid">
+      {recipes.map((c, i) => (
+        <article class="ctl" id={c.id} data-reveal style={`--d:${(i % 3) * 0.08}s;scroll-margin-top:100px`}>
+          <div class="ctl-art" style={`--c:${c.colour}`}>
+            <span class="chip mins">{c.minutes} min</span>
+            <GlassArt glass={c.glass} colour={c.colour} garnish={c.garnish} id={c.id} />
+          </div>
+          <div class="ctl-body">
+            <span class="card-brand">{c.kicker}</span>
+            <h2 class="display" style="font-size:1.9rem">{c.name}</h2>
+            <ul>{c.ingredients.map((x) => <li>{x.shelf ? <b>{x.label}</b> : x.label}</li>)}</ul>
+            <ol>{c.method.map((m) => <li>{m}</li>)}</ol>
+            <div class="ctl-foot">
+              <span class="muted" style="font-size:.8rem">{c.bottles.length} {c.bottles.length === 1 ? "bottle" : "bottles"} · <span class="price" style="color:var(--cream)">{money(c.total)}</span></span>
+              {c.bottles.length > 0 && <button class="btn btn-amber btn-sm" type="button" data-add={JSON.stringify(c.bottles.map((b) => toLine(b)))}>Add the bottles</button>}
+            </div>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+</Base>
