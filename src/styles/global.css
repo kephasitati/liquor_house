@@ -224,11 +224,22 @@ input, select, textarea { font: inherit; color: inherit; }
 }
 .hdr[data-hidden="true"] { transform: translateY(-100%); }
 .hdr-in { height: 100%; display: flex; align-items: center; gap: 1.5rem; }
-.logo { display: inline-flex; align-items: center; gap: 0.7rem; flex-shrink: 0; }
-/* the shop's sign, as the logo: a navy plaque in a silver frame (Plaque.tsx) */
-.logo-plaque { display: block; height: 42px; width: auto; filter: drop-shadow(0 3px 6px rgb(var(--shade) / 0.28)); transition: transform 0.4s var(--ease); }
-.logo:hover .logo-plaque { transform: translateY(-1px); }
-@media (max-width: 520px) { .hdr .logo-plaque { height: 32px; } }
+.logo { flex-shrink: 0; }
+/* the logo: the name as the shop's sign letters it — Cinzel capitals in sign navy, "THE" small,
+   between two thin silver rules (the sign's frame). Logo.astro; sized by .wordmark-sm / -lg. */
+.wordmark { display: grid; justify-items: center; width: fit-content; max-width: 100%; color: #1f3157; transition: color 0.4s var(--ease); }
+.ftr a.wordmark, .hdr a.wordmark { color: #1f3157; }
+.ftr a.wordmark:hover, .hdr a.wordmark:hover { color: #2c4478; }
+.wordmark-name { font-family: "Cinzel", "Trajan Pro", Georgia, "Times New Roman", serif; font-weight: 700; text-transform: uppercase; line-height: 1; letter-spacing: 0.05em; white-space: nowrap; text-shadow: 0 1px 0 rgba(255, 255, 255, 0.7); }
+.wordmark-name small { font-size: 0.68em; letter-spacing: 0.06em; }
+.wordmark-rule { display: block; width: 100%; border-top: 1.5px solid #aeb7c2; border-bottom: 1px solid #c9d0d8; opacity: 0.9; }
+.wordmark-sm { gap: 5px; }
+.wordmark-sm .wordmark-name { font-size: 1.22rem; }
+.wordmark-sm .wordmark-rule { height: 3px; border-top-width: 1px; }
+.wordmark-lg { gap: 14px; }
+.wordmark-lg .wordmark-name { font-size: clamp(1.4rem, 7vw, 5.6rem); text-shadow: 0 1px 0 rgba(255, 255, 255, 0.7), 0 14px 30px rgb(var(--shade) / 0.18); }
+.wordmark-lg .wordmark-rule { height: 5px; }
+@media (max-width: 520px) { .wordmark-sm .wordmark-name { font-size: 1rem; } }
 .nav { display: flex; gap: 0.25rem; margin-left: 1rem; }
 .nav a {
   padding: 0.5rem 0.85rem;
@@ -486,14 +497,6 @@ input, select, textarea { font: inherit; color: inherit; }
   .hero { padding-bottom: 150px; }
 }
 
-/* --------------------------------------------------------------- marquee */
-
-.marquee { position: relative; overflow: hidden; background: linear-gradient(90deg, #f0a83e, #f6c062 50%, #e8952a); padding: 1.1rem 0; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5), 0 20px 40px -24px rgba(200, 110, 20, 0.6); }
-.marquee-track { display: flex; width: max-content; gap: 3rem; animation: marquee 38s linear infinite; }
-.marquee span { font-family: var(--f-display); font-style: italic; font-size: clamp(1.3rem, 2.4vw, 2rem); white-space: nowrap; display: inline-flex; align-items: center; gap: 3rem; color: #2a1806; }
-.marquee span::after { content: "✦"; font-style: normal; font-size: 0.7em; color: #fff; }
-@keyframes marquee { to { transform: translateX(-50%); } }
-@media (prefers-reduced-motion: reduce) { .marquee-track { animation: none; } }
 
 /* -------------------------------------------------------------- sections */
 
@@ -1165,8 +1168,7 @@ input[type="range"] { width: 100%; accent-color: var(--amber); }
 /* ---------------------------------------------------------------- footer */
 
 .ftr { border-top: 1px solid var(--line); padding: 80px 0 30px; background: linear-gradient(180deg, var(--bg), #efe1c8); position: relative; overflow: hidden; }
-.ftr-big { font-family: var(--f-display); font-weight: 300; font-size: clamp(3.6rem, 13vw, 12rem); line-height: 0.85; letter-spacing: -0.05em; color: transparent; -webkit-text-stroke: 1px rgb(var(--shade) / 0.22); margin: 0 0 50px; white-space: nowrap; user-select: none; }
-.ftr-big em { -webkit-text-stroke: 1px rgba(196, 116, 26, 0.75); font-style: italic; background: none; -webkit-text-fill-color: transparent; animation: none; }
+.ftr .ftr-mark { margin: 0 auto 60px; }
 .ftr-grid { display: grid; grid-template-columns: 1.4fr repeat(3, 1fr); gap: 2rem; }
 @media (max-width: 860px) { .ftr-grid { grid-template-columns: 1fr 1fr; } }
 .ftr .ftr-h { font: 500 0.7rem var(--f-mono); letter-spacing: 0.2em; text-transform: uppercase; color: var(--amber-ink); margin: 0 0 1rem; }
