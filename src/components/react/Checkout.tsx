@@ -1,17 +1,22 @@
 import { useEffect, useMemo, useState } from "react";
 import { useStore } from "@nanostores/react";
-import { bag, bagSubtotal, clearBag } from "../../stores/bag";
+import { bag, bagSubtotal, clearBag, setQty } from "../../stores/bag";
+import { readAge } from "../../lib/age";
 import { money } from "../../lib/format";
 import {
-  canUseMedusa, createCart, payAndPlace, shippingOptions, validPhone, whatsappMessage, whatsappUrl,
+  canUseMedusa, createCart, finishCardPayment, payAndPlace, shippingOptions, validPhone, whatsappMessage, whatsappUrl,
   type Details, type PayMethod, type ShipOption,
 } from "../../lib/checkout";
 import { ZONES, ZONE_BY_ID, SPEEDS, site, legal, type SpeedId } from "../../config/site";
 import Bottle from "../Bottle";
+import { TumaBoda, WithTumaBoda } from "../TumaBoda";
+import { REWARD } from "../../data/games";
+import { savedCode } from "../games/store";
+import PayLogos from "../PayLogos";
 import { EmptyGlass } from "./BagDrawer";
 
 /** Zones where the free-delivery threshold applies; the outer ring always pays its fare. */
-const FREE_ZONES = new Set(["cbd", "westlands", "south", "north", "east"]);
+const FREE_ZONES = new Set(["kiambu-road", "north", "kiambu", "westlands", "thika", "cbd"]);
 
 type Done = { kind: "order"; ref: string } | { kind: "whatsapp"; url: string };
 
@@ -40,6 +45,38 @@ export default function Checkout({ live }: { live: boolean }) {
   const [options, setOptions] = useState<ShipOption[]>([]);
   const [optionId, setOptionId] = useState("");
 
+  // Alcohol needs the 18+ confirmation and an ID check at the door; soft drinks don't.
+  const needsAdult = lines.some((l) => l.ageRestricted !== false);
+  // Under 18 (soft-drinks mode): any alcohol in the bag comes out before checkout.
+  const [removedForAge, setRemovedForAge] = useState(0);
+  useEffect(() => {
+    if (readAge() !== "minor") return;
+    const alcohol = bag.get().filter((l) => l.ageRestricted !== false);
+    if (!alcohol.length) return;
+    alcohol.forEach((l) => setQty(l.handle, 0));
+    setRemovedForAge(alcohol.length);
+  }, []);
+
+  // Back from Paystack: finish the order the card just paid for.
+  useEffect(() => {
+    if (!new URLSearchParams(location.search).has("card")) return;
+    setBusy(true); setStatus("Confirming your card payment…");
+    finishCardPayment()
+      .then((order) => {
+        if (!order) return;
+        clearBag();
+        setDone({ kind: "order", ref: `#${order?.display_id ?? order?.id?.slice(-6)}` });
+      })
+      .catch((e) => setError(e?.message || "We couldn't confirm the card payment. If you were charged, call us."))
+      .finally(() => { setBusy(false); setStatus(""); history.replaceState(null, "", "/checkout"); });
+  }, []);
+
+  // A games code, filled in for the player who won one on this device.
+  const [code, setCode] = useState("");
+  useEffect(() => { const c = savedCode(); if (c) setCode(c); }, []);
+  const codeOk = code.trim().toUpperCase() === REWARD.code;
+  const discount = !medusaMode && codeOk ? Math.round((subtotal * REWARD.percent) / 100) : 0;
+
   const z = ZONE_BY_ID[zone];
   const sp = SPEEDS.find((s) => s.id === speed)!;
   const collecting = speed === "collect";
@@ -55,7 +92,7 @@ export default function Checkout({ live }: { live: boolean }) {
     phone: !validPhone(d.phone) ? "A Kenyan mobile number, like 0712 345 678." : "",
     zone: !medusaMode && !collecting && !zone ? "Pick your area so we can price the ride." : "",
     address: !collecting && d.address.trim().length < 4 ? "A street, building or landmark for the rider." : "",
-    adult: !adult ? "Please confirm you are 18 or over." : "",
+    adult: needsAdult && !adult ? "Please confirm you are 18 or over." : "",
   };
   const valid = Object.values(errors).every((e) => !e);
   const set = (k: keyof Details) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => setD({ ...d, [k]: e.target.value });
@@ -75,9 +112,9 @@ export default function Checkout({ live }: { live: boolean }) {
           {done.kind === "order" ? <>Cheers — <em>it's on its way.</em></> : <>Almost there — <em>hit send.</em></>}
         </h1>
         <p className="lede" style={{ margin: "0 auto" }}>
-          {done.kind === "order"
-            ? `We've got your order and a rider is being lined up. We'll call ${d.phone} if anything changes. ${legal.idLine}`
-            : `Your order is written out in WhatsApp. Send it, and we'll confirm the delivery time and how to pay. ${legal.idLine}`}
+          <WithTumaBoda text={done.kind === "order"
+            ? `We've got your order and a TumaBoda rider is being lined up. We'll call ${d.phone} if anything changes. ${legal.idLine}`
+            : `Your order is written out in WhatsApp. Send it, and we'll confirm the delivery time and how to pay. ${legal.idLine}`} />
         </p>
         <div className="row gap" style={{ justifyContent: "center", marginTop: "2rem", flexWrap: "wrap" }}>
           {done.kind === "whatsapp" && <a className="btn btn-amber" href={done.url} target="_blank" rel="noopener">Open WhatsApp again</a>}
@@ -104,7 +141,7 @@ export default function Checkout({ live }: { live: boolean }) {
     if (!valid) return;
     setBusy(true); setError(""); setStatus("Setting up your order…");
     try {
-      const cart = await createCart(lines, d);
+      const cart = await createCart(lines, d, codeOk ? REWARD.code : undefined);
       setCartId(cart.id);
       const opts = await shippingOptions(cart.id);
       setOptions(opts);
@@ -122,6 +159,7 @@ export default function Checkout({ live }: { live: boolean }) {
     setBusy(true); setError("");
     try {
       const order = await payAndPlace(cartId, optionId, pay, setStatus);
+      if (order?.redirected) return; // off to Paystack; the return trip finishes it
       clearBag();
       setDone({ kind: "order", ref: `#${order?.display_id ?? order?.id?.slice(-6)}` });
     } catch (e: any) {
@@ -135,14 +173,14 @@ export default function Checkout({ live }: { live: boolean }) {
     setTouched(true);
     if (!valid) return;
     const label = collecting ? "Collect from the shop" : `${z?.name ?? ""} · ${sp.name}`;
-    const url = whatsappUrl(whatsappMessage(lines, { ...d, area: collecting ? "Collecting" : areaName }, { label, fee }, pay));
+    const url = whatsappUrl(whatsappMessage(lines, { ...d, area: collecting ? "Collecting" : areaName }, { label, fee }, pay, discount ? { code: REWARD.code, amount: discount } : undefined, needsAdult));
     const w = window.open(url, "_blank", "noopener");
     if (!w) window.location.href = url;
     clearBag();
     setDone({ kind: "whatsapp", url });
   }
 
-  const total = subtotal + fee;
+  const total = subtotal + fee - discount;
 
   return (
     <div className="co">
@@ -152,7 +190,7 @@ export default function Checkout({ live }: { live: boolean }) {
           <div className="form-grid">
             <label className="lbl">Full name<input className="field" value={d.name} onChange={set("name")} autoComplete="name" disabled={!!cartId} />{err("name")}</label>
             <label className="lbl">M-Pesa / phone number<input className="field" value={d.phone} onChange={set("phone")} inputMode="tel" autoComplete="tel" placeholder="0712 345 678" disabled={!!cartId} />{err("phone")}</label>
-            <label className="lbl full">Email <span className="muted">(optional, for the receipt)</span><input className="field" type="email" value={d.email} onChange={set("email")} autoComplete="email" disabled={!!cartId} /></label>
+            <label className="lbl full"><span>Email <span className="muted">(optional, for the receipt)</span></span><input className="field" type="email" value={d.email} onChange={set("email")} autoComplete="email" disabled={!!cartId} /></label>
           </div>
         </section>
 
@@ -163,7 +201,7 @@ export default function Checkout({ live }: { live: boolean }) {
               {SPEEDS.map((s) => (
                 <label className="choice" key={s.id}>
                   <input type="radio" name="speed" checked={speed === s.id} onChange={() => setSpeed(s.id)} />
-                  <b>{s.name}</b><span>{s.line}</span>
+                  <b>{s.name}</b><span><WithTumaBoda text={s.line} /></span>
                   {s.surcharge > 0 && <span className="price">+{money(s.surcharge)}</span>}
                 </label>
               ))}
@@ -188,12 +226,12 @@ export default function Checkout({ live }: { live: boolean }) {
                 <input className="field" value={d.address} onChange={set("address")} autoComplete="street-address" placeholder="e.g. Riverside Drive, Riverside Square, 3rd floor" disabled={!!cartId} />
                 {err("address")}
               </label>
-              <label className="lbl full">Notes for the rider <span className="muted">(optional)</span>
+              <label className="lbl full"><span>Notes for the <TumaBoda /> rider <span className="muted">(optional)</span></span>
                 <textarea className="field" value={d.notes} onChange={set("notes")} placeholder="Gate code, call on arrival…" disabled={!!cartId} />
               </label>
             </div>
           )}
-          {collecting && <p className="notice">Collect from {site.address}. We'll message you when it's ready — usually 20 minutes. Bring ID.</p>}
+          {collecting && <p className="notice">Collect from {site.address}. We'll message you when it's ready — we're open 24 hours. Bring ID.</p>}
 
           {medusaMode && cartId && options.length > 0 && (
             <div className="choices mt">
@@ -211,24 +249,31 @@ export default function Checkout({ live }: { live: boolean }) {
         <section className="co-step">
           <h2><i>3</i> How you'll pay</h2>
           <div className="choices">
-            <label className="choice">
+            <label className="choice pay-choice pay-mpesa">
               <input type="radio" name="pay" checked={pay === "mpesa"} onChange={() => setPay("mpesa")} />
-              <b>M-Pesa</b><span>{medusaMode ? "A prompt arrives on your phone" : "We send the till number on WhatsApp"}</span>
+              <PayLogos only="mpesa" />
+              <b>M-Pesa</b><span>{medusaMode ? "A prompt arrives on your phone — enter your PIN" : "We send the till number on WhatsApp"}</span>
             </label>
-            <label className="choice">
-              <input type="radio" name="pay" checked={pay === "cod"} onChange={() => setPay("cod")} />
-              <b>Cash on delivery</b><span>Pay the rider at the door</span>
+            <label className="choice pay-choice pay-card">
+              <input type="radio" name="pay" checked={pay === "card"} onChange={() => setPay("card")} />
+              <PayLogos only="card" />
+              <b>Card</b><span>{medusaMode ? "Visa or Mastercard, on Paystack's secure page" : "We send a secure card-payment link on WhatsApp"}</span>
             </label>
           </div>
-          <label className="check mt">
-            <input type="checkbox" checked={adult} onChange={(e) => setAdult(e.target.checked)} />
-            <span>I confirm I am 18 or over, and I'll show ID when the rider arrives. {legal.healthLine}</span>
-          </label>
+          {needsAdult ? (
+            <label className="check mt">
+              <input type="checkbox" checked={adult} onChange={(e) => setAdult(e.target.checked)} />
+              <span>I confirm I am 18 or over, I'll show ID when the <TumaBoda /> rider arrives, and I accept the <a href="/terms" target="_blank" style={{ textDecoration: "underline" }}>Terms & Conditions</a>. {legal.healthLine}</span>
+            </label>
+          ) : (
+            <p className="muted mt" style={{ fontSize: ".82rem" }}>Soft drinks only — no age check needed. By ordering you accept the <a href="/terms" target="_blank" style={{ textDecoration: "underline" }}>Terms & Conditions</a>.</p>
+          )}
           {touched && errors.adult && <p className="err" style={{ color: "var(--ember)", fontSize: ".78rem" }}>{errors.adult}</p>}
         </section>
 
+        {removedForAge > 0 && <p className="notice" role="status">Under 18, so we took {removedForAge === 1 ? "an alcoholic drink" : `${removedForAge} alcoholic drinks`} out of your bag. Soft drinks, mixers and ice are all yours.</p>}
         {error && <p className="notice err" role="alert">{error}</p>}
-        {status && <p className="notice" role="status">{status}</p>}
+        {status && <p className="notice" role="status"><WithTumaBoda text={status} /></p>}
 
         <div className="mt">
           {!medusaMode ? (
@@ -240,7 +285,7 @@ export default function Checkout({ live }: { live: boolean }) {
               {busy ? "One moment…" : "Continue to delivery"}
             </button>
           ) : (
-            <button className="btn btn-amber btn-block" type="button" onClick={placeMedusa} disabled={busy || !optionId || !adult}>
+            <button className="btn btn-amber btn-block" type="button" onClick={placeMedusa} disabled={busy || !optionId || (needsAdult && !adult)}>
               {busy ? "Placing your order…" : `Place order · ${money(total)}`}
             </button>
           )}
@@ -258,7 +303,7 @@ export default function Checkout({ live }: { live: boolean }) {
           {lines.map((l) => (
             <div className="line" key={l.handle} style={{ gridTemplateColumns: "48px 1fr auto" }}>
               <div className="line-art" style={{ height: 60 }}>
-                <Bottle d={{ handle: l.handle, name: l.name, brand: l.brand, thumbnail: l.thumbnail }} height={50} salt="co" />
+                <Bottle d={{ handle: l.handle, name: l.name, brand: l.brand, volume: l.volume, colour: l.colour, shape: l.shape, thumbnail: l.thumbnail }} height={50} salt="co" />
               </div>
               <div><div className="line-name">{l.name}</div><div className="line-meta" style={{ margin: 0 }}>{l.qty} × {money(l.price)}</div></div>
               <span className="price">{money(l.price * l.qty)}</span>
@@ -270,6 +315,16 @@ export default function Checkout({ live }: { live: boolean }) {
           <span className="muted">Delivery</span>
           <span className="price">{medusaMode && !optionId ? "—" : collecting ? "Collect" : !medusaMode && !z ? "Pick an area" : fee ? money(fee) : "Free"}</span>
         </div>
+        <label className="lbl mt" style={{ marginBottom: 6 }}><span>Games code <span className="muted">(optional)</span></span>
+          <input className="field" value={code} onChange={(e) => setCode(e.target.value)} placeholder="e.g. from Games night" autoCapitalize="characters" spellCheck={false} />
+        </label>
+        {code.trim() && (
+          <p className="muted" style={{ fontSize: ".76rem", margin: "0 0 6px" }}>
+            {!codeOk ? "That code isn't recognised." : medusaMode ? `${REWARD.percent}% off the bottles, applied when you pay.` : `${REWARD.percent}% off the bottles.`}{" "}
+            <a href="/games" style={{ textDecoration: "underline" }}>Win one</a>
+          </p>
+        )}
+        {discount > 0 && <div className="sum-row"><span className="muted">Games code {REWARD.code}</span><span className="price">−{money(discount)}</span></div>}
         <div className="sum-row total"><span>Total</span><span className="price">{money(total)}</span></div>
         {!medusaMode && z && FREE_ZONES.has(z.id) && subtotal < site.freeDeliveryOver && (
           <p className="muted" style={{ fontSize: ".78rem", margin: 0 }}>Add {money(site.freeDeliveryOver - subtotal)} more for free delivery to {z.name}.</p>

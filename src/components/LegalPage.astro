@@ -1,0 +1,41 @@
+---
+/**
+ * The frame the three policy pages share: a plain heading, the date they last changed, the
+ * text set for reading rather than scanning, and a way across to the other two.
+ */
+import Base from "../layouts/Base.astro";
+import { site, legal } from "../config/site";
+
+interface Props { title: string; heading: string; lede: string; path: "/terms" | "/privacy" | "/cookies" }
+const { title, heading, lede, path } = Astro.props;
+const pages = [
+  { href: "/terms", name: "Terms & Conditions" },
+  { href: "/privacy", name: "Privacy Policy" },
+  { href: "/cookies", name: "Cookies" },
+];
+---
+<Base title={title} minorOk description={`${title} — ${site.name}, ${site.street}, Nairobi.`} crumbs={[{ name: title, path: Astro.url.pathname }]}>
+  <section class="page-hero" style="padding-bottom:20px">
+    <div class="wrap">
+      <span class="kicker">{site.name}</span>
+      <h1 class="display h2" style="margin:1rem 0">{heading}</h1>
+      <p class="lede">{lede}</p>
+      <p class="mono muted" style="font-size:.78rem;margin-top:1rem">Last updated {legal.updated}</p>
+    </div>
+  </section>
+  <section class="wrap" style="padding:10px var(--gut) 120px">
+    <div class="legal">
+      <nav class="legal-nav" aria-label="Policies">
+        {pages.map((p) => <a href={p.href} aria-current={p.href === path ? "page" : undefined}>{p.name}</a>)}
+      </nav>
+      <article class="prose">
+        <slot />
+        <h2>Contact us</h2>
+        <p>
+          {site.name}, {site.address}.<br />
+          Call or WhatsApp <a href={`tel:${site.phone.replace(/\s/g, "")}`}>{site.phone}</a>{site.email && <> · <a href={`mailto:${site.email}`}>{site.email}</a></>}. We're open 24 hours.
+        </p>
+      </article>
+    </div>
+  </section>
+</Base>

@@ -1,0 +1,50 @@
+---
+import { WithTumaBoda } from "./TumaBoda";
+import Plaque from "./Plaque";
+import { legal, site } from "../config/site";
+import { AGE_KEY, MINOR_HOME } from "../lib/age";
+
+/**
+ * The door. Kenyan law prohibits selling alcohol to anyone under 18, so the site asks before
+ * it shows a single bottle — but an under-18 isn't turned away: they can shop the soft-drinks
+ * shelf (soft drinks, mixers, ice). It is a self-declared, per-device answer — what every
+ * licensed liquor site does — and the TumaBoda rider still checks ID at the door.
+ *
+ * Rendered on the server and answered by a few lines of inline script, so it paints with the
+ * first byte of HTML instead of waiting for React (it is the first thing a new visitor — and
+ * PageSpeed — sees). The layout's <head> script stamps data-age on <html> for anyone who has
+ * already answered, and CSS hides the gate for them before first paint.
+ */
+const ageKey = AGE_KEY;
+const minorHome = MINOR_HOME;
+---
+<div class="gate" id="gate" role="dialog" aria-modal="true" aria-labelledby="gate-title">
+  <div class="gate-card">
+    <Plaque id="lh-gate" className="logo-plaque gate-plaque" title={site.name} />
+    <span class="kicker">{site.name}</span>
+    <h2 id="gate-title" class="display">Are you <em>18 or over?</em></h2>
+    <p class="lede">Kenyan law prohibits the sale of alcohol to anyone under {legal.minimumAge}. Under 18? You can still shop our soft drinks.</p>
+    <div class="gate-actions">
+      <button class="btn btn-amber" type="button" data-gate="adult">Yes, I'm 18 or over — enter</button>
+      <button class="btn btn-ghost" type="button" data-gate="minor">I'm under 18 — soft drinks</button>
+    </div>
+    <small>{legal.healthLine} <WithTumaBoda text={legal.idLine} /></small>
+  </div>
+</div>
+<script is:inline define:vars={{ ageKey, minorHome }}>
+  (function () {
+    var gate = document.getElementById("gate");
+    if (!gate) return;
+    var root = document.documentElement;
+    if (!root.dataset.age) { var b = gate.querySelector("[data-gate=adult]"); if (b) b.focus({ preventScroll: true }); }
+    gate.addEventListener("click", function (e) {
+      var t = e.target.closest && e.target.closest("[data-gate]");
+      if (!t) return;
+      var adult = t.getAttribute("data-gate") === "adult";
+      try { localStorage.setItem(ageKey, adult ? "1" : "minor"); } catch (x) {}
+      if (!adult) { location.href = minorHome; return; }
+      gate.classList.add("leaving");
+      setTimeout(function () { root.dataset.age = "ok"; gate.classList.remove("leaving"); }, 1100);
+    });
+  })();
+</script>

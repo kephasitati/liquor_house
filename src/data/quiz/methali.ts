@@ -1,0 +1,103 @@
+import type { Question } from "./types";
+
+/**
+ * Methali — finish the Swahili proverb. The ones every Kenyan met in Kiswahili class, from
+ * Standard Four to KCSE insha, grouped by what they teach. The fact is what it means.
+ */
+const m = (topic: string, q: string, options: string[], answer: number, fact: string): Question => ({ topic, q, options, answer, fact });
+
+export const METHALI: Question[] = [
+  /* -------------------------------------------------- subira & bidii */
+  m("Subira", "Haraka haraka…", ["haina baraka", "ndio mwendo", "hujaza kibaba", "huisha gogo"], 0, "Hurry hurry has no blessing — rushing spoils things."),
+  m("Subira", "Pole pole…", ["huvunjika guu", "ndio mwendo", "haina baraka", "hula mbivu"], 1, "Slowly, slowly is the way to go — steady wins."),
+  m("Subira", "Mvumilivu…", ["hula mbivu", "huvunjika guu", "pana njia", "hulia yeye"], 0, "The patient one eats the ripe fruit."),
+  m("Subira", "Subira…", ["huvuta heri", "haina baraka", "ni deni", "huisha gogo"], 0, "Patience draws blessings."),
+  m("Subira", "Baada ya dhiki…", ["faraja", "mauti", "hasara", "deni"], 0, "After hardship comes relief."),
+  m("Subira", "Kawia…", ["ufike", "upotee", "ulie", "ushinde"], 0, "Be late, but arrive — better late than never."),
+  m("Subira", "Mwenda pole…", ["hajikwai", "hula mbivu", "hujaza kibaba", "hulia yeye"], 0, "Whoever walks slowly doesn't stumble."),
+  m("Subira", "Ngoja ngoja…", ["huumiza matumbo", "ndio mwendo", "huvuta heri", "haina baraka"], 0, "Wait, wait hurts the stomach — too much waiting has its own cost."),
+  m("Subira", "Taratibu…", ["ndio mwendo", "haina baraka", "huvunjika guu", "hujaza kibaba"], 0, "Carefully is the way to go."),
+  m("Bidii", "Haba na haba…", ["huisha gogo", "hujaza kibaba", "pana njia", "hayazoleki"], 1, "Little by little fills the measure — small savings add up."),
+  m("Bidii", "Bandu bandu…", ["huisha gogo", "hujaza kibaba", "haiui nyoka", "ndio mwendo"], 0, "Chip by chip finishes the log — keep at it and the job gets done."),
+  m("Bidii", "Penye nia…", ["pana njia", "ndio mwendo", "haina baraka", "hula mbivu"], 0, "Where there's a will, there's a way."),
+  m("Bidii", "Mtaka cha mvunguni…", ["sharti ainame", "hulia yeye", "hayazoleki", "huvunjika guu"], 0, "Whoever wants what's under the bed must bend down — no effort, no reward."),
+  m("Bidii", "Ukiona vyaelea…", ["vimeundwa", "vimezama", "vimeuzwa", "vimepotea"], 0, "If you see things floating, someone built them — nothing comes without work."),
+  m("Bidii", "Mchumia juani…", ["hulia kivulini", "hula mbivu", "huvunjika guu", "hujikwaa"], 0, "Whoever earns in the sun eats in the shade — hard work pays later."),
+  m("Bidii", "Mchagua jembe…", ["si mkulima", "hula mbivu", "hukosa yote", "hulia yeye"], 0, "Whoever is choosy about the hoe is no farmer — a worker doesn't make excuses."),
+  m("Bidii", "Asiyekubali kushindwa…", ["si mshindani", "hulia yeye", "hukosa yote", "huvunjika guu"], 0, "Whoever won't accept defeat is no competitor — be a good loser."),
+  m("Bidii", "Kupotea njia…", ["ndiko kujua njia", "ni kufa", "haina baraka", "hujaza kibaba"], 0, "Getting lost is how you learn the way — mistakes teach."),
+
+  /* ---------------------------------------------------- busara & ushauri */
+  m("Busara", "Asiyesikia la mkuu…", ["hula mbivu", "huvunjika guu", "hulia yeye", "hayazoleki"], 1, "Whoever won't listen to elders breaks a leg — ignore advice at your own risk."),
+  m("Busara", "Usipoziba ufa…", ["utajenga ukuta", "hayazoleki", "huvunjika guu", "hujaza kibaba"], 0, "If you don't fill a crack, you'll build a wall — fix small problems early."),
+  m("Busara", "Maji yakimwagika…", ["hayazoleki", "huisha gogo", "ndio mwendo", "hujaza kibaba"], 0, "Spilt water can't be gathered back — think before you act."),
+  m("Busara", "Fimbo ya mbali…", ["haiui nyoka", "hula mbivu", "pana njia", "haina baraka"], 0, "A stick far away won't kill the snake — help you can't reach is no help."),
+  m("Busara", "Samaki mkunje…", ["angali mbichi", "akiwa mkavu", "kesho", "majini"], 0, "Bend the fish while it's fresh — teach children while they're young."),
+  m("Busara", "Asiyefunzwa na mamaye…", ["hufunzwa na ulimwengu", "hula mbivu", "hulia yeye", "hukosa yote"], 0, "Whoever isn't taught by their mother will be taught by the world."),
+  m("Busara", "Mchelea mwana kulia…", ["hulia yeye", "sharti ainame", "pana njia", "hula mbivu"], 0, "Whoever won't let the child cry ends up crying — discipline now saves tears later."),
+  m("Busara", "Heri kujikwaa kidole…", ["kuliko kujikwaa ulimi", "kuliko kuanguka", "kuliko kukosa", "kuliko kulia"], 0, "Better to stub your toe than your tongue — careless words hurt more."),
+  m("Busara", "Akili ni nywele…", ["kila mtu ana zake", "hazioti", "ni ndefu", "hukatwa"], 0, "Wisdom is like hair — everyone has their own."),
+  m("Busara", "Mwenye macho…", ["haambiwi tazama", "hula mbivu", "hajikwai", "huona mbali"], 0, "Someone with eyes doesn't need to be told to look."),
+  m("Busara", "Usiache mbachao…", ["kwa msala upitao", "kwa jembe jipya", "nyumbani", "mtoni"], 0, "Don't leave your old mat for a passing prayer mat — don't drop the sure thing for a fling."),
+  m("Busara", "Dalili ya mvua…", ["ni mawingu", "ni upepo", "ni radi", "ni jua"], 0, "The sign of rain is clouds — trouble shows itself before it comes."),
+  m("Busara", "Kila chombo…", ["kwa wimbile", "kina nahodha", "huzama", "huelea"], 0, "Every vessel rides its own wave — everyone faces their own challenges."),
+  m("Busara", "Kitanda usichokilalia…", ["hujui kunguni wake", "ni kizuri", "hakina mwenyewe", "ni chako"], 0, "You don't know the bedbugs of a bed you haven't slept in — don't judge from outside."),
+  m("Busara", "Ukiona mwenzako ananyolewa…", ["chako tia maji", "cheka", "kimbia", "msaidie"], 0, "If you see your neighbour being shaved, wet your own head — learn from what happens to others."),
+  m("Busara", "Mpanda farasi wawili…", ["hupasuka msamba", "hufika mapema", "hushinda", "hula mbivu"], 0, "Whoever rides two horses splits — you can't do two things at once."),
+  m("Busara", "Mtaka yote…", ["hukosa yote", "hupata yote", "hula mbivu", "hulia yeye"], 0, "Whoever wants everything loses everything."),
+  m("Busara", "Kuishi kwingi…", ["ni kuona mengi", "ni kuchoka", "ni baraka", "ni deni"], 0, "To live long is to see much."),
+  m("Busara", "Elimu…", ["ni bahari", "ni mali", "ni dawa", "ni nguvu"], 0, "Knowledge is an ocean — you never finish learning."),
+  m("Busara", "Majuto…", ["ni mjukuu", "ni deni", "ni mwalimu", "ni dawa"], 0, "Regret is a grandchild — it always comes last."),
+  m("Busara", "Mali bila daftari…", ["hupotea bila habari", "ni hasara", "haina baraka", "huisha gogo"], 0, "Wealth without records vanishes without trace — keep your books."),
+  m("Busara", "Sikio…", ["halipiti kichwa", "halina pazia", "husikia mbali", "ni mwalimu"], 0, "The ear doesn't grow above the head — respect your elders."),
+
+  /* ------------------------------------------------- umoja & ushirikiano */
+  m("Umoja", "Kidole kimoja…", ["hakivunji chawa", "haiui nyoka", "huisha gogo", "hujaza kibaba"], 0, "One finger can't crush a louse — we need each other."),
+  m("Umoja", "Umoja ni nguvu…", ["utengano ni udhaifu", "na amani", "kwa wote", "pole pole"], 0, "Unity is strength, division is weakness."),
+  m("Umoja", "Mkono mmoja…", ["haulei mwana", "hauna nguvu", "hula peke yake", "haupigi makofi"], 0, "One hand can't raise a child — it takes a village."),
+  m("Umoja", "Penye wengi…", ["pana Mungu", "pana fujo", "hakuna siri", "pana njia"], 0, "Where many gather, God is there."),
+  m("Umoja", "Kinga na kinga…", ["ndipo moto uwakapo", "huisha gogo", "hujaza kibaba", "haiui nyoka"], 0, "Log against log is how the fire burns — togetherness keeps things alive."),
+  m("Umoja", "Damu nzito kuliko…", ["maji", "asali", "maziwa", "mafuta"], 0, "Blood is thicker than water — family first."),
+  m("Umoja", "Akufaaye kwa dhiki…", ["ndiye rafiki", "ni ndugu", "hula nawe", "ni adui"], 0, "A friend in need is a friend indeed."),
+  m("Umoja", "Mzigo wa mwenzio…", ["ni kanda la usufi", "ni mzito", "ubebe", "huisha gogo"], 0, "Someone else's load feels as light as a bag of kapok — until you carry it."),
+  m("Umoja", "Mgeni njoo…", ["mwenyeji apone", "pana njia", "ndio mwendo", "hula mbivu"], 0, "Come, guest, so the host may prosper — visitors bring blessings."),
+  m("Umoja", "Wapiganapo tembo…", ["nyasi huumia", "simba hukimbia", "hakuna mshindi", "mti huanguka"], 0, "When elephants fight, the grass suffers — the small people pay for the quarrels of the big."),
+  m("Umoja", "Mafahali wawili…", ["hawakai zizi moja", "hula pamoja", "hupigana mtoni", "ni ndugu"], 0, "Two bulls can't share one pen — two strong leaders clash."),
+
+  /* ----------------------------------------------------- tabia & maadili */
+  m("Tabia", "Siku za mwizi ni…", ["arobaini", "kumi", "saba", "mia"], 0, "A thief's days are forty — sooner or later, they're caught."),
+  m("Tabia", "Njia ya mwongo…", ["ni fupi", "ni ndefu", "ina miiba", "haina mwisho"], 0, "A liar's road is short — lies get found out."),
+  m("Tabia", "Ahadi…", ["ni deni", "ni dawa", "ni mali", "ni bahari"], 0, "A promise is a debt — keep your word."),
+  m("Tabia", "Hasira…", ["hasara", "ni dawa", "ni deni", "haina baraka"], 0, "Anger is loss — losing your temper costs you."),
+  m("Tabia", "Tamaa mbele…", ["mauti nyuma", "faraja nyuma", "mali nyuma", "baraka nyuma"], 0, "Greed in front, death behind — greed leads to ruin."),
+  m("Tabia", "Chovya chovya…", ["humaliza buyu la asali", "hujaza kibaba", "haiui nyoka", "ndio mwendo"], 0, "Dip by dip finishes the gourd of honey — small takings empty the store."),
+  m("Tabia", "Fadhila ya punda…", ["ni mateke", "ni nyasi", "ni mzigo", "ni maji"], 0, "A donkey's thanks is a kick — some repay kindness with harm."),
+  m("Tabia", "Chema chajiuza…", ["kibaya chajitembeza", "kibaya hakiuzwi", "na kibaya pia", "kwa bei ghali"], 0, "A good thing sells itself, a bad one has to be hawked."),
+  m("Tabia", "Jina jema…", ["hung'aa gizani", "ni mali", "halioti", "ni deni"], 0, "A good name shines in the dark."),
+  m("Tabia", "Wema…", ["hauozi", "ni deni", "hauna mwisho", "ni udhaifu"], 0, "Kindness never rots — good deeds are remembered."),
+  m("Tabia", "Maneno matamu…", ["humtoa nyoka pangoni", "hayaishi", "ni uongo", "hayajazi tumbo"], 0, "Sweet words draw the snake out of its hole — kindness persuades."),
+  m("Tabia", "Mchimba kisima…", ["huingia mwenyewe", "hupata maji", "hula mbivu", "hachoki"], 0, "Whoever digs a well falls in it — plot harm and it lands on you."),
+  m("Tabia", "Mpanda ngazi…", ["hushuka", "hufika juu", "huanguka", "hajikwai"], 0, "Whoever climbs a ladder comes down — stay humble on the way up."),
+  m("Tabia", "Ulimi…", ["unauma kuliko meno", "hauna mfupa", "ni mtamu", "ni mwalimu"], 0, "The tongue bites harder than teeth — words wound."),
+  m("Tabia", "Hakuna siri…", ["ya watu wawili", "duniani", "mjini", "ya mwenyewe"], 0, "There's no secret between two people."),
+  m("Tabia", "Ivumayo…", ["haidumu", "huvunja", "ni nzuri", "hulia"], 0, "What roars loudest doesn't last — hype fades."),
+  m("Tabia", "Simba mwenda kimya…", ["ndiye mla nyama", "hulala njaa", "hufa mapema", "ni mzee"], 0, "The lion that moves quietly is the one that eats — doers don't boast."),
+  m("Tabia", "Mtoto wa nyoka…", ["ni nyoka", "ni mdogo", "hana sumu", "hufa"], 0, "A snake's child is a snake — like parent, like child."),
+  m("Tabia", "Jogoo la shamba…", ["haliwiki mjini", "huamka mapema", "hulia asubuhi", "ni mnene"], 0, "The village rooster doesn't crow in town — you're a big shot only at home."),
+
+  /* ------------------------------------------------------ maisha */
+  m("Maisha", "Kila chenye mwanzo…", ["kina mwisho", "ni kizuri", "kina baraka", "huanza tena"], 0, "Everything that has a beginning has an end."),
+  m("Maisha", "Paka akiondoka…", ["panya hutawala", "mbwa hulala", "kuku hulia", "nyumba hulia"], 0, "When the cat's away, the mice rule."),
+  m("Maisha", "Kikulacho…", ["ki nguoni mwako", "ki mbali", "ni njaa", "ni adui"], 0, "What eats you is in your own clothes — trouble often comes from those close to you."),
+  m("Maisha", "Kamba hukatikia…", ["pabovu", "pazuri", "katikati", "mwisho"], 0, "A rope breaks at its weakest point."),
+  m("Maisha", "Kipya kinyemi…", ["ingawa kidonda", "kila siku", "na kizuri", "hakidumu"], 0, "The new delights, even if it's a wound — novelty excites."),
+  m("Maisha", "Kila ndege…", ["huruka na mbawa zake", "hulia peke yake", "ana kiota", "hula mbegu"], 0, "Every bird flies with its own wings — use your own strengths."),
+  m("Maisha", "Nyumba njema…", ["si mlango", "ni ya mawe", "haina siri", "ina wageni"], 0, "A good house isn't judged by its door — don't judge by appearances."),
+  m("Maisha", "Dawa ya moto…", ["ni moto", "ni maji", "ni mchanga", "ni upepo"], 0, "The cure for fire is fire — fight force with force."),
+  m("Maisha", "Heri nusu shari…", ["kuliko shari kamili", "kuliko kukosa", "kuliko faraja", "kuliko deni"], 0, "Better half a misfortune than a whole one — accept the lesser evil."),
+  m("Maisha", "Riziki kama ajali…", ["huitambui ijapo", "huja asubuhi", "haina mwenyewe", "hupita"], 0, "Fortune, like an accident, comes unannounced."),
+  m("Maisha", "Mwenye kovu…", ["usidhani amepoa", "hasahau", "ni shujaa", "hulia"], 0, "Don't assume someone with a scar has healed — old hurts linger."),
+  m("Maisha", "Kuku mgeni…", ["hakosi kamba mguuni", "hutaga mayai", "hulia usiku", "hula mtama"], 0, "A new chicken always has a string on its leg — newcomers are watched."),
+  m("Maisha", "Nazi mbovu…", ["harabu ya nzima", "haina maji", "huanguka", "ni nzito"], 0, "One rotten coconut spoils the good ones — bad company corrupts."),
+  m("Maisha", "Bahati ya mwenzio…", ["usiilalie mlango wazi", "ni yako", "haidumu", "ni deni"], 0, "Don't sleep with your door open counting on your friend's luck — make your own."),
+];

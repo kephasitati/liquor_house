@@ -1,0 +1,61 @@
+---
+import LegalPage from "../components/LegalPage.astro";
+import { site, legal } from "../config/site";
+import { money } from "../lib/format";
+import { TumaBoda } from "../components/TumaBoda";
+import { GAMES, REWARD } from "../data/games";
+---
+<LegalPage title="Terms & Conditions" heading="Terms & Conditions" path="/terms"
+  lede={`The rules for buying from ${site.name}, in store, for collection or for delivery. By placing an order you agree to them.`}>
+  <h2>1. Who we are</h2>
+  <p>{site.name} is a licensed liquor supermarket at {site.address}. In these terms "we", "us" and "our" mean {site.name}; "you" means the person placing the order.</p>
+
+  <h2>2. You must be 18 or over</h2>
+  <p>Kenyan law, including the Alcoholic Drinks Control Act, 2010, prohibits selling alcohol to anyone under {legal.minimumAge}. By ordering you confirm that you are {legal.minimumAge} or over.</p>
+  <ul>
+    <li><TumaBoda /> riders and our till staff ask for ID on every order that includes alcohol: a national ID, passport, driving licence or other government photo ID.</li>
+    <li>We will not hand alcohol to anyone who is under {legal.minimumAge}, who cannot show ID, or who appears intoxicated. The person who receives the order must also be {legal.minimumAge} or over.</li>
+    <li>If you are under {legal.minimumAge} you can still shop with us: soft drinks, mixers and ice only. The site shows you just that shelf, and any alcohol in your bag is taken out at checkout.</li>
+    <li>If we cannot hand an order over for any of these reasons, we take it back and you are not charged for it. Anything you have already paid is refunded.</li>
+  </ul>
+
+  <h2>3. Orders</h2>
+  <p>You can order on this website, by WhatsApp or by phone. An order placed here is an offer to buy: the contract is made when we confirm it, by message or call. We may decline or cancel an order, and refund anything paid, if an item is out of stock, if a price was shown in error, or if we have reason to believe the order breaks these terms.</p>
+
+  <h2>4. Prices</h2>
+  <p>Prices are in Kenya shillings and include VAT and excise duty. They can change without notice, but the price you pay is the one we confirm with your order. Delivery is charged separately and shown before you order.</p>
+
+  <h2>5. Payment</h2>
+  <p>You can pay by M-Pesa or by card (Visa or Mastercard). We don't take cash on delivery. M-Pesa payments are handled by Safaricom and card payments by Paystack on its secure, 3-D Secure page; we never see your M-Pesa PIN or your card number.</p>
+
+  <h2>6. Delivery and collection</h2>
+  <ul>
+    <li>Every delivery in Nairobi is ridden by our delivery partner, <TumaBoda link />. Zones, fees and times are on the <a href="/delivery">delivery page</a>; times are our best estimate, not a guarantee.</li>
+    <li>Delivery is free in the nearer zones on orders over {money(site.freeDeliveryOver)}.</li>
+    <li>Please give an address and phone number where an adult can receive the order. If nobody is available, the <TumaBoda /> rider will call; if we cannot reach you, the order returns to the shop.</li>
+    <li>You can collect from the supermarket on {site.street} at any hour. Bring ID.</li>
+  </ul>
+
+  <h2>7. Returns and refunds</h2>
+  <p>Check your order when it arrives. If anything is missing, damaged, faulty or not what you ordered, tell us within 24 hours and we will replace or refund it. For health and safety reasons we cannot take back opened bottles, or sealed ones you have simply changed your mind about, unless the product is faulty. Refunds go back the way you paid — to your M-Pesa or your card. None of this affects your rights under the Consumer Protection Act, 2012.</p>
+
+  <h2>8. Drink responsibly</h2>
+  <p>{legal.healthLine} Never drink and drive. We may limit quantities, and we will refuse a sale where we believe it would be irresponsible.</p>
+
+  <h2>9. Our liability</h2>
+  <p>We are responsible for supplying what you ordered with reasonable care and skill. We are not liable for losses we could not reasonably foresee, or for delays caused by events outside our control. Nothing in these terms limits liability that the law does not allow us to limit.</p>
+
+  <h2 id="games">10. Games night and game codes</h2>
+  <ul>
+    <li>The games on this site are free to play and open to adults only. You don't need to buy anything to play.</li>
+    <li>{GAMES.filter((g) => g.rewarded).map((g) => g.name).join(", ")} are games of skill and knowledge. A high score shows a code, {REWARD.code}, worth {REWARD.percent}% off the bottles in one order. {GAMES.filter((g) => !g.rewarded).map((g) => g.name).join(", ")} are party games and carry no prize.</li>
+    <li>One code per order. It can't be exchanged for cash, combined with another offer, or used on delivery fees. We may limit how often it is used, change it or end it at any time; any order already confirmed with it keeps the discount.</li>
+    <li>Nothing in the games asks anyone to drink, and nobody has to drink to play.</li>
+  </ul>
+
+  <h2>11. Your information</h2>
+  <p>How we use the details you give us is set out in our <a href="/privacy">Privacy Policy</a>; what this website stores on your device is in <a href="/cookies">Cookies</a>.</p>
+
+  <h2>12. Changes and governing law</h2>
+  <p>We may update these terms; the version on this page when you order is the one that applies. These terms are governed by the laws of Kenya, and disputes will be heard by the courts of Kenya.</p>
+</LegalPage>

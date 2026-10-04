@@ -1,4 +1,5 @@
 import { addToBag } from "../stores/bag";
+import { resetAge } from "../lib/age";
 import type { BagLine } from "../lib/types";
 
 /**
@@ -23,19 +24,8 @@ function onScrollHeader() {
   lastY = y;
 }
 
-/* ------------------------------------------------------------- reveal on scroll */
-const io = new IntersectionObserver(
-  (entries) => {
-    for (const e of entries) {
-      if (e.isIntersecting) {
-        e.target.classList.add("in");
-        io.unobserve(e.target);
-      }
-    }
-  },
-  { rootMargin: "0px 0px -8% 0px", threshold: 0.08 },
-);
-document.querySelectorAll("[data-reveal], .profile").forEach((el) => io.observe(el));
+/* Reveal on scroll lives inline at the end of Base.astro: it has to run before this module
+   arrives, or everything above the fold waits for it (PageSpeed counts that wait). */
 
 /* ------------------------------------------------------------------- the pour */
 /**
@@ -46,6 +36,10 @@ document.querySelectorAll("[data-reveal], .profile").forEach((el) => io.observe(
 const pour = document.querySelector<HTMLElement>(".pour");
 const beats = pour ? [...pour.querySelectorAll<HTMLElement>(".beat")] : [];
 const fill = pour?.querySelector<SVGRectElement>("[data-fill]");
+const cap = pour?.querySelector<SVGGElement>("[data-cap]");
+/** Where the cap ends up: lying on its side on the bar, left of the glass (scene units,
+ *  relative to where it sits on the neck, whose centre is (0.4, −203)). */
+const CAP_REST = { x: 100, y: 493, turn: 90 };
 const FILL_TOP = 470; // glass rim, in the scene's viewBox units
 const FILL_BOTTOM = 640; // glass base
 function onScrollPour() {
@@ -53,15 +47,29 @@ function onScrollPour() {
   const r = pour.getBoundingClientRect();
   const total = r.height - innerHeight;
   const p = Math.min(1, Math.max(0, -r.top / total));
-  const tip = Math.min(1, p / 0.28); // bottle tips over the first 28%
-  const stream = p > 0.28 && p < 0.86 ? 1 : 0;
-  const level = Math.min(1, Math.max(0, (p - 0.3) / 0.54));
+  // The cap comes off over the first 10%, the bottle tips over the next 20%, then it pours.
+  const off = Math.min(1, p / 0.1);
+  const tip = Math.min(1, Math.max(0, (p - 0.1) / 0.2));
+  const stream = p > 0.3 && p < 0.86 ? 1 : 0;
+  const level = Math.min(1, Math.max(0, (p - 0.32) / 0.52));
+  if (cap) {
+    // Unscrew (a short twisting rise), then an arc over to the bar, landing on its side.
+    let x = 0, y = 0, r = 0;
+    if (off < 0.4) {
+      const u = off / 0.4;
+      y = -16 * u;
+      r = Math.sin(u * Math.PI * 3) * 9;
+    } else {
+      const u = (off - 0.4) / 0.6;
+      const e = 1 - (1 - u) ** 3;
+      x = CAP_REST.x * e;
+      y = -16 + (CAP_REST.y + 16) * u * u - 70 * Math.sin(Math.PI * u);
+      r = CAP_REST.turn * e;
+    }
+    cap.setAttribute("transform", `translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(${r.toFixed(1)} 0.4 -203)`);
+  }
   pour.style.setProperty("--p", p.toFixed(4));
-  const pt = p > 0.86 ? Math.max(0, 1 - (p - 0.86) / 0.12) : tip;
-  pour.style.setProperty("--pt", pt.toFixed(4));
-  // The cork pops as the bottle starts to tip (well before the stream) and is back on by the
-  // time it stands up again.
-  pour.style.setProperty("--cork", Math.min(1, Math.max(0, (pt - 0.08) / 0.42)).toFixed(4));
+  pour.style.setProperty("--pt", (p > 0.86 ? Math.max(0, 1 - (p - 0.86) / 0.12) : tip).toFixed(4));
   pour.style.setProperty("--stream", String(stream));
   if (fill) {
     const h = (FILL_BOTTOM - FILL_TOP) * 0.86 * level;
@@ -70,6 +78,17 @@ function onScrollPour() {
   }
   const idx = p < 0.33 ? 0 : p < 0.66 ? 1 : 2;
   beats.forEach((b, i) => b.classList.toggle("on", i === idx));
+}
+
+/* ---------------------------------------------------------------- the parade */
+/** Rows of bottles slide past each other: --q runs 0 → 1 while the section is pinned. */
+const parade = document.querySelector<HTMLElement>(".parade");
+function onScrollParade() {
+  if (!parade || reduced) return;
+  const r = parade.getBoundingClientRect();
+  const total = r.height - innerHeight;
+  const q = Math.min(1, Math.max(0, -r.top / total));
+  parade.style.setProperty("--q", q.toFixed(4));
 }
 
 /* ------------------------------------------------------------ hero light + parallax */
@@ -165,6 +184,12 @@ document.querySelectorAll<HTMLElement>("[data-rail]").forEach((rail) => {
   });
 });
 
+/* ------------------------------------------- soft-drinks mode: "I'm 18 or over" */
+document.querySelector("[data-age-reset]")?.addEventListener("click", () => {
+  resetAge();
+  location.href = "/";
+});
+
 /* ---------------------------------------------------------- search + mobile menu */
 const pop = document.querySelector<HTMLElement>(".search-pop");
 document.querySelector("[data-search-toggle]")?.addEventListener("click", () => {
@@ -188,6 +213,7 @@ function onScroll() {
   requestAnimationFrame(() => {
     onScrollHeader();
     onScrollPour();
+    onScrollParade();
     ticking = false;
   });
 }

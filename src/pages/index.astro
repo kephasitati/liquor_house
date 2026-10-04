@@ -1,16 +1,21 @@
 ---
 import Base from "../layouts/Base.astro";
-import Skyline from "../components/Skyline.astro";
 import PourScene from "../components/PourScene.astro";
 import ProductCard from "../components/ProductCard.astro";
 import Bottle from "../components/Bottle";
 import Icon from "../components/Icon.astro";
-import GlassArt from "../components/GlassArt.astro";
+import { TumaBoda } from "../components/TumaBoda";
+import CocktailPhoto from "../components/CocktailPhoto.astro";
 import OccasionPicker from "../components/react/OccasionPicker";
 import { listAll, forOccasion, rank, shelfCounts, isBestseller } from "../lib/catalog";
 import { SHELVES, OCCASIONS, ZONES, site } from "../config/site";
 import { COCKTAILS } from "../data/cocktails";
+import { GAMES, REWARD } from "../data/games";
 import { money } from "../lib/format";
+import { img } from "../lib/img";
+import Faq from "../components/Faq.astro";
+import { FAQ } from "../data/faq";
+import { faqLd } from "../lib/seo";
 
 const all = await listAll();
 const counts = shelfCounts(all);
@@ -22,29 +27,43 @@ const shelves = SHELVES.filter((s) => counts[s.id]);
 const shelfBottles = (id: string) => all.filter((d) => d.category === id).sort(rank).slice(0, 3);
 const from = (id: string) => Math.min(...all.filter((d) => d.category === id && d.price != null).map((d) => d.price!));
 const cheapestZone = Math.min(...ZONES.map((z) => z.fee));
+// The hero's bottle is Johnnie Walker Blue Label; it links to its page when the shelf has it.
+const heroDrink = all.find((d) => d.handle.startsWith("johnnie-walker-blue-label"));
 
-/* The hero's three bottles: real photographs cut out of their white ground for the dark stage
- * (scripts/bottle-photos.sh). Each links to its product when the shelf carries it. */
-const heroBottles = [
-  { cls: "hb-l", src: "/hero/moet.webp", w: 178, h: 598, alt: "Moët & Chandon Brut Impérial", brand: "moët" },
-  { cls: "hb-c", src: "/hero/hennessy-vsop.webp", w: 215, h: 570, alt: "Hennessy V.S.O.P", brand: "hennessy v.s.o.p" },
-  { cls: "hb-r", src: "/hero/jameson.webp", w: 148, h: 585, alt: "Jameson Irish Whiskey", brand: "jameson irish" },
-].map((b) => ({ ...b, href: all.find((d) => d.name.toLowerCase().startsWith(b.brand))?.handle ?? null }));
+// Dust in the hero's sunlight. Seeded, so the server and every visit draw the same motes.
+let seed = 11;
+const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
+const motes = Array.from({ length: 34 }, () => ({
+  x: `${(rnd() * 100).toFixed(1)}%`,
+  y: `${(30 + rnd() * 70).toFixed(1)}%`,
+  s: `${(2 + rnd() * 5).toFixed(1)}px`,
+  t: `${(9 + rnd() * 12).toFixed(1)}s`,
+  dl: `-${(rnd() * 20).toFixed(1)}s`,
+  dx: `${Math.round(rnd() * 90 - 45)}px`,
+}));
+
+// The parade: every photographed bottle, dealt into three rows that slide past each other.
+const photographed = all.filter((d) => d.thumbnail).sort(rank);
+const paradeRows = [0, 1, 2].map((r) => photographed.filter((_, i) => i % 3 === r));
 ---
-<Base heroDark>
+<Base jsonLd={faqLd(FAQ)}>
   <!-- ============================================================ HERO -->
-  <section class="hero dark">
+  <section class="hero">
     <div class="hero-light"></div>
+    <div class="hero-rays" aria-hidden="true"></div>
+    <div class="motes" aria-hidden="true">
+      {motes.map((m) => <i style={`--x:${m.x};--y:${m.y};--s:${m.s};--t:${m.t};--dl:${m.dl};--dx:${m.dx}`}></i>)}
+    </div>
     <div class="wrap hero-grid">
       <div>
-        <span class="kicker fade-up">Nairobi · After hours</span>
+        <span class="kicker fade-up">Kiambu Road · Open 24 hours</span>
         <h1 class="display h1">
           <span class="hl"><span>The city's</span></span>
           <span class="hl"><span><em>finest pour,</em></span></span>
           <span class="hl"><span>at your door.</span></span>
         </h1>
         <p class="lede fade-up" style="animation-delay:.5s">
-          Whisky, cognac, gin, wine and ice-cold Tusker — chosen by people who drink it and delivered across Nairobi within the hour.
+          Kenya's first liquor supermarket. Whisky, cognac, gin, wine and ice-cold Tusker — walk the aisles on Kiambu Road at any hour, or have it delivered across Nairobi.
         </p>
         <div class="hero-cta fade-up" style="animation-delay:.65s">
           <a class="btn btn-amber" href="/shop">Enter the house <Icon name="arrow" size={18} /></a>
@@ -52,9 +71,15 @@ const heroBottles = [
         </div>
         <div class="hero-facts fade-up" style="animation-delay:.8s">
           <div><b>{all.length}+</b><span>bottles on the shelf</span></div>
-          <div><b>~45<small style="font-size:.5em"> min</small></b><span>express in the city</span></div>
-          <div><b>M-Pesa</b><span>or cash at the door</span></div>
+          <div><b>24/7</b><span>open, every day</span></div>
+          <div><b>M-Pesa</b><span>or Visa &amp; Mastercard</span></div>
         </div>
+        <!-- The supermarket itself, on Kiambu Road: a photo from the shop, framed like a print.
+             Small on purpose — the source is 360px wide; a full-width band needs a bigger one. -->
+        <a class="shopfront fade-up" style="animation-delay:.95s" href={site.maps} target="_blank" rel="noopener">
+          <img src="/scene/shopfront.webp" alt="The Liquor House supermarket on Kiambu Road" width="720" height="326" decoding="async" />
+          <span><b>Find us</b> Kiambu Road, beside Astrol · open 24 hours <i aria-hidden="true">→</i></span>
+        </a>
       </div>
       <div class="hero-stage">
         <div class="spot"></div>
@@ -62,28 +87,27 @@ const heroBottles = [
           <defs><path id="ring" d="M150,150 m-130,0 a130,130 0 1,1 260,0 a130,130 0 1,1 -260,0" /></defs>
           <text><textPath href="#ring">LIQUOR HOUSE · KENYA · FINE SPIRITS · NAIROBI · DELIVERED COLD ·</textPath></text>
         </svg>
-        <div class="hero-bottle">
-          {heroBottles.map((b) => {
-            const img = <img class={`hb ${b.cls}`} src={b.src} width={b.w} height={b.h} alt={b.alt} fetchpriority={b.cls === "hb-c" ? "high" : "auto"} decoding="async" />;
-            return b.href ? <a href={`/p/${b.href}`} class={`hb-link ${b.cls}`}>{img}</a> : <span class={`hb-link ${b.cls}`}>{img}</span>;
-          })}
-        </div>
+        <a class="hero-bottle" href={heroDrink ? `/p/${heroDrink.handle}` : "/shop?shelf=whisky"} aria-label={heroDrink ? `${heroDrink.name}, ${money(heroDrink.price)}` : "Whisky"}>
+          <img src="/scene/blue-label.webp" alt="Johnnie Walker Blue Label with its presentation box" width="332" height="599" fetchpriority="high" />
+        </a>
+        {heroDrink && (
+          <a class="hero-tag t3" href={`/p/${heroDrink.handle}`}><b>{heroDrink.name}</b><span class="price">{money(heroDrink.price)}</span></a>
+        )}
         <div class="hero-plinth"></div>
         <div class="hero-tag t1"><b>Cold on arrival</b><span class="muted">Beer · bubbles · whites</span></div>
         <div class="hero-tag t2"><b>18+ · ID at the door</b><span class="muted">Licensed, responsible</span></div>
       </div>
     </div>
-    <Skyline />
     <div class="scroll-cue" aria-hidden="true">SCROLL<i></i></div>
   </section>
 
-  <div class="marquee dark" aria-hidden="true">
+  <div class="marquee" aria-hidden="true">
     <div class="marquee-track">
       {[0, 1].map(() => (
         <>
           <span>Single malts</span><span>Cognac for the elders</span><span>Tusker by the crate</span>
           <span>Gin & tonic hour</span><span>Moët for the toast</span><span>Delivered across Nairobi</span>
-          <span>M-Pesa at the door</span>
+          <span>Open 24 hours</span><span>M-Pesa at the door</span>
         </>
       ))}
     </div>
@@ -109,11 +133,11 @@ const heroBottles = [
         <a class="shelf" href={`/shop?shelf=${s.id}`} style={`--hue:${s.hue}`}>
           <span class="count">{String(counts[s.id]).padStart(2, "0")} bottles</span>
           <div class="shelf-bottles">
-            {shelfBottles(s.id).map((d, i) => <Bottle d={d} height={i === 1 ? 220 : 170} />)}
+            {shelfBottles(s.id).map((d, i) => <Bottle d={d} height={i === 1 ? 210 : 175} salt={`bar${i}`} />)}
           </div>
           <h3>{s.name}</h3>
           <p>{s.line}</p>
-          <p class="mono" style="margin-top:10px;color:var(--accent)">from {money(from(s.id))}</p>
+          <p class="mono" style="margin-top:10px;color:var(--amber-ink)">from {money(from(s.id))}</p>
         </a>
       ))}
     </div>
@@ -121,6 +145,31 @@ const heroBottles = [
 
   <!-- ======================================================== THE POUR -->
   <PourScene />
+
+  <!-- ========================================================== PARADE -->
+  <section class="parade" aria-labelledby="parade-title">
+    <div class="parade-sticky">
+      <div class="wrap parade-head">
+        <span class="kicker">The whole shelf</span>
+        <h2 id="parade-title" class="display h2">{photographed.length} bottles. <em>One long bar.</em></h2>
+      </div>
+      <div class="parade-rows">
+        {paradeRows.map((row, r) => (
+          <div class={`parade-row depth-${r}`} style={`--dir:${r % 2 ? -1 : 1}`}>
+            {/* Three passes, so a row is always wider than the screen however far it slides.
+                Only the first pass is read out or reachable by keyboard. */}
+            {[0, 1, 2].flatMap((pass) => row.map((d) => (
+              <a class="parade-item" href={`/p/${d.handle}`} aria-hidden={pass ? "true" : undefined} tabindex={pass ? -1 : undefined}>
+                <img {...img(d.thumbnail, "200px")} alt={pass ? "" : d.name} loading="lazy" decoding="async" width="600" height="800" />
+                <span>{d.name}<b class="price">{money(d.price)}</b></span>
+              </a>
+            )))}
+          </div>
+        ))}
+      </div>
+      <a class="btn btn-amber parade-cta" href="/shop">Walk the whole shelf <Icon name="arrow" size={18} /></a>
+    </div>
+  </section>
 
   <!-- ======================================================= OCCASIONS -->
   <section class="section">
@@ -201,12 +250,39 @@ const heroBottles = [
           <a class="ctl" href={`/cocktails#${c.id}`} data-reveal style={`--d:${i * 0.08}s`}>
             <div class="ctl-art" style={`--c:${c.colour}`}>
               <span class="chip mins">{c.minutes} min</span>
-              <GlassArt glass={c.glass} colour={c.colour} garnish={c.garnish} id={`home-${c.id}`} />
+              <CocktailPhoto c={c} />
             </div>
             <div class="ctl-body">
               <span class="card-brand">{c.kicker}</span>
               <h3>{c.name}</h3>
               <p class="muted" style="margin:0;font-size:.88rem">{c.ingredients.map((x) => x.label.replace(/^[\d½.]+\s?(ml|tsp|tbsp)?\s?/i, "")).slice(0, 3).join(" · ")}</p>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================================================== GAMES NIGHT -->
+  <section class="section" style="padding-top:0">
+    <div class="wrap">
+      <div class="section-head" data-reveal>
+        <div>
+          <span class="kicker">Mchezo · Games night</span>
+          <h2 class="display h2">Cheza, <em>shinda {REWARD.percent}% off.</em></h2>
+        </div>
+        <a class="link-arrow" href="/games">All {GAMES.length} games <span>→</span></a>
+      </div>
+      <div class="games-grid">
+        {["history", "headsup", "guess", "wyr"].map((id) => GAMES.find((g) => g.id === id)!).map((g, i) => (
+          <a class="game-card" href={`/games/${g.id}`} data-reveal style={`--d:${i * 0.07}s`}>
+            <div class={`game-card-art${g.cover ? " is-cover" : ""}`} style="height:190px">
+              <img {...img(g.art, "(max-width: 640px) 100vw, 340px")} alt="" loading="lazy" decoding="async" />
+              <span class={`chip ${g.rewarded ? "chip-amber" : ""}`}>{g.rewarded ? `Win ${REWARD.percent}% off` : g.players ?? "Party game"}</span>
+            </div>
+            <div class="game-card-body">
+              <span class="card-brand">{g.sw}</span>
+              <h3 class="display h3" style="font-size:1.5rem">{g.name}</h3>
             </div>
           </a>
         ))}
@@ -238,12 +314,12 @@ const heroBottles = [
           <span class="kicker">Delivery</span>
           <h2 class="display h2">Across Nairobi, <em>from {money(cheapestZone)}.</em></h2>
         </div>
-        <p class="muted">Free in the city zones over {money(site.freeDeliveryOver)}. Express riders leave the moment your order is confirmed.</p>
+        <p class="muted">Every order is ridden by <TumaBoda link />, leaving Kiambu Road the moment it's confirmed. Free in the nearer zones over {money(site.freeDeliveryOver)}.</p>
       </div>
       <div class="zones-band" data-reveal>
         {ZONES.map((z) => (
           <div class="zone">
-            <h4>{z.name}</h4>
+            <h3>{z.name}</h3>
             <div class="row" style="justify-content:space-between"><span class="price">{money(z.fee)}</span><span class="muted">{z.eta}</span></div>
             <p>{z.areas.slice(0, 4).join(" · ")}</p>
           </div>
@@ -251,4 +327,6 @@ const heroBottles = [
       </div>
     </div>
   </section>
+
+  <Faq />
 </Base>

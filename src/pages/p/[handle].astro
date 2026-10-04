@@ -3,13 +3,15 @@ import Base from "../../layouts/Base.astro";
 import Bottle from "../../components/Bottle";
 import ProductCard from "../../components/ProductCard.astro";
 import Icon from "../../components/Icon.astro";
-import GlassArt from "../../components/GlassArt.astro";
+import { TumaBoda } from "../../components/TumaBoda";
+import CocktailPhoto from "../../components/CocktailPhoto.astro";
 import AddToBag from "../../components/react/AddToBag";
 import { getDrink, listAll, similar, resolveIngredient } from "../../lib/catalog";
 import { PROFILE_AXES, toLine } from "../../lib/types";
 import { money, percentOff } from "../../lib/format";
 import { SHELF_BY_ID, ZONES, site, legal } from "../../config/site";
 import { COCKTAILS } from "../../data/cocktails";
+import { productLd } from "../../lib/seo";
 
 const { handle } = Astro.params;
 const d = handle ? await getDrink(handle) : null;
@@ -26,30 +28,17 @@ const cocktail = COCKTAILS.find((c) => c.base === d.category || c.ingredients.so
 const mixers = d.category !== "mixers" ? all.filter((x) => x.category === "mixers" && x.price != null).slice(0, 3) : [];
 const fastest = ZONES[0];
 
-const jsonLd = {
-  "@context": "https://schema.org",
-  "@type": "Product",
-  name: d.name,
-  brand: d.brand ? { "@type": "Brand", name: d.brand } : undefined,
-  description: d.description,
-  category: shelf?.name,
-  image: d.thumbnail ?? undefined,
-  offers: d.price != null ? {
-    "@type": "Offer",
-    priceCurrency: "KES",
-    price: d.price,
-    availability: soldOut ? "https://schema.org/OutOfStock" : "https://schema.org/InStock",
-    url: new URL(`/p/${d.handle}`, site.url).toString(),
-  } : undefined,
-};
+const jsonLd = productLd(d);
+const crumbs = [{ name: "Shop", path: "/shop" }, ...(shelf ? [{ name: shelf.name, path: `/shop?shelf=${shelf.id}` }] : []), { name: d.name, path: `/p/${d.handle}` }];
+const metaDescription = `${d.name} (${d.volume}) — ${d.price != null ? `${money(d.price)} at ` : ""}${site.name}, Kiambu Road, Nairobi. ${d.notes.join(", ")}. Delivered cold by TumaBoda, 24 hours.`;
 ---
-<Base title={d.name} description={d.description.slice(0, 155)} jsonLd={jsonLd} image={d.thumbnail ?? undefined}>
+<Base title={`${d.name} ${d.volume}`} description={metaDescription.length > 160 ? `${metaDescription.slice(0, 157).trimEnd()}…` : metaDescription} jsonLd={jsonLd} image={d.thumbnail ?? undefined} imageAlt={`${d.name}, ${d.volume}`} minorOk={!d.ageRestricted} crumbs={crumbs} ogType="product">
   <section class="pdp wrap" style="padding-bottom:40px">
     <nav class="crumbs" aria-label="Breadcrumb">
       <a href="/">Home</a><span>/</span>
       <a href="/shop">Shop</a><span>/</span>
       {shelf && <><a href={`/shop?shelf=${shelf.id}`}>{shelf.name}</a><span>/</span></>}
-      <span style="color:var(--text)">{d.name}</span>
+      <span style="color:var(--fg)">{d.name}</span>
     </nav>
 
     <div class="pdp-grid">
@@ -59,7 +48,7 @@ const jsonLd = {
           <defs><path id="pring" d="M150,150 m-130,0 a130,130 0 1,1 260,0 a130,130 0 1,1 -260,0" /></defs>
           <text><textPath href="#pring">{`${d.brand || site.short} · ${d.subcategory} · ${d.origin} · `.toUpperCase().repeat(2)}</textPath></text>
         </svg>
-        <Bottle d={d} height={520} eager />
+        <Bottle d={d} height={520} salt="pdp" />
       </div>
 
       <div class="pdp-info">
@@ -88,15 +77,15 @@ const jsonLd = {
         )}
 
         <div class="assure">
-          <div><Icon name="bolt" /><span><b>Express {fastest.eta}</b>{fastest.name} and nearby</span></div>
+          <div><Icon name="bolt" /><span><b>Express {fastest.eta}</b>Ridden by <TumaBoda /></span></div>
           <div><Icon name="snow" /><span><b>Delivered cold</b>Straight from the fridge</span></div>
           <div><Icon name="shield" /><span><b>Genuine bottles</b>Sealed, from licensed suppliers</span></div>
-          <div><Icon name="chat" /><span><b>M-Pesa or cash</b>Pay at the door</span></div>
+          <div><Icon name="chat" /><span><b>M-Pesa or card</b>Visa &amp; Mastercard accepted</span></div>
         </div>
 
         <div class="block">
           <h2>In the glass</h2>
-          <p style="margin:0 0 1rem;color:var(--text-2)">{d.description}</p>
+          <p style="margin:0 0 1rem;color:var(--fg-2)">{d.description}</p>
           {d.notes.length > 0 && <div class="notes">{d.notes.map((n) => <span>{n}</span>)}</div>}
         </div>
 
@@ -153,11 +142,11 @@ const jsonLd = {
   {cocktail && (() => {
     const bottles = cocktail.ingredients.filter((i) => i.shelf).map((i) => resolveIngredient(all, i.shelf!, i.brand)).filter((x, i, arr) => x && arr.findIndex((y) => y?.handle === x.handle) === i);
     return (
-      <section class="section" style="padding:60px 0">
+      <section class="section" style="padding:60px 0" data-adult>
         <div class="wrap">
           <div class="panel panel-glow" style="min-height:0;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);gap:2rem;align-items:center" data-reveal>
             <div class="ctl-art" style={`--c:${cocktail.colour};border-radius:var(--r);aspect-ratio:1`}>
-              <GlassArt glass={cocktail.glass} colour={cocktail.colour} garnish={cocktail.garnish} id={`pdp-${cocktail.id}`} />
+              <CocktailPhoto c={cocktail} />
             </div>
             <div>
               <span class="kicker">Make it a cocktail</span>

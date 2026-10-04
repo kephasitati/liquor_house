@@ -2,7 +2,8 @@
 import Base from "../layouts/Base.astro";
 import ProductCard from "../components/ProductCard.astro";
 import { listAll, query, shelfCounts, SORTS, PRICE_BANDS, type SortId } from "../lib/catalog";
-import { SHELVES, SHELF_BY_ID } from "../config/site";
+import { SHELVES, SHELF_BY_ID, site } from "../config/site";
+import { itemListLd } from "../lib/seo";
 
 /**
  * The whole shop, filtered on the server: every filter is a query param, so a filtered
@@ -26,6 +27,12 @@ const lede = q
   ? `${items.length} ${items.length === 1 ? "bottle matches" : "bottles match"} your search.`
   : active?.line ?? "Every bottle on every shelf. Filter by what you're pouring, or what you want to spend.";
 
+// One indexable URL per shelf (or tag); price bands and sorts point back to it, searches stay out.
+const canonicalPath = shelf && active ? `/shop?shelf=${shelf}` : tag && TAG_TITLES[tag] ? `/shop?tag=${tag}` : "/shop";
+const pageTitle = active ? `${active.name} in Nairobi` : q ? `Search: ${q}` : tag && TAG_TITLES[tag] ? TAG_TITLES[tag] : "Shop";
+const crumbs = [{ name: "Shop", path: "/shop" }, ...(active ? [{ name: active.name, path: canonicalPath }] : [])];
+const jsonLd = q ? undefined : itemListLd(active?.name ?? title, items);
+
 /** Build a link that keeps the other filters. */
 function href(patch: Record<string, string | null>) {
   const u = new URLSearchParams(sp);
@@ -34,7 +41,7 @@ function href(patch: Record<string, string | null>) {
   return `/shop${s ? `?${s}` : ""}`;
 }
 ---
-<Base title={active?.name ?? (q ? `Search: ${q}` : "Shop")} description={`${title} — ${lede}`}>
+<Base title={pageTitle} minorOk={shelf === "mixers" && !q && !tag} description={active ? `${active.name} at ${site.name}, Kiambu Road — ${items.length} bottles with prices in KSh. ${active.line} Delivered across Nairobi, 24 hours.` : `${title} — ${lede}`} noindex={!!q} canonicalPath={canonicalPath} crumbs={crumbs} jsonLd={jsonLd}>
   <section class="page-hero" style={`--hue:${active?.hue ?? "#e8a33d"}`}>
     <div class="wrap">
       <span class="kicker">{active ? "The back bar" : "The shop"} · {items.length} bottles</span>
@@ -45,9 +52,9 @@ function href(patch: Record<string, string | null>) {
 
   <nav class="filters" aria-label="Shelves">
     <div class="wrap filters-in">
-      <a class="pill" href={href({ shelf: null })} aria-current={!shelf ? "true" : undefined}>All <small>{all.length}</small></a>
+      <a class="pill" data-adult href={href({ shelf: null })} aria-current={!shelf ? "true" : undefined}>All <small>{all.length}</small></a>
       {SHELVES.filter((s) => counts[s.id]).map((s) => (
-        <a class="pill" href={href({ shelf: s.id })} aria-current={shelf === s.id ? "true" : undefined}>{s.name} <small>{counts[s.id]}</small></a>
+        <a class="pill" data-adult={s.ageRestricted ? "" : undefined} href={href({ shelf: s.id })} aria-current={shelf === s.id ? "true" : undefined}>{s.name} <small>{counts[s.id]}</small></a>
       ))}
     </div>
   </nav>

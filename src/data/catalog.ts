@@ -1,7 +1,11 @@
 import type { Drink, Profile } from "../lib/types";
 import { liquidColour, SHAPE_BY_SHELF } from "../lib/colour";
 import { SHELF_BY_ID } from "../config/site";
-import PHOTOS from "../../scripts/bottle-photos.json";
+import PHOTO_CREDITS from "./photo-credits.json";
+
+/** Bottles with a photograph in public/bottles/, one per handle. Where each came from is in
+ *  photo-credits.json: retailer listings, downloaded and self-hosted, never hotlinked. */
+const PHOTOS = new Set(PHOTO_CREDITS.map((c) => c.handle));
 
 /**
  * The demo cellar.
@@ -13,11 +17,6 @@ import PHOTOS from "../../scripts/bottle-photos.json";
  *
  * One line per bottle. The profile string is six 0–5 scores in this order:
  *   sweet smoky fruity spicy oaky fresh
- *
- * Every bottle shown is PHOTOGRAPHED: public/bottles/<handle>.webp, mapped and credited in
- * scripts/bottle-photos.json. A bottle with no photograph stays listed here (it is still a
- * thing the shop sells) but is left off the shelf until one is added — the shop is never
- * shown with a drawn stand-in.
  */
 type Extra = { old?: number; tags?: string[]; serve?: string; desc?: string; stock?: number };
 
@@ -84,7 +83,7 @@ function d(
     profile: profile(prof),
     colour: liquidColour({ subcategory, name, category }),
     shape: SHAPE_BY_SHELF[category] ?? "spirit",
-    thumbnail: handle in PHOTOS ? `/bottles/${handle}.webp` : null,
+    thumbnail: PHOTOS.has(handle) ? `/bottles/${handle}.webp` : null,
     description:
       x.desc ??
       `${name} — ${subcategory.toLowerCase()} from ${origin}. ${volume}, ${abv}% ABV. Delivered cold across Nairobi.`,
@@ -93,7 +92,7 @@ function d(
   };
 }
 
-const CELLAR: Drink[] = [
+export const DEMO_CATALOG: Drink[] = [
   /* ---------------------------------------------------------------- whisky */
   d("whisky", "Johnnie Walker Black Label", "Johnnie Walker", "Blended Scotch", "750ml", 40, "Scotland", 4800,
     "3 3 3 2 3 1", "Dark fruit · Vanilla · Gentle smoke",
@@ -114,23 +113,23 @@ const CELLAR: Drink[] = [
     "4 1 3 2 4 1", "Toffee · Charred barrel · Dried fruit", { tags: ["premium"] }),
   d("whisky", "Glenfiddich 12 Year Old", "Glenfiddich", "Single Malt Scotch", "750ml", 40, "Speyside, Scotland", 7200,
     "3 0 4 1 3 3", "Fresh pear · Cream · Subtle oak", { tags: ["occasion:quiet", "bestseller"] }),
-  d("whisky", "The Glenlivet Founder's Reserve", "The Glenlivet", "Single Malt Scotch", "700ml", 40, "Speyside, Scotland", 5600,
-    "3 0 4 1 2 3", "Sweet orange · Pear · Toffee", {}),
+  d("whisky", "The Glenlivet 12 Year Old", "The Glenlivet", "Single Malt Scotch", "750ml", 40, "Speyside, Scotland", 6800,
+    "3 0 4 1 2 3", "Pineapple · Vanilla · Floral", {}),
   d("whisky", "The Singleton 12 Year Old", "The Singleton", "Single Malt Scotch", "750ml", 40, "Dufftown, Scotland", 6500,
     "4 0 4 1 3 2", "Red berries · Brown sugar · Nutty", { tags: ["occasion:quiet"] }),
   d("whisky", "Monkey Shoulder", "Monkey Shoulder", "Blended Malt Scotch", "700ml", 40, "Speyside, Scotland", 5400,
     "4 0 3 2 3 2", "Vanilla · Orange zest · Honey", { tags: ["new"] }),
-  d("whisky", "Talisker 10 Year Old", "Talisker", "Single Malt Scotch", "700ml", 45.8, "Isle of Skye, Scotland", 7800,
-    "2 5 2 4 3 1", "Sea smoke · Black pepper · Dried fruit",
-    { tags: ["premium", "occasion:quiet"], desc: "Made by the sea on the Isle of Skye: maritime smoke, a hit of black pepper, then sweet dried fruit. For the whisky drinker who has had everything else." }),
+  d("whisky", "Lagavulin 16 Year Old", "Lagavulin", "Single Malt Scotch", "700ml", 43, "Islay, Scotland", 12500,
+    "2 5 2 3 4 0", "Peat smoke · Iodine · Rich sherry",
+    { tags: ["premium", "occasion:quiet"], desc: "The great Islay malt: a bonfire on a beach, then dried fruit and sweet sherry. For the whisky drinker who has had everything else." }),
   d("whisky", "Jack Daniel's Old No. 7", "Jack Daniel's", "Tennessee Whiskey", "700ml", 40, "Tennessee, USA", 3900,
     "4 1 2 2 3 1", "Caramel · Banana · Toasted oak", { tags: ["bestseller", "occasion:matchnight"], serve: "With cola over ice — the Jack and Coke." }),
   d("whisky", "Chivas Regal 12 Year Old", "Chivas Regal", "Blended Scotch", "750ml", 40, "Scotland", 5200,
     "4 1 3 1 3 2", "Honey · Ripe apple · Vanilla", { tags: ["occasion:celebration"] }),
-  d("whisky", "Grant's Family Reserve", "Grant's", "Blended Scotch", "750ml", 40, "Scotland", 2100,
+  d("whisky", "Grant's Triple Wood", "Grant's", "Blended Scotch", "750ml", 40, "Scotland", 2100,
     "3 1 2 2 2 2", "Vanilla · Malt · Sweet oak", { tags: ["value", "occasion:office"] }),
-  d("whisky", "Teacher's Highland Cream", "Teacher's", "Blended Scotch", "750ml", 40, "Scotland", 1800,
-    "2 3 2 2 2 1", "Peat smoke · Malt · Toffee", { tags: ["value"] }),
+  d("whisky", "Black & White", "Black & White", "Blended Scotch", "750ml", 40, "Scotland", 1500,
+    "2 2 1 2 1 2", "Malt · Light smoke · Cereal", { tags: ["value"] }),
 
   /* ----------------------------------------------------------------- cognac */
   d("cognac", "Hennessy V.S", "Hennessy", "Cognac", "700ml", 40, "Cognac, France", 6500,
@@ -151,10 +150,8 @@ const CELLAR: Drink[] = [
   d("gin", "Gilbey's Special Dry Gin", "Gilbey's", "London Dry Gin", "750ml", 40, "Kenya", 1500,
     "1 0 1 2 0 4", "Juniper · Citrus peel · Pepper",
     { tags: ["bestseller", "value", "local", "occasion:sundowner", "occasion:office"], desc: "Bottled in Nairobi and poured in every bar in the country. Clean, juniper-forward, and exactly what a G&T wants." }),
-  d("gin", "Gilbey's Mixed Berries Gin", "Gilbey's", "Flavoured Gin", "750ml", 37.5, "Kenya", 1600,
-    "4 0 5 0 0 3", "Mixed berries · Juniper · Sweet finish", { tags: ["local", "new", "occasion:sundowner"] }),
   d("gin", "Gordon's London Dry Gin", "Gordon's", "London Dry Gin", "750ml", 37.5, "England", 2100,
-    "1 0 2 2 0 4", "Juniper · Lemon · Coriander", { tags: ["bestseller", "occasion:sundowner"] }),
+    "1 0 2 2 0 4", "Juniper · Lemon · Coriander", { tags: ["occasion:sundowner"] }),
   d("gin", "Tanqueray London Dry", "Tanqueray", "London Dry Gin", "750ml", 43.1, "Scotland", 3200,
     "1 0 1 2 0 5", "Bold juniper · Angelica · Liquorice", {}),
   d("gin", "Hendrick's Gin", "Hendrick's", "Scottish Gin", "700ml", 41.4, "Scotland", 5800,
@@ -162,8 +159,8 @@ const CELLAR: Drink[] = [
     { tags: ["premium", "occasion:sundowner"], serve: "With tonic and a thin ribbon of cucumber, never lime." }),
   d("gin", "Bombay Sapphire", "Bombay Sapphire", "London Dry Gin", "750ml", 40, "England", 3300,
     "1 0 2 2 0 5", "Juniper · Lemon peel · Almond", { tags: ["bestseller"] }),
-  d("gin", "Beefeater London Dry", "Beefeater", "London Dry Gin", "750ml", 40, "England", 2600,
-    "1 0 2 2 0 5", "Juniper · Seville orange · Lemon peel", {}),
+  d("gin", "Beefeater Pink Strawberry", "Beefeater", "Flavoured Gin", "700ml", 37.5, "England", 2800,
+    "4 0 5 0 0 3", "Strawberry · Juniper · Citrus", { tags: ["new", "occasion:sundowner"] }),
   d("gin", "Procera Blue Dot Gin", "Procera", "African Gin", "700ml", 41.7, "Kenya", 9000,
     "1 0 2 3 1 5", "African juniper · Pink pepper · Honey",
     { tags: ["premium", "local", "gift"], desc: "Distilled in Nairobi from African juniper — the world's first gin made with it. A Kenyan bottle worth putting on the table when guests fly in." }),
@@ -173,7 +170,7 @@ const CELLAR: Drink[] = [
     "1 0 0 1 0 4", "Clean · Crisp · Neutral", { tags: ["bestseller", "value", "occasion:office", "occasion:matchnight"] }),
   d("vodka", "Absolut Vodka", "Absolut", "Vodka", "750ml", 40, "Sweden", 2600,
     "1 0 1 1 0 4", "Grain · Dried fruit · Clean finish", { tags: ["occasion:office"] }),
-  d("vodka", "Cîroc Snap Frost", "Cîroc", "Grape Vodka", "750ml", 40, "France", 5200,
+  d("vodka", "Cîroc", "Cîroc", "Grape Vodka", "750ml", 40, "France", 5200,
     "2 0 3 0 0 4", "Fresh grape · Citrus · Smooth", { tags: ["premium", "occasion:celebration"] }),
   d("vodka", "Grey Goose", "Grey Goose", "Vodka", "750ml", 40, "France", 5800,
     "2 0 1 1 0 5", "Almond · Citrus · Soft wheat", { tags: ["premium"] }),
@@ -201,8 +198,6 @@ const CELLAR: Drink[] = [
     "2 0 2 1 0 4", "Light · Vanilla · Almond", { serve: "Muddled with mint, lime and sugar — the mojito." }),
   d("rum", "Kenya Cane", "Kenya Cane", "Cane Spirit", "750ml", 40, "Kenya", 900,
     "2 0 1 1 0 3", "Clean cane · Light sweetness", { tags: ["value", "local", "occasion:matchnight"] }),
-  d("rum", "Kenya Cane Pineapple", "Kenya Cane", "Pineapple Cane Spirit", "750ml", 30, "Kenya", 950,
-    "4 0 4 0 0 3", "Ripe pineapple · Sugar cane", { tags: ["value", "local", "occasion:matchnight"] }),
   d("rum", "Kenya Cane Coconut", "Kenya Cane", "Coconut Cane Spirit", "750ml", 30, "Kenya", 950,
     "4 0 3 0 0 3", "Toasted coconut · Sugar cane", { tags: ["local", "occasion:sundowner"] }),
   d("rum", "Malibu Coconut", "Malibu", "Coconut Rum Liqueur", "750ml", 21, "Barbados", 2400,
@@ -224,16 +219,16 @@ const CELLAR: Drink[] = [
   /* ------------------------------------------------------------------- wine */
   d("wine", "4th Street Sweet Red", "4th Street", "Sweet Red Wine", "750ml", 7.5, "South Africa", 950,
     "5 0 4 0 0 2", "Berries · Plum · Sweet finish", { tags: ["bestseller", "value", "occasion:office", "occasion:nyama"] }),
-  d("wine", "4th Street Sweet Rosé", "4th Street", "Rosé Wine", "750ml", 7.5, "South Africa", 950,
+  d("wine", "Four Cousins Sweet Rosé", "Four Cousins", "Rosé Wine", "750ml", 8, "South Africa", 1000,
     "5 0 4 0 0 3", "Strawberry · Candyfloss · Fresh", { tags: ["value", "occasion:sundowner"] }),
   d("wine", "Nederburg Cabernet Sauvignon", "Nederburg", "Red Wine", "750ml", 13.5, "South Africa", 1600,
     "1 0 4 2 3 1", "Blackcurrant · Cedar · Mint", { tags: ["occasion:nyama"] }),
   d("wine", "Casillero del Diablo Cabernet Sauvignon", "Casillero del Diablo", "Red Wine", "750ml", 13.5, "Chile", 1700,
     "1 1 4 2 3 1", "Black cherry · Plum · Smoky oak", { tags: ["bestseller"] }),
-  d("wine", "Nederburg Sauvignon Blanc", "Nederburg", "White Wine", "750ml", 12.5, "South Africa", 1500,
-    "1 0 3 0 0 5", "Green apple · Citrus · Grass", { tags: ["occasion:sundowner"] }),
-  d("wine", "Whispering Angel Rosé", "Château d'Esclans", "Rosé Wine", "750ml", 13, "Provence, France", 5500,
-    "1 0 4 0 0 5", "Strawberry · Peach · Dry finish", { tags: ["premium", "occasion:sundowner"] }),
+  d("wine", "Nederburg The Winemasters Sauvignon Blanc", "Nederburg", "White Wine", "750ml", 12.5, "South Africa", 1500,
+    "1 0 3 0 0 5", "Gooseberry · Citrus · Cut grass", { tags: ["occasion:sundowner"] }),
+  d("wine", "Mateus Rosé", "Mateus", "Rosé Wine", "750ml", 11, "Portugal", 1500,
+    "3 0 4 0 0 4", "Red berries · Light fizz · Fresh", {}),
 
   /* -------------------------------------------------------------- champagne */
   d("champagne", "Moët & Chandon Brut Impérial", "Moët & Chandon", "Champagne", "750ml", 12, "Champagne, France", 8500,
@@ -241,25 +236,25 @@ const CELLAR: Drink[] = [
     { tags: ["bestseller", "gift", "occasion:celebration"], desc: "The toast at a thousand Nairobi weddings. Bright green apple and citrus over a fine, persistent bead — order it cold." }),
   d("champagne", "Veuve Clicquot Yellow Label", "Veuve Clicquot", "Champagne", "750ml", 12, "Champagne, France", 10500,
     "2 0 4 0 2 4", "Pear · Vanilla · Toasted brioche", { tags: ["premium", "gift", "occasion:celebration"] }),
-  d("champagne", "Martini Asti", "Martini", "Sweet Sparkling Wine", "750ml", 7.5, "Italy", 1900,
-    "5 0 4 0 0 4", "Peach · Honey · Grape", { tags: ["value", "occasion:celebration"] }),
+  d("champagne", "Luc Belaire Rare Rosé", "Luc Belaire", "Sparkling Rosé", "750ml", 12.5, "Burgundy, France", 6500,
+    "3 0 5 0 0 4", "Strawberry · Red berries · Creamy bubbles", { tags: ["gift", "occasion:celebration"] }),
   d("champagne", "J.C. Le Roux Le Domaine", "J.C. Le Roux", "Sweet Sparkling Wine", "750ml", 7.5, "South Africa", 1400,
-    "5 0 4 0 0 3", "Tropical fruit · Sweet · Fine bubbles", { tags: ["value", "occasion:celebration"] }),
+    "5 0 4 0 0 3", "Tropical fruit · Sweet · Light fizz", { tags: ["value", "occasion:celebration"] }),
 
   /* ------------------------------------------------------------------- beer */
-  d("beer", "Tusker Lager", "Tusker", "Lager", "500ml can", 4.2, "Kenya", 250,
+  d("beer", "Tusker Lager", "Tusker", "Lager", "500ml", 4.2, "Kenya", 250,
     "1 0 1 0 0 4", "Malt · Light hops · Crisp",
-    { tags: ["bestseller", "local", "occasion:nyama", "occasion:matchnight"], desc: "Kenya's beer since 1922. Pale, crisp and best ice-cold — a pint of the country in one can." }),
+    { tags: ["bestseller", "local", "occasion:nyama", "occasion:matchnight"], desc: "Kenya's beer since 1922. Pale, crisp and best ice-cold — a pint of the country in one bottle." }),
   d("beer", "Tusker Lager — Crate of 25", "Tusker", "Lager Crate", "25 × 500ml", 4.2, "Kenya", 5600,
     "1 0 1 0 0 4", "Malt · Light hops · Crisp",
     { old: 6250, tags: ["deal", "local", "occasion:nyama", "occasion:office"], desc: "Twenty-five cold Tuskers in one delivery. The bottles and crate carry a deposit, refunded when the rider collects the empties." }),
-  d("beer", "White Cap Lager", "White Cap", "Lager", "500ml can", 4.2, "Kenya", 270,
+  d("beer", "White Cap Lager", "White Cap", "Lager", "500ml", 4.2, "Kenya", 270,
     "1 0 1 0 0 4", "Smooth malt · Gentle bitterness", { tags: ["local"] }),
-  d("beer", "Guinness Draught", "Guinness", "Stout", "500ml can", 4.2, "Ireland", 350,
-    "2 2 1 1 1 1", "Roasted barley · Coffee · Creamy head", { tags: ["occasion:nyama"] }),
-  d("beer", "Tusker Cider", "Tusker", "Cider", "500ml can", 4.5, "Kenya", 260,
+  d("beer", "Guinness Foreign Extra Stout", "Guinness", "Stout", "500ml can", 6.5, "Kenya", 280,
+    "2 2 1 1 1 1", "Roasted barley · Coffee · Bitter chocolate", { tags: ["local", "occasion:nyama"] }),
+  d("beer", "Tusker Cider", "Tusker", "Cider", "500ml", 4.5, "Kenya", 260,
     "3 0 4 0 0 4", "Crisp apple · Light sweetness", { tags: ["local", "occasion:matchnight"] }),
-  d("beer", "Heineken", "Heineken", "Lager", "500ml can", 5, "Netherlands", 320,
+  d("beer", "Heineken", "Heineken", "Lager", "330ml", 5, "Netherlands", 260,
     "1 0 1 0 0 4", "Light malt · Fruity hop · Crisp", {}),
   d("beer", "Savanna Dry Premium Cider", "Savanna", "Cider", "330ml", 6, "South Africa", 300,
     "2 0 4 0 0 5", "Dry apple · Citrus", { serve: "Ice-cold, with a wedge of lemon in the neck." }),
@@ -273,15 +268,9 @@ const CELLAR: Drink[] = [
     "5 0 1 1 0 2", "Classic cola", { tags: ["occasion:matchnight", "occasion:nyama"] }),
   d("mixers", "Stoney Tangawizi", "Stoney", "Ginger Beer", "500ml", 0, "Kenya", 110,
     "4 0 1 4 0 3", "Fiery ginger · Sweet", { tags: ["local"] }),
-  d("mixers", "Schweppes Ginger Ale", "Schweppes", "Ginger Ale", "330ml can", 0, "Kenya", 100,
-    "4 0 1 3 0 4", "Ginger · Light sweetness", { tags: ["occasion:nyama"] }),
-  d("mixers", "Sprite", "Sprite", "Lemon-Lime Soda", "2L", 0, "Kenya", 230,
-    "4 0 2 0 0 4", "Lemon · Lime · Crisp", { tags: ["occasion:office", "occasion:matchnight"] }),
   d("mixers", "Red Bull Energy Drink", "Red Bull", "Energy Drink", "250ml", 0, "Austria", 250,
     "5 0 2 0 0 2", "Sweet · Tart", {}),
   d("mixers", "Party Ice", "Liquor House", "Ice", "2kg bag", 0, "Nairobi", 200,
     "0 0 0 0 0 5", "Clear · Slow-melting",
     { tags: ["occasion:nyama", "occasion:office", "occasion:matchnight"], desc: "A 2kg bag of clear party ice, delivered frozen with your order." }),
 ];
-
-export const DEMO_CATALOG: Drink[] = CELLAR.filter((d) => d.thumbnail);

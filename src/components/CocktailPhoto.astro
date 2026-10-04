@@ -1,0 +1,19 @@
+---
+/**
+ * A cocktail, photographed: the real drink in its glass, cropped to whatever box it sits in
+ * with the glass kept in frame by the cocktail's focal point. The photos are Pexels (free for
+ * commercial use, no attribution) and their ids live in src/data/cocktails.ts.
+ */
+import type { Cocktail } from "../data/cocktails";
+import { img } from "../lib/img";
+interface Props { c: Pick<Cocktail, "id" | "name" | "focus">; eager?: boolean; sizes?: string }
+const { c, eager = false, sizes = "(max-width: 700px) 100vw, 420px" } = Astro.props;
+---
+<img
+  class="ctl-photo"
+  {...img(`/cocktails/${c.id}.webp`, sizes)}
+  alt={c.name}
+  style={`object-position:${c.focus}`}
+  loading={eager ? "eager" : "lazy"}
+  decoding="async"
+/>

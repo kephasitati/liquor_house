@@ -55,6 +55,9 @@ export interface BagLine {
   colour: string;
   shape: Drink["shape"];
   thumbnail: string | null;
+  /** False for soft drinks, mixers and ice: the only lines an under-18 can buy. Lines saved
+   *  before this existed have no value and are treated as alcohol. */
+  ageRestricted?: boolean;
   qty: number;
 }
 
@@ -69,6 +72,7 @@ export function toLine(d: Drink, qty = 1): BagLine {
     colour: d.colour,
     shape: d.shape,
     thumbnail: d.thumbnail,
+    ageRestricted: d.ageRestricted,
     qty,
   };
 }

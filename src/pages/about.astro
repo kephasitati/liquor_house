@@ -1,25 +1,30 @@
 ---
 import Base from "../layouts/Base.astro";
 import Icon from "../components/Icon.astro";
+import { TumaBoda } from "../components/TumaBoda";
 import { site } from "../config/site";
 ---
-<Base title="About & contact" description={`${site.name} — ${site.tagline}. Find us, call us, or message us on WhatsApp.`}>
+<Base title="About & contact" minorOk crumbs={[{ name: "About", path: "/about" }]} description={`${site.name} — ${site.tagline}, on ${site.street}, Nairobi. Open 24 hours. Call or WhatsApp ${site.phone}.`}>
   <section class="page-hero">
     <div class="wrap">
       <span class="kicker">The house</span>
-      <h1 class="display h1">A liquor store <em>with a bartender's taste.</em></h1>
-      <p class="lede">{site.name} is a Nairobi liquor house: a shelf picked by people who drink it, cold stock, honest prices and riders who know the city.</p>
+      <h1 class="display h1">Kenya's first <em>liquor supermarket.</em></h1>
+      <p class="lede">Walk the aisles on {site.street}: spirits, wines and beers on open shelves, a tasting room inside, and the doors open around the clock. Or stay home — <TumaBoda link /> will bring it to you.</p>
     </div>
   </section>
-  <section class="wrap" style="padding:20px var(--gut) 140px">
+  <section class="wrap" style="padding:20px var(--gut) 40px">
     <div class="split">
       <div class="panel">
         <span class="kicker">Find us</span>
         <div class="stack gap mt">
-          <div class="row gap"><Icon name="pin" size={22} /><span>{site.address}</span></div>
+          <a class="row gap" href={site.maps} target="_blank" rel="noopener"><Icon name="pin" size={22} /><span>{site.address}<br /><span class="link-arrow" style="font-size:.85rem">Directions <span>→</span></span></span></a>
           <a class="row gap" href={`tel:${site.phone.replace(/\s/g, "")}`}><Icon name="phone" size={22} /><span>{site.phone}</span></a>
-          <a class="row gap" href={`https://wa.me/${site.whatsapp}`} target="_blank" rel="noopener"><Icon name="chat" size={22} /><span>WhatsApp — orders and questions</span></a>
-          <a class="row gap" href={`mailto:${site.email}`}><Icon name="spark" size={22} /><span>{site.email}</span></a>
+          <a class="row gap" href={`https://wa.me/${site.whatsapp}`} target="_blank" rel="noopener"><Icon name="chat" size={22} /><span>WhatsApp {site.phone} — orders and questions</span></a>
+          {site.email && <a class="row gap" href={`mailto:${site.email}`}><Icon name="spark" size={22} /><span>{site.email}</span></a>}
+          <a class="row gap" href={site.glovo} target="_blank" rel="noopener"><Icon name="bolt" size={22} /><span>Also on Glovo</span></a>
+        </div>
+        <div class="row gap-s mt" style="flex-wrap:wrap">
+          {site.socials.map((s) => <a class="chip social-chip" href={s.url} target="_blank" rel="noopener"><Icon name={s.icon} size={15} />{s.handle}<span class="sr-only"> on {s.name}</span></a>)}
         </div>
       </div>
       <div class="panel panel-glow">
@@ -31,8 +36,17 @@ import { site } from "../config/site";
             </div>
           ))}
         </div>
-        <p class="muted mt" style="font-size:.85rem">Drink responsibly. Never drink and drive — order a ride, not another round.</p>
+        <p class="muted mt" style="font-size:.85rem">Midnight, Sunday morning, a public holiday — the lights are on. Drink responsibly, and never drink and drive: order a ride, not another round.</p>
       </div>
     </div>
   </section>
+  {site.tastingRoom && (
+    <section class="wrap" style="padding:0 var(--gut) 140px">
+      <div class="panel" style="min-height:0">
+        <span class="kicker">Inside the house</span>
+        <h2 class="display h2" style="margin:1rem 0 .8rem">Taste it <em>before you buy it.</em></h2>
+        <p class="muted" style="max-width:62ch;margin:0">The Liquor House opened in December 2020 with Kenya Breweries, and the supermarket has Diageo's tasting room fitted inside: a counter where you can try a whisky, a gin or a cream liqueur before you take the bottle home. Ask at the till.</p>
+      </div>
+    </section>
+  )}
 </Base>

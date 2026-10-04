@@ -1,0 +1,78 @@
+---
+import Base from "../../layouts/Base.astro";
+import "../../styles/games.css";
+import GuessBottle from "../../components/games/GuessBottle";
+import PerfectPour from "../../components/games/PerfectPour";
+import BarTrivia from "../../components/games/BarTrivia";
+import SpinBottle from "../../components/games/SpinBottle";
+import HeadsUp from "../../components/games/HeadsUp";
+import WouldYouRather from "../../components/games/WouldYouRather";
+import BeiGani from "../../components/games/BeiGani";
+import Memory from "../../components/games/Memory";
+import Chora from "../../components/games/Chora";
+import { GAMES, REWARD, HISTORY, SHENG, METHALI, KAUNTI } from "../../data/games";
+import { listAll } from "../../lib/catalog";
+
+const game = GAMES.find((g) => g.id === Astro.params.game);
+if (!game) return Astro.redirect("/games");
+
+const all = await listAll();
+const photographed = all.filter((d) => d.thumbnail && d.category !== "mixers");
+
+// Guess the Bottle: every photographed bottle, Kenyan ones marked so each round has some.
+const guessDrinks = photographed.map((d) => ({
+  handle: d.handle, name: d.name, brand: d.brand, category: d.category, thumbnail: d.thumbnail!, local: d.tags.includes("local"),
+}));
+
+// Perfect Pour: spirits poured by the tot — Kenyan first, topped up with any spirit.
+const SPIRITS = ["whisky", "cognac", "gin", "vodka", "rum", "tequila"];
+const spirits = photographed.filter((d) => SPIRITS.includes(d.category));
+const pourPool = [...spirits.filter((d) => d.tags.includes("local")), ...spirits.filter((d) => !d.tags.includes("local"))]
+  .slice(0, 8)
+  .map((d) => ({ handle: d.handle, name: d.name, thumbnail: d.thumbnail!, colour: d.colour }));
+
+// Bei Gani?: priced, photographed bottles from the shelf.
+const priceDrinks = photographed.filter((d) => d.price != null).map((d) => ({ handle: d.handle, name: d.name, volume: d.volume, thumbnail: d.thumbnail!, price: d.price! }));
+// Kumbukumbu: one bottle per brand, so no two pairs look alike.
+const seenBrand = new Set<string>();
+const memoryDrinks = photographed.filter((d) => (seenBrand.has(d.brand) ? false : (seenBrand.add(d.brand), true))).map((d) => ({ handle: d.handle, name: d.name, thumbnail: d.thumbnail! }));
+
+// Spin the Bottle: a Tusker in the middle of the table.
+const spinBottle = (all.find((d) => d.handle.startsWith("tusker-lager") && d.thumbnail) ?? photographed.find((d) => d.category === "beer"))?.thumbnail ?? "/bottles/tusker-lager-500ml.webp";
+const others = GAMES.filter((g) => g.id !== game.id);
+---
+<Base title={`${game.name} · Games night`} description={`${game.name} — ${game.line} A free game from The Liquor House: play solo or in teams on one phone.`} crumbs={[{ name: "Games night", path: "/games" }, { name: game.name, path: `/games/${game.id}` }]} image={game.cover ? game.art : undefined}>
+  <section class="page-hero" style="padding-bottom:16px">
+    <div class="wrap">
+      <a class="line-remove" href="/games">← Games night</a>
+      <span class="kicker" style="display:flex;margin-top:14px">{game.sw}</span>
+      <h1 class="display h2" style="margin:.8rem 0">{game.name}</h1>
+      <p class="lede">{game.line}{game.rewarded && ` High score unlocks ${REWARD.percent}% off.`}</p>
+    </div>
+  </section>
+  <section class="wrap" style="padding:10px var(--gut) 60px;max-width:1040px">
+    <div class="tool game-tool">
+      <div class="tool-body">
+        {game.id === "guess" && <GuessBottle client:visible drinks={guessDrinks} />}
+        {game.id === "pour" && <PerfectPour client:visible drinks={pourPool} />}
+        {game.id === "trivia" && <BarTrivia client:visible />}
+        {game.id === "spin" && <SpinBottle client:visible bottle={spinBottle} />}
+        {game.id === "history" && <BarTrivia client:visible game="history" pool={HISTORY} intro={`Maswali za history ya 254 — primary na high school: Turkana Boy, migration, the coast, colonial rule, Mau Mau, Jamhuri, Katiba 2010 na history ya dunia. ${HISTORY.length} maswali, kila round inachanganya topics. Uko sure unajua?`} />}
+        {game.id === "sheng" && <BarTrivia client:visible game="sheng" pool={SHENG} intro={`${SHENG.length} maneno ya mtaa — watu, chapaa, mtaa, hisia na salamu. What do they mean? Uko fiti na lugha ya mtaa?`} />}
+        {game.id === "headsup" && <HeadsUp client:visible />}
+        {game.id === "wyr" && <WouldYouRather client:visible />}
+        {game.id === "methali" && <BarTrivia client:visible game="methali" pool={METHALI} intro={`${METHALI.length} methali za wahenga — subira, busara, umoja, tabia, maisha. Haraka haraka… unajua inaishaje?`} />}
+        {game.id === "kaunti" && <BarTrivia client:visible game="kaunti" pool={KAUNTI} intro={`Kaunti zote 47, from Mandera to Kwale — parks, lakes, towns, headquarters and county numbers. ${KAUNTI.length} maswali. Unajua ziko wapi?`} />}
+        {game.id === "bei" && <BeiGani client:visible drinks={priceDrinks} />}
+        {game.id === "memory" && <Memory client:visible drinks={memoryDrinks} />}
+        {game.id === "chora" && <Chora client:visible />}
+      </div>
+    </div>
+  </section>
+  <section class="wrap" style="padding:0 var(--gut) 120px;max-width:1040px">
+    <span class="kicker">Next game</span>
+    <div class="row gap mt" style="flex-wrap:wrap">
+      {others.map((g) => <a class="btn btn-ghost" href={`/games/${g.id}`}>{g.name}</a>)}
+    </div>
+  </section>
+</Base>

@@ -2,43 +2,56 @@
  * Everything about the shop that is a business fact rather than design lives here, so the
  * owner's answers land in one file.
  *
- * TO CONFIRM WITH THE SHOP before launch — every value marked `// confirm` is a sensible
- * placeholder, not something the shop has told us: the street address, phone and WhatsApp
- * number, opening hours, delivery fees and the free-delivery threshold.
+ * The facts below are the shop's own public listing (Google Business Profile, Instagram
+ * @liquorhouse254, October 2026): Kenya's first liquor supermarket, on Kiambu Road beside the
+ * Astrol station, open around the clock, orders on 0700 884444. Anything still marked
+ * `// confirm` is ours, not theirs: the domain, the email, delivery fees and the
+ * free-delivery threshold. (@theliquorhouseke in Parklands is a different business.)
  */
 export const site = {
-  name: "Liquor House Kenya",
+  name: "The Liquor House",
   short: "Liquor House",
-  tagline: "Nairobi's house of fine spirits",
-  url: (import.meta.env.PUBLIC_SITE_URL as string | undefined) || "https://liquorhouse.co.ke", // confirm (an empty build arg must fall back too)
+  tagline: "Kenya's first liquor supermarket",
+  url: (import.meta.env.PUBLIC_SITE_URL as string | undefined) ?? "https://liquorhouse.co.ke", // confirm
   locale: "en-KE",
   country: "ke",
   city: "Nairobi",
-  address: "Nairobi, Kenya", // confirm: street and landmark
-  phone: "+254 700 000 000", // confirm
-  whatsapp: "254700000000", // confirm: digits only, 2547XXXXXXXX
-  email: "orders@liquorhouse.co.ke", // confirm
-  hours: [
-    { days: "Mon – Thu", time: "10am – 11pm" }, // confirm
-    { days: "Fri – Sat", time: "10am – 1am" }, // confirm
-    { days: "Sunday", time: "12pm – 10pm" }, // confirm
+  street: "Kiambu Road, beside Astrol petrol station",
+  area: "Ridgeways",
+  address: "Kiambu Road, beside Astrol petrol station, Ridgeways, Nairobi",
+  maps: "https://www.google.com/maps/search/?api=1&query=The+Liquor+House+Supermarket+Kiambu+Road+Nairobi",
+  phone: "+254 700 884 444",
+  whatsapp: "254700884444",
+  /** Empty until the shop gives us one; the pages leave the line out. */
+  email: "", // confirm
+  hours: [{ days: "Every day", time: "Open 24 hours" }],
+  /** schema.org openingHours, for the structured data in the layout. */
+  openingHours: "Mo-Su 00:00-23:59",
+  socials: [
+    { name: "Instagram", icon: "instagram", handle: "@liquorhouse254", url: "https://www.instagram.com/liquorhouse254/" },
+    { name: "X", icon: "x", handle: "@liquorhouse254", url: "https://x.com/liquorhouse254" },
   ],
-  /** Free delivery within the city zones once the bag reaches this. */
+  /** Every delivery in Nairobi is ridden by TumaBoda; its name always renders in its own
+   *  colours (src/components/TumaBoda.tsx). */
+  courier: { name: "TumaBoda", url: "https://tumaboda.co.ke" },
+  /** The shop also takes orders through Glovo. */
+  glovo: "https://glovoapp.com/ke/en/nairobi/",
+  /** Diageo's tasting room, opened with Kenya Breweries in December 2020. */
+  tastingRoom: true,
+  /** Free delivery within the nearer zones once the bag reaches this. */
   freeDeliveryOver: 10_000, // confirm
   storagePrefix: "lhk_",
-  /** Leave a product off the shelf until it has a photograph, rather than show it without
-   *  one. Applies to the live Medusa catalogue too: a POS product with no picture stays
-   *  sellable in the shop but does not appear on the website until it gets one. */
-  photosOnly: true,
 } as const;
 
 /** Kenyan law: no sale to under-18s, and the statutory health message. Shown in the footer,
  *  the age gate and at checkout. */
 export const legal = {
+  /** When the terms, privacy and cookie pages last changed. */
+  updated: "4 October 2026",
   minimumAge: 18,
   ageLine: "Not for sale to persons under the age of 18.",
   healthLine: "Excessive consumption of alcohol is harmful to your health.",
-  idLine: "Our riders check ID on delivery.",
+  idLine: "TumaBoda riders check ID on delivery.",
 };
 
 export interface Shelf {
@@ -63,7 +76,7 @@ export const SHELVES: Shelf[] = [
   { id: "wine", name: "Wine", line: "Sweet reds for the table, dry whites for the sun.", hue: "#8a1c34", shape: "wine", ageRestricted: true },
   { id: "champagne", name: "Champagne & Bubbles", line: "For the toast, the ruracio, the win.", hue: "#e3c77a", shape: "champagne", ageRestricted: true },
   { id: "beer", name: "Beer & Cider", line: "Cold Tusker, by the bottle or the crate.", hue: "#d39a32", shape: "can", ageRestricted: true },
-  { id: "mixers", name: "Mixers & Ice", line: "Tonic, soda, energy and ice. No age check.", hue: "#6fa8c9", shape: "can", ageRestricted: false },
+  { id: "mixers", name: "Soft Drinks & Mixers", line: "Sodas, tonic, energy drinks and ice — open to everyone, no age check.", hue: "#6fa8c9", shape: "can", ageRestricted: false },
 ];
 
 export const SHELF_BY_ID: Record<string, Shelf> = Object.fromEntries(SHELVES.map((s) => [s.id, s]));
@@ -101,21 +114,23 @@ export interface Zone {
 }
 
 export const ZONES: Zone[] = [
-  { id: "cbd", name: "CBD & Upper Hill", fee: 200, eta: "30 – 45 min", areas: ["CBD", "Upper Hill", "Ngara", "Parklands"] }, // confirm
-  { id: "westlands", name: "Westlands & Kilimani", fee: 250, eta: "30 – 45 min", areas: ["Westlands", "Kilimani", "Lavington", "Kileleshwa", "Riverside", "Hurlingham"] }, // confirm
-  { id: "south", name: "Karen, Lang'ata & South", fee: 350, eta: "45 – 60 min", areas: ["Karen", "Lang'ata", "South B", "South C", "Madaraka", "Ngong Road"] }, // confirm
-  { id: "north", name: "Runda, Gigiri & Muthaiga", fee: 350, eta: "45 – 60 min", areas: ["Runda", "Gigiri", "Muthaiga", "Ridgeways", "Kitisuru", "Two Rivers"] }, // confirm
-  { id: "east", name: "Eastlands & Embakasi", fee: 350, eta: "45 – 75 min", areas: ["Buruburu", "Donholm", "Embakasi", "Umoja", "Fedha", "Eastleigh"] }, // confirm
-  { id: "thika", name: "Thika Road & Kasarani", fee: 400, eta: "60 – 90 min", areas: ["Kasarani", "Roysambu", "Garden City", "Zimmerman", "Kahawa", "Ruiru"] }, // confirm
-  { id: "outer", name: "Kiambu, Rongai & Syokimau", fee: 500, eta: "60 – 90 min", areas: ["Kiambu", "Ruaka", "Rongai", "Syokimau", "Kitengela", "Athi River"] }, // confirm
+  // Ordered by distance from the shop on Kiambu Road. Fees and times: confirm.
+  { id: "kiambu-road", name: "Kiambu Road & Ridgeways", fee: 150, eta: "15 – 30 min", areas: ["Ridgeways", "Kiambu Road", "Thindigua", "Karura", "Garden Estate", "Muthaiga North"] },
+  { id: "north", name: "Runda, Gigiri & Muthaiga", fee: 200, eta: "20 – 40 min", areas: ["Runda", "Gigiri", "Muthaiga", "Rosslyn", "Two Rivers", "Village Market"] },
+  { id: "kiambu", name: "Kiambu, Ruaka & Banana", fee: 250, eta: "30 – 45 min", areas: ["Kiambu Town", "Ruaka", "Banana", "Ndenderu", "Kirigiti", "Tatu City"] },
+  { id: "westlands", name: "Westlands & Parklands", fee: 250, eta: "30 – 45 min", areas: ["Westlands", "Parklands", "Spring Valley", "Loresho", "Kitisuru", "Highridge"] },
+  { id: "thika", name: "Thika Road & Kasarani", fee: 300, eta: "35 – 55 min", areas: ["Roysambu", "Garden City", "Kasarani", "Zimmerman", "Kahawa", "Ruiru"] },
+  { id: "cbd", name: "CBD, Kilimani & Upper Hill", fee: 300, eta: "40 – 60 min", areas: ["CBD", "Upper Hill", "Kilimani", "Lavington", "Kileleshwa", "Hurlingham"] },
+  { id: "south", name: "Karen, Lang'ata & South", fee: 450, eta: "60 – 90 min", areas: ["Karen", "Lang'ata", "South B", "South C", "Madaraka", "Ngong Road"] },
+  { id: "east", name: "Eastlands & Embakasi", fee: 450, eta: "60 – 90 min", areas: ["Buruburu", "Donholm", "Embakasi", "Umoja", "Fedha", "Eastleigh"] },
 ];
 
 export const ZONE_BY_ID: Record<string, Zone> = Object.fromEntries(ZONES.map((z) => [z.id, z]));
 
 export const SPEEDS = [
-  { id: "express", name: "Express", line: "Rider leaves now", surcharge: 150 }, // confirm
-  { id: "standard", name: "This evening", line: "6pm – 10pm", surcharge: 0 },
-  { id: "collect", name: "Collect", line: "Ready in 20 minutes", surcharge: 0 },
+  { id: "express", name: "Express", line: "A TumaBoda rider leaves now", surcharge: 150 }, // confirm
+  { id: "standard", name: "Scheduled", line: "Pick a time — we're open 24 hours", surcharge: 0 },
+  { id: "collect", name: "Collect", line: "From the supermarket on Kiambu Road", surcharge: 0 },
 ] as const;
 
 export type SpeedId = (typeof SPEEDS)[number]["id"];

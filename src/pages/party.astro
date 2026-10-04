@@ -1,20 +1,43 @@
 ---
 import Base from "../layouts/Base.astro";
+import "../styles/party.css";
 import PartyPlanner from "../components/react/PartyPlanner";
+import { TumaBoda } from "../components/TumaBoda";
 import { listAll } from "../lib/catalog";
+import { PARTIES } from "../data/party";
+import { img } from "../lib/img";
 
-const shelves = new Set(["whisky", "vodka", "gin", "wine", "beer", "mixers"]);
+const shelves = new Set(["whisky", "vodka", "gin", "tequila", "rum", "cognac", "wine", "champagne", "beer", "mixers"]);
 const drinks = (await listAll()).filter((d) => d.price != null && shelves.has(d.category));
+const polaroids = ["nyama", "birthday", "ruracio"].map((id) => PARTIES.find((p) => p.id === id)!);
 ---
-<Base title="Party Planner" description="Guests, hours and the crowd — the Liquor House party planner works out the spirits, wine, beer, mixers and ice, then fills your bag.">
-  <section class="page-hero">
-    <div class="wrap">
-      <span class="kicker">Party planner</span>
-      <h1 class="display h1">How much for <em>the party?</em></h1>
-      <p class="lede">Slide in the headcount and the hours. We'll work out the bottles, crates, mixers and ice — and put the whole list in your bag in one tap.</p>
+<Base title="Party Planner — how much alcohol for a party" crumbs={[{ name: "Party Planner", path: "/party" }]} image="/party/birthday.webp" imageAlt="Friends celebrating a birthday" description="Pick the occasion, count the mbogi — the Liquor House party planner works out every bottle, crate, mixer and bag of ice, fills your bag, and TumaBoda brings it cold.">
+  <section class="pp-hero">
+    <div class="wrap pp-hero-grid">
+      <div>
+        <span class="kicker fade-up">Party planner · Panga sherehe</span>
+        <h1 class="display h1 arcade-title">
+          <span class="hl"><span>Panga sherehe,</span></span>
+          <span class="hl"><span><em>sisi tulete bar.</em></span></span>
+        </h1>
+        <p class="lede fade-up" style="animation-delay:.4s">Pick the occasion and count the mbogi. We work out every bottle, crate, mixer and bag of ice — then <TumaBoda /> brings it cold, any hour.</p>
+        <ol class="pp-how fade-up" style="animation-delay:.55s">
+          <li><b>1</b>Chagua sherehe</li>
+          <li><b>2</b>Hesabu mbogi</li>
+          <li><b>3</b>Bar inafika</li>
+        </ol>
+      </div>
+      <div class="pp-polaroids" aria-hidden="true">
+        {polaroids.map((p, i) => (
+          <figure class={`pp-pol p${i}`} style={`--hue:${p.hue}`}>
+            <img {...img(p.photo, "(max-width: 860px) 50vw, 300px")} alt="" style={`object-position:${p.focus}`} />
+            <figcaption>{p.name}</figcaption>
+          </figure>
+        ))}
+      </div>
     </div>
   </section>
-  <section class="wrap" style="padding:20px var(--gut) 140px;max-width:1040px">
+  <section class="wrap pp-wrap">
     <PartyPlanner client:load drinks={drinks} />
   </section>
 </Base>

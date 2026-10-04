@@ -39,6 +39,7 @@ ENV NODE_ENV=production HOST=0.0.0.0 PORT=4321
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app/server.mjs ./server.mjs
 
 EXPOSE 4321
 # /healthz touches nothing — never point this at a page that calls the backend. Checked with
@@ -46,4 +47,5 @@ EXPOSE 4321
 HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=5 \
   CMD node -e "fetch('http://localhost:4321/healthz').then((r) => process.exit(r.ok ? 0 : 1), () => process.exit(1))"
 
-CMD ["node", "./dist/server/entry.mjs"]
+# server.mjs: Astro's handler plus brotli/gzip and long caching for the photos.
+CMD ["node", "./server.mjs"]

@@ -1,30 +1,13 @@
 ---
 /**
- * The mark: a roof's arch (the "house") with a bottle standing in the doorway, in brass.
- * A placeholder identity until the shop supplies its own logo — swap this file and the
- * favicon, nothing else references the drawing.
+ * The logo is the shop's own sign — see Plaque.tsx. Swap that file (and public/favicon.svg)
+ * if the shop supplies artwork; nothing else draws it.
  */
-interface Props { word?: boolean; class?: string }
-const { word = true, class: cls = "" } = Astro.props;
+import Plaque from "./Plaque";
+import { site } from "../config/site";
+interface Props { class?: string; id?: string }
+const { class: cls = "", id = "lh" } = Astro.props;
 ---
-<a href="/" class={`logo ${cls}`} aria-label="Liquor House Kenya — home">
-  <svg class="logo-mark" viewBox="0 0 48 48" aria-hidden="true">
-    <defs>
-      <linearGradient id="lh-brass" x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0" stop-color="#ffd58a" />
-        <stop offset=".55" stop-color="#e8a33d" />
-        <stop offset="1" stop-color="#9a6018" />
-      </linearGradient>
-    </defs>
-    <circle cx="24" cy="24" r="22.5" fill="none" stroke="url(#lh-brass)" stroke-width="1.2" />
-    <path d="M11 37 V21 L24 10 L37 21 V37" fill="none" stroke="url(#lh-brass)" stroke-width="1.6" stroke-linejoin="round" />
-    <path d="M22.3 16.5 h3.4 v4.2 c0 1.2 2.6 2 2.6 4.8 v9.6 a1.4 1.4 0 0 1 -1.4 1.4 h-5.8 a1.4 1.4 0 0 1 -1.4 -1.4 v-9.6 c0 -2.8 2.6 -3.6 2.6 -4.8 z" fill="url(#lh-brass)" />
-    <rect x="20.6" y="27" width="6.8" height="4.6" rx=".6" fill="#0b0907" opacity=".55" />
-  </svg>
-  {word && (
-    <span class="logo-word">
-      <b>Liquor House</b>
-      <small>KENYA · NAIROBI</small>
-    </span>
-  )}
+<a href="/" class={`logo ${cls}`}>
+  <Plaque id={id} title={site.name} />
 </a>

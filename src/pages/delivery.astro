@@ -1,15 +1,19 @@
 ---
 import Base from "../layouts/Base.astro";
 import Icon from "../components/Icon.astro";
+import { TumaBoda, WithTumaBoda } from "../components/TumaBoda";
 import { ZONES, SPEEDS, site, legal } from "../config/site";
 import { money } from "../lib/format";
+import Faq from "../components/Faq.astro";
+import { FAQ } from "../data/faq";
+import { faqLd } from "../lib/seo";
 ---
-<Base title="Delivery" description={`Liquor House delivers across Nairobi — zones, fees and times. Free in the city zones over ${money(site.freeDeliveryOver)}.`}>
+<Base title="Alcohol delivery in Nairobi" minorOk description={`The Liquor House delivers across Nairobi 24 hours a day with TumaBoda — zones, fees from ${money(Math.min(...ZONES.map((z) => z.fee)))} and times. Free in the city zones over ${money(site.freeDeliveryOver)}.`} crumbs={[{ name: "Delivery", path: "/delivery" }]} jsonLd={faqLd(FAQ)}>
   <section class="page-hero">
     <div class="wrap">
       <span class="kicker">Delivery</span>
       <h1 class="display h1">Across Nairobi, <em>cold.</em></h1>
-      <p class="lede">Riders leave as soon as your order is confirmed. Pay by M-Pesa or cash at the door — and keep your ID handy.</p>
+      <p class="lede">Every delivery is ridden by <TumaBoda link />. Riders leave the supermarket on Kiambu Road as soon as your order is confirmed — day or night, we're open 24 hours. Pay by M-Pesa or card (Visa, Mastercard), and keep your ID handy.</p>
     </div>
   </section>
 
@@ -17,16 +21,16 @@ import { money } from "../lib/format";
     <div class="zones-band">
       {ZONES.map((z) => (
         <div class="zone">
-          <h4>{z.name}</h4>
+          <h2>{z.name}</h2>
           <div class="row" style="justify-content:space-between"><span class="price">{money(z.fee)}</span><span class="muted">{z.eta}</span></div>
           <p>{z.areas.join(" · ")}</p>
         </div>
       ))}
     </div>
-    <p class="muted mt" style="font-size:.85rem">Free delivery in the city zones on orders over {money(site.freeDeliveryOver)}. Further out? Message us — we deliver beyond these zones by arrangement.</p>
+    <p class="muted mt" style="font-size:.85rem">Free delivery in the city zones on orders over {money(site.freeDeliveryOver)}. Further out? Message us — we deliver beyond these zones by arrangement. You'll also find us on <a href={site.glovo} target="_blank" rel="noopener" style="text-decoration:underline">Glovo</a>.</p>
   </section>
 
-  <section class="wrap" style="padding:20px var(--gut) 140px">
+  <section class="wrap" style="padding:20px var(--gut) 40px">
     <div class="split">
       <div class="panel">
         <span class="kicker">How fast</span>
@@ -34,7 +38,7 @@ import { money } from "../lib/format";
           {SPEEDS.map((s) => (
             <div class="row gap" style="padding:14px 0;border-bottom:1px solid var(--line)">
               <Icon name={s.id === "express" ? "bolt" : s.id === "collect" ? "pin" : "clock"} size={22} />
-              <div style="flex:1"><b>{s.name}</b><div class="muted" style="font-size:.85rem">{s.line}</div></div>
+              <div style="flex:1"><b>{s.name}</b><div class="muted" style="font-size:.85rem"><WithTumaBoda text={s.line} /></div></div>
               <span class="price">{s.surcharge ? `+ ${money(s.surcharge)}` : "—"}</span>
             </div>
           ))}
@@ -43,9 +47,11 @@ import { money } from "../lib/format";
       <div class="panel panel-glow">
         <span class="kicker">At the door</span>
         <h3 class="display h3">Have your ID ready.</h3>
-        <p class="muted">{legal.ageLine} Our riders ask for ID on every delivery that includes alcohol, and will not hand over to anyone under 18 — or to anyone who appears intoxicated. Nobody is charged for an order we can't hand over.</p>
+        <p class="muted">{legal.ageLine} <TumaBoda /> riders ask for ID on every delivery that includes alcohol, and will not hand over to anyone under 18 — or to anyone who appears intoxicated. Nobody is charged for an order we can't hand over.</p>
         <a class="btn btn-ghost" href={`https://wa.me/${site.whatsapp}`} target="_blank" rel="noopener">Questions? WhatsApp us</a>
       </div>
     </div>
   </section>
+
+  <Faq title="Delivery, payment and ID" kicker="Before you order" />
 </Base>

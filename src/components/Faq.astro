@@ -1,0 +1,25 @@
+---
+/**
+ * Questions and answers, open on a tap. The page passes the same list to its layout as
+ * FAQPage structured data (lib/seo.ts), so what people read is what search engines quote.
+ */
+import { FAQ, type Faq } from "../data/faq";
+interface Props { items?: Faq[]; title?: string; kicker?: string }
+const { items = FAQ, title = "Questions, answered", kicker = "Good to know" } = Astro.props;
+---
+<section class="wrap faq" aria-labelledby="faq-title">
+  <div class="section-head" data-reveal>
+    <div>
+      <span class="kicker">{kicker}</span>
+      <h2 class="display h2" id="faq-title">{title}</h2>
+    </div>
+  </div>
+  <div class="faq-list">
+    {items.map((f, i) => (
+      <details class="faq-item" open={i === 0}>
+        <summary><h3>{f.q}</h3><span aria-hidden="true">+</span></summary>
+        <p>{f.a}</p>
+      </details>
+    ))}
+  </div>
+</section>

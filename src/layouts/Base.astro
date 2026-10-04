@@ -2,77 +2,155 @@
 import "../styles/global.css";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
-import AgeGate from "../components/react/AgeGate";
+import AgeGate from "../components/AgeGate.astro";
 import BagDrawer from "../components/react/BagDrawer";
 import { site } from "../config/site";
+import { AGE_KEY, MINOR_HOME } from "../lib/age";
+import { OG_IMAGE, abs, breadcrumbLd, storeLd, websiteLd, type Crumb } from "../lib/seo";
 
 interface Props {
   title?: string;
   description?: string;
   /** Checkout and other utility pages drop the giant footer. */
   bare?: boolean;
+  /** True for pages an under-18 may see: the soft-drinks shelf and products, checkout,
+   *  delivery, about and the policies. Every other page sends them to the soft drinks. */
+  minorOk?: boolean;
+  /** schema.org entities for this page; the store and website entities are always added. */
   jsonLd?: Record<string, unknown> | Record<string, unknown>[];
   image?: string;
-  /** The page opens on a dark (after-hours) hero: the header starts dark over it. */
-  heroDark?: boolean;
+  imageAlt?: string;
+  /** Search results, checkout, 404: kept out of the index (links are still followed). */
+  noindex?: boolean;
+  /** When the canonical URL keeps a query (a shelf of the shop), pass it here. */
+  canonicalPath?: string;
+  /** The trail below Home, for the BreadcrumbList. */
+  crumbs?: Crumb[];
+  ogType?: "website" | "product" | "article";
 }
-const { title, description = `${site.tagline}. Whisky, cognac, gin, wine and cold beer delivered across Nairobi in under an hour.`, bare = false, jsonLd, image, heroDark = false } = Astro.props;
+const {
+  title,
+  description = `${site.tagline}, on ${site.street}, Nairobi — open 24 hours. Whisky, cognac, gin, wine and cold beer, in store or delivered by TumaBoda.`,
+  bare = false, jsonLd, image, imageAlt, minorOk = false, noindex = false, canonicalPath, crumbs, ogType = "website",
+} = Astro.props;
 const fullTitle = title ? `${title} · ${site.name}` : `${site.name} — ${site.tagline}`;
-const canonical = new URL(Astro.url.pathname, site.url).toString();
-const ageKey = `${site.storagePrefix}age_ok`;
-
-const org = {
+const canonical = abs(canonicalPath ?? Astro.url.pathname);
+const ogImage = abs(image ?? OG_IMAGE);
+const twitter = site.socials.find((s) => s.icon === "x")?.handle;
+const graph = {
   "@context": "https://schema.org",
-  "@type": "LiquorStore",
-  name: site.name,
-  url: site.url,
-  telephone: site.phone,
-  address: { "@type": "PostalAddress", addressLocality: site.city, addressCountry: "KE" },
-  priceRange: "KSh",
+  "@graph": [storeLd(), websiteLd(), ...(crumbs?.length ? [breadcrumbLd(crumbs)] : []), ...(jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [])],
 };
+const FONT_KEY = `${site.storagePrefix}fonts_v1`;
+const FONT_FACES = [
+  { family: "Fraunces", style: "normal", weight: "300 600", url: "/fonts/fraunces.woff2" },
+  { family: "Fraunces", style: "italic", weight: "300 600", url: "/fonts/fraunces-italic.woff2" },
+  { family: "Inter Tight", style: "normal", weight: "400 700", url: "/fonts/inter-tight.woff2" },
+  { family: "JetBrains Mono", style: "normal", weight: "400 700", url: "/fonts/jetbrains-mono.woff2" },
+  { family: "Cinzel", style: "normal", weight: "600 700", url: "/fonts/cinzel.woff2" },
+];
+const ageKey = AGE_KEY;
+const minorHome = MINOR_HOME;
+
 ---
 <!doctype html>
-<html lang="en-KE" data-hero={heroDark ? "dark" : undefined}>
+<html lang="en-KE">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
-    <meta name="theme-color" content="#f5eee1" />
+    <meta name="robots" content={noindex ? "noindex, follow" : "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"} />
+    <meta name="theme-color" content="#f8f1e4" />
+    <meta name="geo.region" content="KE-30" />
+    <meta name="geo.placename" content="Nairobi" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <meta property="og:type" content="website" />
+    <link rel="icon" href="/icon-192.png" type="image/png" sizes="192x192" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="alternate" type="text/plain" title="About this shop, for AI assistants" href="/llms.txt" />
+    <meta property="og:type" content={ogType} />
     <meta property="og:site_name" content={site.name} />
+    <meta property="og:locale" content="en_KE" />
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
-    {image && <meta property="og:image" content={image} />}
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:alt" content={imageAlt ?? `${site.name} — ${site.tagline}, Kiambu Road, Nairobi`} />
+    {!image && <meta property="og:image:width" content="1200" />}
+    {!image && <meta property="og:image:height" content="630" />}
     <meta name="twitter:card" content="summary_large_image" />
+    {twitter && <meta name="twitter:site" content={twitter} />}
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..700,0..100,0..1;1,9..144,300..700,0..100,0..1&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap"
-    />
+    <!-- The brand fonts (public/fonts: self-hosted, SIL Open Font Licence, cut to Latin-1 and the
+         weights in use). A first visit paints at once in the fallback faces and fetches the fonts
+         quietly after the page has loaded; every page after that declares them up front, from
+         cache, so they are there for the first paint. Nothing ever swaps mid-page: no reflow,
+         no layout shift, and the first view is never held back by ~120 KB of type. -->
+    <script is:inline define:vars={{ FONT_FACES, FONT_KEY }}>
+      (function () {
+        var css = FONT_FACES.map(function (f) {
+          return '@font-face{font-family:"' + f.family + '";font-style:' + f.style + ";font-weight:" + f.weight + ';font-display:optional;src:url("' + f.url + '") format("woff2")}';
+        }).join("");
+        var warm = false;
+        try { warm = localStorage.getItem(FONT_KEY) === "1"; } catch (e) {}
+        if (warm) { var st = document.createElement("style"); st.textContent = css; document.head.appendChild(st); return; }
+        addEventListener("load", function () {
+          setTimeout(function () {
+            Promise.all(FONT_FACES.map(function (f) { return fetch(f.url); }))
+              .then(function () { try { localStorage.setItem(FONT_KEY, "1"); } catch (e) {} })
+              .catch(function () {});
+          }, 1500);
+        });
+      })();
+    </script>
 
     <!-- Before first paint: a visitor who already confirmed 18+ never sees the gate flash. -->
-    <script is:inline define:vars={{ ageKey }}>
-      try { if (localStorage.getItem(ageKey) === "1") document.documentElement.dataset.age = "ok"; } catch (e) {}
+    <script is:inline define:vars={{ ageKey, minorOk, minorHome }}>
+      try {
+        var a = localStorage.getItem(ageKey);
+        if (a === "1") document.documentElement.dataset.age = "ok";
+        else if (a === "minor") {
+          // Under 18: soft drinks only. Anything else goes back to the soft-drinks shelf.
+          if (!minorOk) location.replace(minorHome);
+          else document.documentElement.dataset.age = "minor";
+        }
+      } catch (e) {}
     </script>
-    <noscript><style>body > main, .hdr { visibility: visible !important; } [data-reveal] { opacity: 1 !important; transform: none !important; }</style></noscript>
+    <noscript><style>.gate { display: none !important; } html body { overflow: auto !important; } [data-reveal] { opacity: 1 !important; transform: none !important; }</style></noscript>
 
-    <script type="application/ld+json" set:html={JSON.stringify(org)} />
-    {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
+    <script type="application/ld+json" set:html={JSON.stringify(graph)} />
   </head>
   <body>
-    <AgeGate client:load />
+    <AgeGate />
     <Header />
     <main id="main">
       <slot />
     </main>
     {!bare && <Footer />}
-    <BagDrawer client:load />
+    <BagDrawer client:idle />
+    <!-- Reveal on scroll. Inline so it runs as soon as the HTML is parsed: whatever is already on
+         screen shows at once (no waiting on JavaScript to paint the first view), the rest fades
+         up as it scrolls in. -->
+    <script is:inline>
+      (function () {
+        var els = document.querySelectorAll("[data-reveal], .profile");
+        if (!("IntersectionObserver" in window)) { els.forEach(function (e) { e.classList.add("in"); }); return; }
+        var io = new IntersectionObserver(function (entries) {
+          entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } });
+        }, { rootMargin: "0px 0px -8% 0px", threshold: 0.08 });
+        var h = window.innerHeight;
+        els.forEach(function (el) {
+          var r = el.getBoundingClientRect();
+          if (r.top < h && r.bottom > 0) { el.style.transition = "none"; el.classList.add("in"); }
+          else io.observe(el);
+        });
+      })();
+    </script>
     <script>
       import "../scripts/immersive";
     </script>

@@ -1,0 +1,44 @@
+---
+import LegalPage from "../components/LegalPage.astro";
+import { site } from "../config/site";
+
+// What this site actually keeps on a visitor's device. If code starts storing something new,
+// it belongs in this table.
+const stored = [
+  { name: `${site.storagePrefix}age_ok`, what: "Your answer at the age check — 18 or over, or under 18 (soft drinks only) — so it isn't asked on every page.", kept: "Until you clear your browser's site data" },
+  { name: `${site.storagePrefix}bag`, what: "The bottles in your bag, so they are still there when you come back.", kept: "Until you check out, empty the bag or clear site data" },
+  { name: `${site.storagePrefix}best`, what: "Your best score in each of the games, so you know what to beat.", kept: "Until you clear your browser's site data" },
+  { name: `${site.storagePrefix}code`, what: "A discount code you won in the games, so checkout can fill it in for you.", kept: "Until you clear your browser's site data" },
+  { name: `${site.storagePrefix}seen`, what: "Which game questions, words and dares you've already had, so none repeats until you've played them all.", kept: "Until you clear your browser's site data" },
+  { name: `${site.storagePrefix}party`, what: "Your team names and players from the last game night, so nobody has to type them again.", kept: "Until you clear your browser's site data" },
+  { name: `${site.storagePrefix}fonts_v1`, what: "Remembers that this browser already has the shop's fonts, so pages after the first show them straight away.", kept: "Until you clear your browser's site data" },
+  { name: `${site.storagePrefix}plan`, what: "Your party plan — the occasion, guests, bottles you swapped, the date and area — so you can come back and finish it.", kept: "Until you clear your browser's site data" },
+  { name: `${site.storagePrefix}card_cart`, what: "While you pay by card on Paystack's page, which order the payment is for — so it completes when you come back.", kept: "Only in that browser tab, until the payment finishes" },
+];
+---
+<LegalPage title="Cookies" heading="Cookies" path="/cookies"
+  lede="Short version: no tracking, no advertising, no analytics. The site keeps a few small things in your browser so it works.">
+  <h2>What this site stores</h2>
+  <p>We don't set cookies. Instead the site uses your browser's local storage, a similar technology, for a few things it needs to work:</p>
+  <div class="legal-table">
+    <table>
+      <thead><tr><th>Name</th><th>What it's for</th><th>How long</th></tr></thead>
+      <tbody>{stored.map((s) => <tr><td class="mono">{s.name}</td><td>{s.what}</td><td>{s.kept}</td></tr>)}</tbody>
+    </table>
+  </div>
+  <p>They stay on your device; we can't read them from our side, and they're only written when you use the feature they belong to — the age check, the bag, or a game. None of them is used to track or profile you.</p>
+
+  <h2>What we don't do</h2>
+  <p>No advertising or tracking pixels, no analytics, no profiling, and nothing that follows you to other websites.</p>
+
+  <h2>Other services</h2>
+  <ul>
+    <li>The site's typefaces are loaded from Google Fonts, which receives your IP address in order to send them.</li>
+    <li>Links to WhatsApp, Instagram, X, Glovo and Google Maps take you to those services, which use their own cookies under their own policies.</li>
+  </ul>
+
+  <h2>Clearing it</h2>
+  <p>You can delete what the site has stored at any time from your browser's settings — usually under Privacy, Site data or Cookies. You'll be asked to confirm your age again, and your bag will be empty.</p>
+
+  <p>For how we use the details you give us at checkout, see our <a href="/privacy">Privacy Policy</a>.</p>
+</LegalPage>

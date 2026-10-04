@@ -7,7 +7,7 @@ import Medusa from "@medusajs/js-sdk";
  * No key means no backend yet: `LIVE` is false, the catalogue comes from the demo cellar and
  * checkout sends the order over WhatsApp. Nothing calls Medusa in that mode.
  */
-const MEDUSA_URL = (import.meta.env.PUBLIC_MEDUSA_URL || "http://localhost:8082").replace(/\/+$/, "");
+const MEDUSA_URL = (import.meta.env.PUBLIC_MEDUSA_URL ?? "http://localhost:8082").replace(/\/+$/, "");
 const KEY = (import.meta.env.PUBLIC_MEDUSA_KEY_LIQUORHOUSE as string | undefined) ?? "";
 
 export const LIVE = KEY.length > 0;

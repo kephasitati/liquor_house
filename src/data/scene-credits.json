@@ -1,0 +1,110 @@
+[
+ {
+  "file": "public/scene/blue-label.webp",
+  "use": "home hero",
+  "source": "https://jayswines.com/wp-content/uploads/2020/09/johnnie-walker-blue-label-700ml.png",
+  "note": "studio white cut away (edge flood fill), cropped"
+ },
+ {
+  "file": "public/scene/baileys-body.webp + baileys-cap.webp",
+  "use": "home pour scene",
+  "source": "repo: medusa/src/scripts/data/beyond/baileys-irish-cream.webp",
+  "note": "studio white cut away (edge flood fill), then split at the cap so the scene can unscrew it"
+ },
+ {
+  "file": "public/scene/shopfront.webp",
+  "use": "home hero, under the facts",
+  "source": "supplied by the shop (photo of the Kiambu Road supermarket)",
+  "note": "360px original, scaled 2x; a full-width use needs a larger photo"
+ },
+ {
+  "file": "public/games/history.webp",
+  "use": "games card",
+  "source": "https://www.pexels.com/photo/15483543/",
+  "note": "Pexels (free for commercial use); adults, no drinks in shot"
+ },
+ {
+  "file": "public/games/sheng.webp",
+  "use": "games card",
+  "source": "https://www.pexels.com/photo/9705753/",
+  "note": "Pexels (free for commercial use); adults, no drinks in shot"
+ },
+ {
+  "file": "public/games/headsup.webp",
+  "use": "games card",
+  "source": "https://www.pexels.com/photo/6861096/",
+  "note": "Pexels (free for commercial use); adults, no drinks in shot"
+ },
+ {
+  "file": "public/games/wyr.webp",
+  "use": "games card",
+  "source": "https://www.pexels.com/photo/30689324/",
+  "note": "Pexels (free for commercial use); adults, no drinks in shot"
+ },
+ {
+  "file": "public/games/methali.webp",
+  "use": "games card",
+  "source": "https://www.pexels.com/photo/32685497/",
+  "note": "Pexels (free for commercial use); adults, no drinks in shot"
+ },
+ {
+  "file": "public/games/kaunti.webp",
+  "use": "games card",
+  "source": "https://www.pexels.com/photo/37489738/",
+  "note": "Pexels (free for commercial use); adults, no drinks in shot"
+ },
+ {
+  "file": "public/games/chora.webp",
+  "use": "games card",
+  "source": "https://www.pexels.com/photo/4238483/",
+  "note": "Pexels (free for commercial use); adults, no drinks in shot"
+ },
+ {
+  "file": "public/party/birthday.webp",
+  "use": "party planner occasion",
+  "source": "https://www.pexels.com/photo/28863293/",
+  "note": "Pexels (free for commercial use); adults"
+ },
+ {
+  "file": "public/party/nyama.webp",
+  "use": "party planner occasion",
+  "source": "https://www.pexels.com/photo/14887967/",
+  "note": "Pexels (free for commercial use); adults"
+ },
+ {
+  "file": "public/party/ruracio.webp",
+  "use": "party planner occasion",
+  "source": "https://www.pexels.com/photo/35516036/",
+  "note": "Pexels (free for commercial use); adults"
+ },
+ {
+  "file": "public/party/match.webp",
+  "use": "party planner occasion",
+  "source": "https://www.pexels.com/photo/36766071/",
+  "note": "Pexels (free for commercial use); adults"
+ },
+ {
+  "file": "public/party/office.webp",
+  "use": "party planner occasion",
+  "source": "https://www.pexels.com/photo/8555215/",
+  "note": "Pexels (free for commercial use); adults"
+ },
+ {
+  "file": "public/party/sundowner.webp",
+  "use": "party planner occasion",
+  "source": "https://www.pexels.com/photo/36729891/",
+  "note": "Pexels (free for commercial use); adults"
+ },
+ {
+  "file": "public/party/graduation.webp",
+  "use": "party planner occasion",
+  "source": "https://www.pexels.com/photo/19837484/",
+  "note": "Pexels (free for commercial use); adults"
+ },
+ {
+  "file": "public/party/newyear.webp",
+  "use": "party planner occasion",
+  "source": "https://www.pexels.com/photo/5970895/",
+  "note": "Pexels (free for commercial use); adults"
+ }
+]

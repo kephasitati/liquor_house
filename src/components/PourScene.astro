@@ -4,23 +4,31 @@
  * script in src/scripts/immersive.ts writes --p / --pt / --stream and the fill height, and
  * everything here reads them.
  *
- * The bottle is a real one: a photograph cut out of its white ground (scripts/bottle-photos.sh),
- * placed as an <image> so the same transform tips it.
+ * The bottle is a real Baileys Original photograph, so what pours is cream, not whisky, and
+ * it is opened first: the photo is split into its cap and its body, and the script unscrews
+ * the cap and lays it on the bar before the bottle tips.
  *
- * Geometry, in viewBox units: the bottle is drawn around its own centre, parked at (170,352),
- * and turns about that point (transform-origin 0 0, so the flying cork never moves the pivot).
- * The open mouth sits at (0,−170). Tipped 125° clockwise and nudged (56,−28), it lands at
- * ~(347,389) — just above the glass rim (y 470), where the stream starts. The cork pops off
- * along the bottle's axis as it tips (--cork) and goes back on as it rights itself.
+ * Geometry, in viewBox units, inside the group parked at (170,330): the body runs from the
+ * open neck (y −190) to the base (y 251), so the group's box is centred on (0,29). The tip in
+ * global.css turns it 125° about that centre and nudges it (19,−75), which lands the mouth at
+ * ~(368,410) — just above the glass rim (y 470), where the stream starts. The cap sits at
+ * x −25.7…26.5, y −225…−181 until it comes off. Resize anything and the nudge has to be
+ * worked out again.
  */
+import { TumaBoda } from "./TumaBoda";
 ---
-<section class="pour dark" aria-label="How an order is poured">
+<section class="pour" aria-label="How an order is poured">
   <div class="pour-sticky">
     <div class="pour-glow"></div>
     <div class="pour-scene">
       <div class="pour-art">
         <svg viewBox="0 0 600 700" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
           <defs>
+            <linearGradient id="ps-liq" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0" stop-color="#8a420f" />
+              <stop offset=".5" stop-color="#eaa040" />
+              <stop offset="1" stop-color="#7a370b" />
+            </linearGradient>
             <linearGradient id="ps-glass" x1="0" y1="0" x2="1" y2="0">
               <stop offset="0" stop-color="#fff" stop-opacity=".25" />
               <stop offset=".2" stop-color="#fff" stop-opacity=".04" />
@@ -28,17 +36,21 @@
               <stop offset="1" stop-color="#fff" stop-opacity=".12" />
             </linearGradient>
             <linearGradient id="ps-stream" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0" stop-color="#c8741f" />
-              <stop offset=".5" stop-color="#ffc670" />
-              <stop offset="1" stop-color="#b8661a" />
+              <stop offset="0" stop-color="#b98a5e" />
+              <stop offset=".5" stop-color="#f1dfc2" />
+              <stop offset="1" stop-color="#a87a4f" />
             </linearGradient>
             <linearGradient id="ps-fill" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stop-color="#ffc670" />
-              <stop offset=".08" stop-color="#e3953a" />
-              <stop offset="1" stop-color="#7a370b" />
+              <stop offset="0" stop-color="#f6e9d4" />
+              <stop offset=".08" stop-color="#dcbf98" />
+              <stop offset="1" stop-color="#9c6d45" />
             </linearGradient>
             <clipPath id="ps-glass-in">
               <path d="M305 472 H455 L445 626 H315 Z" />
+            </clipPath>
+            <!-- bubbles live only inside the liquid, so they rise with the level -->
+            <clipPath id="ps-liquid">
+              <use href="#ps-fill-rect" />
             </clipPath>
             <radialGradient id="ps-table" cx=".5" cy=".5" r=".5">
               <stop offset="0" stop-color="#e8a33d" stop-opacity=".35" />
@@ -47,38 +59,52 @@
           </defs>
 
           <ellipse cx="380" cy="648" rx="200" ry="22" fill="url(#ps-table)" />
+          <ellipse cx="380" cy="644" rx="78" ry="7" fill="#4a3014" opacity=".2" />
 
           <!-- the stream -->
           <g class="pour-stream" style="transition: opacity .35s">
-            <path d="M347 390 C 358 450, 370 520, 376 610" stroke="url(#ps-stream)" stroke-width="9" fill="none" stroke-linecap="round">
+            <path d="M362 402 C 368 450, 372 520, 376 610" stroke="url(#ps-stream)" stroke-width="9" fill="none" stroke-linecap="round">
               <animate attributeName="d" dur=".6s" repeatCount="indefinite"
-                values="M347 390 C 358 450, 370 520, 376 610;M347 390 C 356 452, 373 522, 377 610;M347 390 C 358 450, 370 520, 376 610" />
+                values="M362 402 C 368 450, 372 520, 376 610;M362 402 C 366 452, 375 522, 377 610;M362 402 C 368 450, 372 520, 376 610" />
             </path>
-            <circle cx="372" cy="600" r="4" fill="#ffc670"><animate attributeName="cy" values="600;580;600" dur=".5s" repeatCount="indefinite" /><animate attributeName="cx" values="372;356;372" dur=".5s" repeatCount="indefinite" /></circle>
-            <circle cx="384" cy="600" r="3" fill="#ffc670"><animate attributeName="cy" values="600;575;600" dur=".45s" repeatCount="indefinite" /><animate attributeName="cx" values="384;402;384" dur=".45s" repeatCount="indefinite" /></circle>
+            <circle cx="372" cy="600" r="4" fill="#efdcbf"><animate attributeName="cy" values="600;580;600" dur=".5s" repeatCount="indefinite" /><animate attributeName="cx" values="372;356;372" dur=".5s" repeatCount="indefinite" /></circle>
+            <circle cx="384" cy="600" r="3" fill="#efdcbf"><animate attributeName="cy" values="600;575;600" dur=".45s" repeatCount="indefinite" /><animate attributeName="cx" values="384;402;384" dur=".45s" repeatCount="indefinite" /></circle>
           </g>
 
           <!-- the glass, filling -->
           <g>
             <g clip-path="url(#ps-glass-in)">
-              <rect data-fill x="300" y="640" width="160" height="0" fill="url(#ps-fill)" />
+              <rect id="ps-fill-rect" data-fill x="300" y="640" width="160" height="0" fill="url(#ps-fill)" />
+              <g clip-path="url(#ps-liquid)" class="pour-bubbles">
+                {[[328, 3, 2.6, 0], [352, 2.2, 3.1, 0.8], [371, 2.8, 2.2, 1.6], [394, 1.8, 2.9, 0.4], [413, 2.6, 2.4, 1.2], [432, 2, 3.4, 2], [340, 1.6, 2.7, 2.4], [404, 2.2, 2.0, 0.6]].map(([x, r, dur, delay]) => (
+                  <circle cx={x} cy="636" r={r} fill="#fff" fill-opacity=".75">
+                    <animate attributeName="cy" values="636;470" dur={`${dur}s`} begin={`${delay}s`} repeatCount="indefinite" />
+                    <animate attributeName="cx" values={`${x};${x + 5};${x - 3};${x}`} dur={`${dur}s`} begin={`${delay}s`} repeatCount="indefinite" />
+                  </circle>
+                ))}
+              </g>
               <rect x="330" y="560" width="40" height="40" rx="8" fill="#fff" fill-opacity=".14" stroke="#fff" stroke-opacity=".3" transform="rotate(14 350 580)" />
               <rect x="378" y="575" width="44" height="40" rx="8" fill="#fff" fill-opacity=".12" stroke="#fff" stroke-opacity=".3" transform="rotate(-10 400 595)" />
             </g>
-            <path d="M300 468 H460 L448 632 Q446 642 436 642 H324 Q314 642 312 632 Z" fill="url(#ps-glass)" stroke="#f4ead7" stroke-opacity=".45" stroke-width="2" />
+            <path d="M300 468 H460 L448 632 Q446 642 436 642 H324 Q314 642 312 632 Z" fill="url(#ps-glass)" stroke="#4a3014" stroke-opacity=".35" stroke-width="2" />
             <path d="M313 610 H447 L444 640 H316 Z" fill="#fff" fill-opacity=".08" />
             <path d="M318 490 L326 600" stroke="#fff" stroke-opacity=".35" stroke-width="4" stroke-linecap="round" />
           </g>
 
-          <!-- the bottle: a photograph in two pieces, so it uncorks as it tips -->
-          <g transform="translate(170.3 352)">
+          <!-- the bottle -->
+          <g transform="translate(170 330)">
             <g class="pour-bottle">
-              <!-- the neck was clear glass on white and went with the background; put the glass back -->
-              <rect x="-24" y="-140" width="48" height="26" rx="4" fill="url(#ps-glass)" stroke="#fff" stroke-opacity=".28" />
-              <image href="/hero/monkey-shoulder-body.webp" x="-76.3" y="-170.4" width="152.6" height="362.4" />
-              <g class="pour-cork">
-                <image href="/hero/monkey-shoulder-cork.webp" x="-76.3" y="-192" width="152.6" height="21.6" />
-              </g>
+              <!-- Baileys Original, cut out of its studio white, cap removed (public/scene/). -->
+              <image href="/scene/baileys-body.webp" x="-72.9" y="-181.2" width="145.8" height="432.2" preserveAspectRatio="none" />
+              <!-- the open neck the cap was screwed onto: threaded glass and the mouth -->
+              <rect x="-15" y="-190" width="30" height="10" rx="2.5" fill="#15110e" />
+              <path d="M-15 -186.5h30M-15 -183.5h30" stroke="#4a3d32" stroke-width=".8" />
+              <ellipse cx="0" cy="-190" rx="15" ry="3.2" fill="#2b231d" stroke="#fff" stroke-opacity=".35" stroke-width=".8" />
+              <ellipse cx="0" cy="-190" rx="9" ry="1.8" fill="#000" fill-opacity=".85" />
+            </g>
+            <!-- the cap: immersive.ts moves it, from the neck to the bar beside the glass -->
+            <g class="pour-cap" data-cap>
+              <image href="/scene/baileys-cap.webp" x="-25.7" y="-225" width="52.2" height="43.8" preserveAspectRatio="none" />
             </g>
           </g>
         </svg>
@@ -98,7 +124,7 @@
         <div class="beat">
           <span class="num">03 — THE DOOR</span>
           <h3 class="display h2">At your door, <em>within the hour.</em></h3>
-          <p class="lede">Express riders across Nairobi. Pay by M-Pesa or cash on delivery — and have your ID ready, we check.</p>
+          <p class="lede">Ridden by <TumaBoda /> across Nairobi. Pay by M-Pesa or card — and have your ID ready, the rider checks.</p>
         </div>
       </div>
     </div>

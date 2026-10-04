@@ -115,7 +115,8 @@ Once the shop's channel is live, its own product photos (uploaded in the POS or 
 ## Deploying
 
 `Dockerfile`: a multi-stage Node 22 image built from this folder alone with
-`pnpm install --frozen-lockfile`, serving `dist/server/entry.mjs` on port 4321. Its
+`pnpm install --frozen-lockfile`, serving `server.mjs` (Astro's handler with compression
+and photo caching) on port 4321. Its
 healthcheck calls `/healthz` with Node's own `fetch`, so the image needs no curl.
 `docker-compose.yml` runs that single service on `LIQUORHOUSE_PORT` (default 4325).
 
@@ -134,3 +135,10 @@ Before the site takes real orders:
    `AUTH_CORS`. If you skip this, the pages load but nothing can be added to the basket.
 3. Point the domain at the service.
 4. Replace every `// confirm` in `src/config/site.ts`.
+
+**On Vercel:** import this repository with the defaults (root directory `.`, framework Astro).
+`vercel.json` installs with the lockfile, and `astro.config.mjs` switches to the Vercel adapter
+whenever `VERCEL` is set, so the same code runs as serverless functions there and as a Node
+server everywhere else. Set the `PUBLIC_*` variables in the project's Environment Variables and
+redeploy after changing them. Deployment Protection only guards preview URLs; the production
+domain is public.

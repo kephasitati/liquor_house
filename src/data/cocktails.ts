@@ -19,6 +19,11 @@ export interface Cocktail {
   glass: Glass;
   colour: string;
   garnish: string;
+  /** Pexels photo id of the drink (free for commercial use, no attribution). The file is
+   *  public/cocktails/<id>.webp; refetch with the id if it needs a larger size. */
+  photo: string;
+  /** object-position for the photo, so the glass stays in frame when the card crops it. */
+  focus: string;
   base: string;
   minutes: number;
   ingredients: Ingredient[];
@@ -27,7 +32,7 @@ export interface Cocktail {
 
 export const COCKTAILS: Cocktail[] = [
   {
-    id: "dawa", name: "Dawa", kicker: "Nairobi's own medicine", glass: "rocks", colour: "#e9e3c8", garnish: "#9cc65a",
+    id: "dawa", name: "Dawa", kicker: "Nairobi's own medicine", glass: "rocks", colour: "#e9e3c8", garnish: "#9cc65a", photo: "29095932", focus: "50% 43%",
     base: "vodka", minutes: 3,
     ingredients: [
       { label: "60ml vodka", shelf: "vodka", brand: "Smirnoff" },
@@ -43,11 +48,11 @@ export const COCKTAILS: Cocktail[] = [
     ],
   },
   {
-    id: "gin-tonic", name: "Sundowner G&T", kicker: "The balcony classic", glass: "highball", colour: "#dfeee9", garnish: "#7cb342",
+    id: "gin-tonic", name: "Sundowner G&T", kicker: "The balcony classic", glass: "highball", colour: "#dfeee9", garnish: "#7cb342", photo: "3557746", focus: "50% 100%",
     base: "gin", minutes: 2,
     ingredients: [
-      { label: "50ml gin", shelf: "gin", brand: "Gordon's" },
-      { label: "150ml tonic water", shelf: "mixers", brand: "Tonic" },
+      { label: "50ml gin", shelf: "gin", brand: "Gilbey's" },
+      { label: "150ml tonic water", shelf: "mixers", brand: "Schweppes" },
       { label: "Lime wedge or cucumber ribbon" },
       { label: "Plenty of ice", shelf: "mixers", brand: "Liquor House" },
     ],
@@ -58,18 +63,18 @@ export const COCKTAILS: Cocktail[] = [
     ],
   },
   {
-    id: "whisky-ginger", name: "Jameson, Ginger & Lime", kicker: "The easy crowd-pleaser", glass: "highball", colour: "#d9a556", garnish: "#8bc34a",
+    id: "whisky-ginger", name: "Jameson, Ginger & Lime", kicker: "The easy crowd-pleaser", glass: "highball", colour: "#d9a556", garnish: "#8bc34a", photo: "19789236", focus: "50% 94%",
     base: "whisky", minutes: 2,
     ingredients: [
       { label: "50ml Irish whiskey", shelf: "whisky", brand: "Jameson" },
-      { label: "150ml ginger ale", shelf: "mixers", brand: "Ginger Ale" },
+      { label: "150ml ginger beer", shelf: "mixers", brand: "Stoney" },
       { label: "Lime wedge" },
       { label: "Ice", shelf: "mixers", brand: "Liquor House" },
     ],
-    method: ["Fill a highball with ice.", "Add the whiskey and top with ginger ale.", "Squeeze in the lime and stir."],
+    method: ["Fill a highball with ice.", "Add the whiskey and top with ginger beer.", "Squeeze in the lime and stir."],
   },
   {
-    id: "margarita", name: "Margarita", kicker: "Salt rim, late night", glass: "coupe", colour: "#e4e9a8", garnish: "#9ccc65",
+    id: "margarita", name: "Margarita", kicker: "Salt rim, late night", glass: "coupe", colour: "#e4e9a8", garnish: "#9ccc65", photo: "29463223", focus: "50% 54%",
     base: "tequila", minutes: 4,
     ingredients: [
       { label: "50ml blanco tequila", shelf: "tequila", brand: "Olmeca" },
@@ -84,24 +89,24 @@ export const COCKTAILS: Cocktail[] = [
     ],
   },
   {
-    id: "spritz", name: "Aperol Spritz", kicker: "Golden hour in a glass", glass: "flute", colour: "#f07a2c", garnish: "#ff9800",
+    id: "spritz", name: "Aperol Spritz", kicker: "Golden hour in a glass", glass: "flute", colour: "#f07a2c", garnish: "#ff9800", photo: "33493346", focus: "50% 58%",
     base: "liqueur", minutes: 2,
     ingredients: [
-      { label: "75ml sparkling wine", shelf: "champagne", brand: "Le Roux" },
+      { label: "75ml sparkling wine", shelf: "champagne", brand: "Martini" },
       { label: "50ml Aperol", shelf: "liqueur", brand: "Aperol" },
-      { label: "Splash of soda water", shelf: "mixers", brand: "Soda Water" },
+      { label: "Splash of soda water", shelf: "mixers", brand: "Schweppes" },
       { label: "Orange slice" },
     ],
     method: ["Fill a large wine glass with ice.", "Pour the sparkling wine, then the Aperol, then the soda.", "Garnish with orange."],
   },
   {
-    id: "mojito", name: "Mojito", kicker: "Mint, lime, rum, repeat", glass: "highball", colour: "#e9f3df", garnish: "#43a047",
+    id: "mojito", name: "Mojito", kicker: "Mint, lime, rum, repeat", glass: "highball", colour: "#e9f3df", garnish: "#43a047", photo: "11009216", focus: "50% 65%",
     base: "rum", minutes: 4,
     ingredients: [
       { label: "50ml white rum", shelf: "rum", brand: "Bacardí" },
       { label: "8 mint leaves" },
       { label: "½ lime and 2 tsp sugar" },
-      { label: "Top with soda water", shelf: "mixers", brand: "Soda Water" },
+      { label: "Top with soda water", shelf: "mixers", brand: "Schweppes" },
     ],
     method: [
       "Gently press the mint with lime and sugar — bruise it, don't shred it.",
@@ -110,7 +115,7 @@ export const COCKTAILS: Cocktail[] = [
     ],
   },
   {
-    id: "espresso-martini", name: "Espresso Martini", kicker: "The second wind", glass: "martini", colour: "#3a2216", garnish: "#c8a27a",
+    id: "espresso-martini", name: "Espresso Martini", kicker: "The second wind", glass: "martini", colour: "#3a2216", garnish: "#c8a27a", photo: "15866908", focus: "50% 56%",
     base: "vodka", minutes: 4,
     ingredients: [
       { label: "40ml vodka", shelf: "vodka", brand: "Absolut" },
@@ -125,7 +130,7 @@ export const COCKTAILS: Cocktail[] = [
     ],
   },
   {
-    id: "dark-stormy", name: "Cane & Stormy", kicker: "A Kenyan twist", glass: "mug", colour: "#b46a2a", garnish: "#cddc39",
+    id: "dark-stormy", name: "Cane & Stormy", kicker: "A Kenyan twist", glass: "mug", colour: "#b46a2a", garnish: "#cddc39", photo: "14469343", focus: "50% 50%",
     base: "rum", minutes: 2,
     ingredients: [
       { label: "50ml cane spirit", shelf: "rum", brand: "Kenya Cane" },

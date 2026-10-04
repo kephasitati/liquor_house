@@ -1,5 +1,8 @@
 ---
 import Logo from "./Logo.astro";
+import Icon from "./Icon.astro";
+import { TumaBoda, WithTumaBoda } from "./TumaBoda";
+import PayLogos from "./PayLogos";
 import { site, legal, SHELVES } from "../config/site";
 const year = new Date().getFullYear();
 ---
@@ -8,40 +11,57 @@ const year = new Date().getFullYear();
     <p class="ftr-big" aria-hidden="true">Liquor <em>House</em></p>
     <div class="ftr-grid">
       <div>
-        <Logo />
+        <Logo id="lh-ftr" />
         <p class="muted" style="max-width:34ch;margin-top:1.2rem;font-size:.92rem">
-          {site.tagline}. Whisky, cognac, gin, wine and cold beer — delivered across {site.city}, or ready to collect.
+          {site.tagline}, on {site.street}. Whisky, cognac, gin, wine and cold beer — open 24 hours, in store or delivered across {site.city} by <TumaBoda />.
         </p>
         <div class="row gap-s mt">
           <a class="btn btn-ghost btn-sm" href={`https://wa.me/${site.whatsapp}`} target="_blank" rel="noopener">WhatsApp us</a>
           <a class="btn btn-ghost btn-sm" href={`tel:${site.phone.replace(/\s/g, "")}`}>Call</a>
+          {site.socials.map((s) => (
+            <a class="icon-btn social" href={s.url} target="_blank" rel="noopener" aria-label={`${site.short} on ${s.name}, ${s.handle}`}><Icon name={s.icon} size={18} /></a>
+          ))}
         </div>
       </div>
       <div>
-        <h4>The shelves</h4>
-        <ul>{SHELVES.slice(0, 7).map((s) => <li><a href={`/shop?shelf=${s.id}`}>{s.name}</a></li>)}</ul>
+        <h2 class="ftr-h">The shelves</h2>
+        <ul>
+          {SHELVES.slice(0, 7).map((s) => <li data-adult={s.ageRestricted ? "" : undefined}><a href={`/shop?shelf=${s.id}`}>{s.name}</a></li>)}
+          <li><a href="/shop?shelf=mixers">Soft Drinks &amp; Mixers</a></li>
+        </ul>
       </div>
       <div>
-        <h4>The house</h4>
+        <h2 class="ftr-h">The house</h2>
         <ul>
-          <li><a href="/cocktails">Cocktail Lab</a></li>
-          <li><a href="/finder">Taste Finder</a></li>
-          <li><a href="/party">Party Planner</a></li>
+          <li data-adult><a href="/cocktails">Cocktail Lab</a></li>
+          <li data-adult><a href="/finder">Taste Finder</a></li>
+          <li data-adult><a href="/party">Party Planner</a></li>
+          <li data-adult><a href="/games">Games night</a></li>
           <li><a href="/delivery">Delivery & zones</a></li>
           <li><a href="/about">About & contact</a></li>
         </ul>
       </div>
       <div>
-        <h4>Opening hours</h4>
-        <ul>{site.hours.map((h) => <li><span class="mono" style="color:var(--text)">{h.days}</span><br />{h.time}</li>)}</ul>
+        <h2 class="ftr-h">Find us</h2>
+        <ul>
+          {site.hours.map((h) => <li><span class="mono" style="color:var(--fg)">{h.days}</span><br />{h.time}</li>)}
+          <li class="pay-strip"><PayLogos label="We accept M-Pesa, Visa and Mastercard" /></li>
+          <li><a href={site.maps} target="_blank" rel="noopener">{site.street}</a></li>
+          <li><a href={`tel:${site.phone.replace(/\s/g, "")}`}>{site.phone}</a></li>
+        </ul>
       </div>
     </div>
     <div class="ftr-legal">
       <div class="row gap">
         <span class="badge-18" aria-label="18 plus">18+</span>
-        <span><strong>{legal.ageLine}</strong> {legal.healthLine} {legal.idLine}</span>
+        <span><strong>{legal.ageLine}</strong> {legal.healthLine} <WithTumaBoda text={legal.idLine} /></span>
       </div>
-      <span>© {year} {site.name}. Drink responsibly — never drink and drive.</span>
+      <div class="ftr-links">
+        <a href="/terms">Terms & Conditions</a>
+        <a href="/privacy">Privacy Policy</a>
+        <a href="/cookies">Cookies</a>
+        <span>© {year} {site.name}. Drink responsibly — never drink and drive.</span>
+      </div>
     </div>
   </div>
 </footer>
