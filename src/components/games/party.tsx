@@ -138,7 +138,12 @@ export function PartySetup({ seconds, secondsOptions, onStart, startLabel = "Twe
       </div>
 
       <button className="btn btn-amber" type="button" disabled={!ready}
-        onClick={() => onStart(solo ? { ...SOLO, seconds: secs } : { solo: false, teams, seconds: secs })}>
+        onClick={(e) => {
+          onStart(solo ? { ...SOLO, seconds: secs } : { solo: false, teams, seconds: secs });
+          // on a phone the play area can start below the fold: bring it up
+          const tool = (e.currentTarget as HTMLElement).closest(".game-tool");
+          requestAnimationFrame(() => tool?.scrollIntoView({ behavior: "smooth", block: "start" }));
+        }}>
         {startLabel}
       </button>
     </div>

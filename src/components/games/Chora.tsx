@@ -142,17 +142,15 @@ export default function Chora() {
           <button type="button" className="pill" onClick={clear}>Clear</button>
         </div>
       </div>
-      <div className="row gap" style={{ justifyContent: "space-between", flexWrap: "wrap", marginTop: 12 }}>
-        <span className="muted">{say || "Hakuna kuongea — draw only!"}</span>
-        <div className="row gap-s">
-          <button type="button" className="btn btn-ghost btn-sm chora-peek-btn"
-            onPointerDown={() => setPeeking(true)} onPointerUp={() => setPeeking(false)} onPointerLeave={() => setPeeking(false)} onPointerCancel={() => setPeeking(false)}
-            onContextMenu={(e) => e.preventDefault()}>
-            {peeking ? word : "Shika kuona neno"}
-          </button>
-          <button type="button" className="btn btn-ghost btn-sm" onClick={nextWord}>Skip word</button>
-          <button type="button" className="btn btn-amber btn-sm" onClick={scored}>Wamepata! +1</button>
-        </div>
+      <p className="muted chora-say">{say || "Hakuna kuongea — draw only!"}</p>
+      <div className="chora-actions">
+        <button type="button" className="btn btn-amber chora-got" onClick={scored}>Wamepata! +1</button>
+        <button type="button" className="btn btn-ghost btn-sm chora-peek-btn"
+          onPointerDown={() => setPeeking(true)} onPointerUp={() => setPeeking(false)} onPointerLeave={() => setPeeking(false)} onPointerCancel={() => setPeeking(false)}
+          onContextMenu={(e) => e.preventDefault()}>
+          {peeking ? word : "Shika kuona neno"}
+        </button>
+        <button type="button" className="btn btn-ghost btn-sm" onClick={nextWord}>Skip word</button>
       </div>
     </div>
   );
